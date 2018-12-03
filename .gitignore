@@ -1,0 +1,55 @@
+#
+# Byte compiled
+__pycache__/
+*.py[cod]
+
+# Compiled 
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# compressed files
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# log and database
+*.log
+*.sql
+*.sqlite
+
+# OS files
+.DS_Store*
+.DS_Store?
+.DS_Store
+ehthumbs.db
+Icon?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+.AppleDouble
+.LSOverride
+
+# Possible raw files
+*.abf
+*.bin
+*.rhd
+*.h5
+*.mp4
+*.npy
