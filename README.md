@@ -95,8 +95,9 @@ ntk.plot_data(bdgc, 0, 25000, 1)
 * butter_bandpass
 * butter_highpass
 * butter_lowpass
-
+* welch_power
 ```
+
 # import libraries
 import neuraltoolkit as ntk
 import numpy as np

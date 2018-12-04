@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 '''
-All filter functions
+All filter, power  functions
 Hlab
 Author :Kiran Bhaskaran-Nair
 
@@ -74,3 +74,33 @@ def butter_highpass(data, highpass, fs, order=3):
    y = filtfilt(b, a, data)
    return y
 
+
+
+def welch_power(data, fs, lengthseg, noverlappoints, axis_n=-1, lplot=0):
+    from scipy.signal import welch
+    import matplotlib.pyplot as plt
+
+    '''
+    Welch power of signal
+
+    welch_power(data, fs, lengthseg, noverlappoints, axis_n=-1, lplot=0):
+    
+    fs sampling frequency
+    lengthseg : length of segments
+    noverlappoints : number of points to overlap between segments
+    axis_n : deault -1
+
+    returns
+    sf : sample frequencies
+    px : power spectral density
+
+    welch_power(data, 25000, 2048, 0, -1, 0)
+    '''
+    
+    sf, px = welch(data, fs, window='hann', nperseg=lengthseg, noverlap=noverlappoints, axis=axis_n )
+
+    if lplot == 1:
+        plt.semilogy(sf, px)
+        plt.show()
+        
+    return sf, px
