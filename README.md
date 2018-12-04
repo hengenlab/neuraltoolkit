@@ -62,6 +62,10 @@ ntk.plot_data(dgc, 0, 25000, 1)
 
 # plot bandpassed data
 ntk.plot_data(bdgc, 0, 25000, 1)
+
+# plot data in channel list
+l = np.array([5, 13, 31, 32, 42, 46, 47, 49, 51, 52, 53, 54 ])
+ntk.plot_data_chlist(bdgc, 25000, 50000, l )
 ```
 
 ## load intan data
@@ -88,6 +92,10 @@ ntk.plot_data(dgc, 0, 25000, 1)
 
 # plot bandpassed data
 ntk.plot_data(bdgc, 0, 25000, 1)
+
+# plot data in channel list
+l = np.array([5, 13])
+ntk.plot_data_chlist(bdgc, 25000, 50000, l )
 ```
 
 ## filters
