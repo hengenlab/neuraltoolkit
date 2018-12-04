@@ -51,7 +51,7 @@ print("Enter total number of channels : ")
 number_of_channels = np.int16(eval(input()))
 
 # Time and data
-t, dgc = ntk.load_raw_binary_gain_chmap(rawfile, number_of_channels, 'hs64')
+a = ntk.load_raw_binary_gain_chmap(rawfile, number_of_channels, 'hs64')
 
 # bandpass filter
 bdgc = ntk.butter_bandpass(dgc, 500, 7500, 25000, 3)
@@ -64,7 +64,30 @@ ntk.plot_data(bdgc, 0, 25000, 1)
 ```
 
 ## load intan data
+#### List of functions
+* load_intan_raw_gain_chanmap	: To load raw data with gain and channel mapping
 
+```
+# import libraries
+import neuraltoolkit as ntk
+import numpy as np
+from matplotlib import pyplot as plt
+
+# Get filename
+rawfile = 'neuraltoolkit/intansimu_170807_205345.rhd'
+
+# Time and data
+t, dgc = ntk.load_intan_raw_gain_chanmap(rawfile, 32, 'intan32')
+
+# bandpass filter
+bdgc = ntk.butter_bandpass(dgc, 500, 7500, 25000, 3)
+
+# plot raw data
+ntk.plot_data(dgc, 0, 25000, 1)
+
+# plot bandpassed data
+ntk.plot_data(bdgc, 0, 25000, 1)
+```
 
 ## filters
 #### List of functions
