@@ -26,6 +26,7 @@ If you are using bash shell
 In terminal cd ~/  
 then open  .profile using your favourite text editor (open -a TextEdit .profile)
 to add location where neuraltoolkit is located add the line below
+
 export PYTHONPATH=/location_of_neuraltoolkit:$PYTHONPATH
 
 
