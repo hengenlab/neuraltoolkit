@@ -52,7 +52,7 @@ print("Enter total number of channels : ")
 number_of_channels = np.int16(eval(input()))
 
 # Time and data
-a = ntk.load_raw_binary_gain_chmap(rawfile, number_of_channels, 'hs64')
+t, dgc = ntk.load_raw_binary_gain_chmap(rawfile, number_of_channels, 'hs64')
 
 # bandpass filter
 bdgc = ntk.butter_bandpass(dgc, 500, 7500, 25000, 3)
