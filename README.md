@@ -38,6 +38,7 @@ export PYTHONPATH=/location_of_neuraltoolkit:$PYTHONPATH
 * load_raw_binary                 : To load plain raw data
 * load_raw_binary_gain            : To load raw data with gain
 * load_raw_binary_gain_chmap      : To load raw data with gain and channel mapping
+* load_raw_binary_gain_chmap_nsec : To load nsec of raw data with gain and channel mapping
 
 ```
 import neuraltoolkit as ntk
@@ -66,6 +67,9 @@ ntk.plot_data(bdgc, 0, 25000, 1)
 # plot data in channel list
 l = np.array([5, 13, 31, 32, 42, 46, 47, 49, 51, 52, 53, 54 ])
 ntk.plot_data_chlist(bdgc, 25000, 50000, l )
+
+# Time and data from rawdata for nsec
+tt, ddgc = ntk.load_raw_binary_gain_chmap_nsec(rawfile, number_of_channels, 'hs64', 25000, 2)
 ```
 
 ## load intan data

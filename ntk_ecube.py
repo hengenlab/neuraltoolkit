@@ -89,5 +89,32 @@ def load_raw_binary_gain_chmap(name, number_of_channels, hstype):
     return tr, dgc
 
 
+def load_raw_binary_gain_chmap_nsec(name, number_of_channels, hstype, fs, nsec):
+    import numpy as np
+    from neuraltoolkit import ntk_channelmap as ntkc
+
+    '''
+    load ecube nsec of data and multiply gain and apply channel mapping
+    load_raw_binary_gain_chmap_nsec(name, number_of_channels, hstype, fs, nsec):
+    hstype : 'hs64', 'Si_64_KS_chmap', 'Si_64_KT_T1_K2_chmap' and linear
+    fs : sampling rate
+    nsec : number of seconds
+    returns first timestamp and data
+
+    tt, ddgc = ntk.load_raw_binary_gain_chmap_nsec(rawfile, number_of_channels, 'hs64', 25000, 2)
+    '''
+
+    # constants
+    gain = np.float64(0.19073486328125)
+
+    f = open(name, 'rb')
+    tr = np.fromfile(f, dtype = np.uint64, count =  1)
+    dr = np.fromfile(f, dtype = np.int16,  count = nsec*number_of_channels*fs)
+    f.close()
+    length = np.int64(np.size(dr)/number_of_channels)
+    drr = np.reshape(dr, [number_of_channels, length], order='F')
+    dg = drr*gain
+    dgc = ntkc.channel_map_data(dg, number_of_channels, 'hs64')
+    return tr, dgc
 
 
