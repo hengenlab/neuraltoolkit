@@ -96,6 +96,7 @@ ntk.plot_data(bdgc, 0, 25000, 1)
 * butter_highpass
 * butter_lowpass
 * welch_power
+* notch_filter
 ```
 
 # import libraries

@@ -104,3 +104,34 @@ def welch_power(data, fs, lengthseg, noverlappoints, axis_n=-1, lplot=0):
         plt.show()
         
     return sf, px
+
+
+
+def notch_filter(data, fs, Q, ftofilter):
+    from scipy.signal import filtfilt, iirnotch
+
+    '''
+    Notch filter
+
+    notch_filter(data, fs, Q, ftofilter)
+
+    fs : sampling frequency
+    Q :  Q = w0/bw, w0 = ftofilter/(fs/2), bw bandwidth
+    ftofilter : frequency to filter out
+
+    return
+    datan : filtered signal
+
+    '''
+
+    w0 = ftofilter/(fs/2)  # Normalized Frequency
+    print(w0)
+    print(w0/10)
+
+    # notch filter
+    b, a = iirnotch(w0, Q)
+
+    # filter foward and reverse
+    datan = filtfilt(b, a, data)
+
+    return datan
