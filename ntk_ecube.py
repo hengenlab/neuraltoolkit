@@ -96,7 +96,7 @@ def load_raw_binary_gain_chmap_nsec(name, number_of_channels, hstype, fs, nsec):
     '''
     load ecube nsec of data and multiply gain and apply channel mapping
     load_raw_binary_gain_chmap_nsec(name, number_of_channels, hstype, fs, nsec):
-    hstype : 'hs64', 'Si_64_KS_chmap', 'Si_64_KT_T1_K2_chmap' and linear
+    hstype : 'hs64', 'eibless-hs64', 'intan', 'Si_64_KS_chmap', 'Si_64_KT_T1_K2_chmap' and linear
     fs : sampling rate
     nsec : number of seconds
     returns first timestamp and data

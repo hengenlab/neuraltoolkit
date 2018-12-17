@@ -13,7 +13,7 @@ def channel_map_data(data, number_of_channels, hstype):
     '''
     Apply channel mapping
     channel_map_data(data, number_of_channels, hstype)
-    hstype : 'hs64', 'Si_64_KS_chmap', 'Si_64_KT_T1_K2_chmap' and linear
+    hstype : 'hs64', 'eibless-hs64', 'intan', 'Si_64_KS_chmap', 'Si_64_KT_T1_K2_chmap' and linear
     '''
 
     channel_map = find_channel_map(hstype, number_of_channels)
@@ -28,7 +28,7 @@ def find_channel_map(hstype, number_of_channels):
     '''
     Get channel map data
     find_channel_map(hstype, number_of_channels)
-    hstype : 'hs64', 'intan', 'Si_64_KS_chmap', 'Si_64_KT_T1_K2_chmap' and linear
+    hstype : 'hs64', 'eibless-hs64', 'intan', 'Si_64_KS_chmap', 'Si_64_KT_T1_K2_chmap' and linear
     '''
 
     # Ecube HS-64
@@ -37,6 +37,14 @@ def find_channel_map(hstype, number_of_channels):
                 48, 44, 36, 40, 64, 60, 52, 56, 54, 50, 42, 46, 62, 58, 34, 38, \
                 39, 35, 59, 63, 47, 43, 51, 55, 53, 49, 57, 61, 37, 33, 41, 45, \
                 17, 21, 29, 25, 1,  5 , 13, 9,  11, 15, 23, 19, 3,  7,  31, 27]) - 1
+
+    # Ecube eibless-hs64
+    if hstype == 'eibless-hs64':
+       chanMap = np.array([1, 5, 9, 13, 3, 7, 11, 15, 17, 21, 25, 29, 19, 23, 27, 31, \
+               33, 37, 41, 45, 35, 39, 43, 47, 49, 53, 57, 61, 51, 55, 59, 63, \
+               2, 6, 10, 14, 4, 8, 12, 16, 18, 22, 26, 30, 20, 24, 28, 32, \
+               34, 38, 42, 46, 36, 40, 44, 48, 50, 54, 58, 62, 52, 56, 60, 64]) - 1
+
     # Intan 32
     elif hstype == 'intan32':
        chan_map = np.array([25, 26, 27, 28, 29, 30, 31, 32, 1,  2,  3,  4,  5,  6,  7,  8, \
