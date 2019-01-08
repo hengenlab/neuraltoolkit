@@ -118,3 +118,21 @@ def load_raw_binary_gain_chmap_nsec(name, number_of_channels, hstype, fs, nsec):
     return tr, dgc
 
 
+# Load Ecube Digital data
+def load_digital_binary(name):
+    import numpy as np
+
+    '''
+    load ecube digital data
+    load_digital_binary(name)
+    returns first timestamp and data
+    data has to be 1 channel
+
+    tdig, ddig =load_digital_binary(digitalrawfile)
+    '''
+
+    f = open(name, 'rb')
+    tr = np.fromfile(f, dtype = np.uint64, count =  1)
+    dr = np.fromfile(f, dtype = np.int64,  count = -1)
+    f.close()
+    return tr, dr

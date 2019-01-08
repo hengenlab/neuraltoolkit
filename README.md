@@ -70,6 +70,9 @@ ntk.plot_data_chlist(bdgc, 25000, 50000, l )
 
 # Time and data from rawdata for nsec
 tt, ddgc = ntk.load_raw_binary_gain_chmap_nsec(rawfile, number_of_channels, 'hs64', 25000, 2)
+
+# Load digital data for cameras, etc
+tdig, ddig =load_digital_binary(digitalrawfile)
 ```
 
 ## load intan data
