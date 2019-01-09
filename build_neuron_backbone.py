@@ -130,6 +130,7 @@ class neuron(object):
 		    ax.set_ylabel('Number of intervals')
 		    ax.text(30,0.7*ax.get_ylim()[1],cont_text)
 		sns.despine()
+		return ISI
 
 
 
