@@ -22,7 +22,9 @@ class neuron_net(object):
 		print(np.shape(neurons))
 		self.neurons = [neurons[i] for i in range(0, len(neurons))]
 
-	def plot_FR(self, binsz = 1800, start = 0, end = max(self.neurons[0].time)):
+	def plot_FR(self, binsz = 1800, start = 0, end = Falso):
+		if end == False:
+			end = max(self.time)
 		fig1    = plt.figure()
 		for i in self.neurons:
 
