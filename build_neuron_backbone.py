@@ -84,7 +84,8 @@ class neuron(object):
 		# This will produce a firing rate plot for all loaded spike times unless otherwise specified
 		# binsz, start, end are in seconds 
 
-
+		if end == False:
+			end = max(self.time)
 		edges   = np.arange(start,end, binsz)
 		bins    = np.histogram(self.time,edges)
 		hzcount = bins[0]
