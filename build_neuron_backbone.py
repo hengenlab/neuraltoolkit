@@ -126,6 +126,7 @@ class neuron(object):
 		    ax              = fig1.add_subplot(111)
 		    ax.bar(edges[1:]*1000-0.5, hist_isi[0],color='#6a79f7')
 		    ax.set_ylim(ymin = 0)
+		    ax.set_xlim(xmin = 0)
 		    ax.set_xlabel('ISI (ms)')
 		    ax.set_ylabel('Number of intervals')
 		    ax.text(30,0.7*ax.get_ylim()[1],cont_text)
