@@ -12,6 +12,7 @@ plot_data
 help(plot_data)
 '''
 
+
 def plot_data(data, data_beg, data_end, channel=0):
     import matplotlib.pyplot as plt
 
@@ -34,7 +35,7 @@ def plot_data_chlist(data, data_beg, data_end, ch_list):
     plot data in range for channels in the list
 
     plot_data_chlist(data, data_beg, data_end, ch_list )
-    data_beg, data_end : sample range 
+    data_beg, data_end : sample range
     ch_list : list of channels to plot
 
     l = np.array([5, 13, 31, 32, 42, 46, 47, 49, 51, 52, 53, 54 ])
@@ -42,14 +43,13 @@ def plot_data_chlist(data, data_beg, data_end, ch_list):
     '''
 
     for i in range(len(ch_list)):
-         print(i, " ", ch_list[i])
+        print(i, " ", ch_list[i])
 
-         ax = plt.subplot(len(ch_list), 1, i+1)
-         plt.plot(data[ch_list[i], data_beg:data_end])
+        ax = plt.subplot(len(ch_list), 1, i+1)
+        plt.plot(data[ch_list[i], data_beg:data_end])
 
-         plt.xticks([])
-         plt.yticks([])
-         plt.box(on=None)
+        plt.xticks([])
+        plt.yticks([])
+        plt.box(on=None)
 
     plt.show()
-
