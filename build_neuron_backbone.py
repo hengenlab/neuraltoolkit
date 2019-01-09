@@ -11,7 +11,6 @@ import matplotlib
 import glob
 import os
 import random
-import xlrd
 import math
 import scipy.stats as stats
 import read_intan_ecube_binary as ecube
