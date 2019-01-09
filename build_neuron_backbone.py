@@ -116,7 +116,7 @@ class neuron(object):
 		ISI = np.diff(self.time[idx])
 		edges = np.linspace(0,isi_thresh,nbins)
 		hist_isi        = np.histogram(ISI,edges)
-		contamination   = 100*(sum(hist_isi[0][0:int((nbins-1)/50)])/sum(hist_isi[0]))
+		contamination   = 100*(sum(hist_isi[0][0:int((isi_thresh/0.1)*(nbins-1)/50)])/sum(hist_isi[0]))
 		contamination   = round(contamination,2)
 		cont_text       = 'Contamination is {} percent.' .format(contamination)
 
