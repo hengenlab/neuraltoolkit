@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
 '''
-Script to read ecube binary file 
+Script to read ecube binary file
 Hlab
 Author :Kiran Bhaskaran-Nair
 
-List of functions in ntk_ecube 
+List of functions in ntk_ecube
 
 Load raw data without gain or channel mapping
 load_raw_binary
@@ -32,13 +32,12 @@ def load_raw_binary(name, number_of_channels):
     '''
 
     f = open(name, 'rb')
-    tr = np.fromfile(f, dtype = np.uint64, count =  1)
-    dr = np.fromfile(f, dtype = np.int16,  count = -1)
+    tr = np.fromfile(f, dtype=np.uint64, count=1)
+    dr = np.fromfile(f, dtype=np.int16,  count=-1)
     length = np.int64(np.size(dr)/number_of_channels)
     drr = np.reshape(dr, [number_of_channels, length], order='F')
     f.close()
     return tr, drr
-
 
 
 def load_raw_binary_gain(name, number_of_channels):
@@ -54,14 +53,13 @@ def load_raw_binary_gain(name, number_of_channels):
     gain = np.float64(0.19073486328125)
 
     f = open(name, 'rb')
-    tr = np.fromfile(f, dtype = np.uint64, count =  1)
-    dr = np.fromfile(f, dtype = np.int16,  count = -1)
+    tr = np.fromfile(f, dtype=np.uint64, count=1)
+    dr = np.fromfile(f, dtype=np.int16,  count=-1)
     f.close()
     length = np.int64(np.size(dr)/number_of_channels)
     drr = np.reshape(dr, [number_of_channels, length], order='F')
     dg = drr*gain
     return tr, dg
-
 
 
 def load_raw_binary_gain_chmap(name, number_of_channels, hstype):
@@ -79,8 +77,8 @@ def load_raw_binary_gain_chmap(name, number_of_channels, hstype):
     gain = np.float64(0.19073486328125)
 
     f = open(name, 'rb')
-    tr = np.fromfile(f, dtype = np.uint64, count =  1)
-    dr = np.fromfile(f, dtype = np.int16,  count = -1)
+    tr = np.fromfile(f, dtype=np.uint64, count=1)
+    dr = np.fromfile(f, dtype=np.int16,  count=-1)
     f.close()
     length = np.int64(np.size(dr)/number_of_channels)
     drr = np.reshape(dr, [number_of_channels, length], order='F')
@@ -89,27 +87,31 @@ def load_raw_binary_gain_chmap(name, number_of_channels, hstype):
     return tr, dgc
 
 
-def load_raw_binary_gain_chmap_nsec(name, number_of_channels, hstype, fs, nsec):
+def load_raw_binary_gain_chmap_nsec(name, number_of_channels, hstype,
+                                    fs, nsec):
     import numpy as np
     from neuraltoolkit import ntk_channelmap as ntkc
 
     '''
     load ecube nsec of data and multiply gain and apply channel mapping
-    load_raw_binary_gain_chmap_nsec(name, number_of_channels, hstype, fs, nsec):
-    hstype : 'hs64', 'eibless-hs64', 'intan', 'Si_64_KS_chmap', 'Si_64_KT_T1_K2_chmap' and linear
+    load_raw_binary_gain_chmap_nsec(name, number_of_channels, hstype,
+                                    fs, nsec):
+    hstype : 'hs64', 'eibless-hs64', 'intan', 'Si_64_KS_chmap',
+             'Si_64_KT_T1_K2_chmap' and linear
     fs : sampling rate
     nsec : number of seconds
     returns first timestamp and data
 
-    tt, ddgc = ntk.load_raw_binary_gain_chmap_nsec(rawfile, number_of_channels, 'hs64', 25000, 2)
+    tt, ddgc = ntk.load_raw_binary_gain_chmap_nsec(rawfile, number_of_channels,
+                                                   'hs64', 25000, 2)
     '''
 
     # constants
     gain = np.float64(0.19073486328125)
 
     f = open(name, 'rb')
-    tr = np.fromfile(f, dtype = np.uint64, count =  1)
-    dr = np.fromfile(f, dtype = np.int16,  count = nsec*number_of_channels*fs)
+    tr = np.fromfile(f, dtype=np.uint64, count=1)
+    dr = np.fromfile(f, dtype=np.int16,  count=nsec*number_of_channels*fs)
     f.close()
     length = np.int64(np.size(dr)/number_of_channels)
     drr = np.reshape(dr, [number_of_channels, length], order='F')
@@ -132,7 +134,7 @@ def load_digital_binary(name):
     '''
 
     f = open(name, 'rb')
-    tr = np.fromfile(f, dtype = np.uint64, count =  1)
-    dr = np.fromfile(f, dtype = np.int64,  count = -1)
+    tr = np.fromfile(f, dtype=np.uint64, count=1)
+    dr = np.fromfile(f, dtype=np.int64,  count=-1)
     f.close()
     return tr, dr
