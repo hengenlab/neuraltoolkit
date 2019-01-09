@@ -79,7 +79,7 @@ class neuron(object):
 		sns.despine()
 
 
-	def firing_rate(self, binsz = 1800, start = 0, end = max(self.time)):
+	def firing_rate(self, binsz = 1800, start = 0, end = False):
 
 		# This will produce a firing rate plot for all loaded spike times unless otherwise specified
 		# binsz, start, end are in seconds 
