@@ -13,7 +13,8 @@ def channel_map_data(data, number_of_channels, hstype):
     '''
     Apply channel mapping
     channel_map_data(data, number_of_channels, hstype)
-    hstype : 'hs64', 'eibless-hs64', 'intan', 'Si_64_KS_chmap',
+    hstype : 'hs64', 'eibless-hs64_port32', 'eibless-hs64_port64',
+             'intan', 'Si_64_KS_chmap',
              'Si_64_KT_T1_K2_chmap' and linear
     '''
 
@@ -28,7 +29,8 @@ def find_channel_map(hstype, number_of_channels):
     '''
     Get channel map data
     find_channel_map(hstype, number_of_channels)
-    hstype : 'hs64', 'eibless-hs64', 'intan', 'Si_64_KS_chmap',
+    hstype : 'hs64', 'eibless-hs64_port32', 'eibless-hs64_port64',
+             'intan', 'Si_64_KS_chmap',
              'Si_64_KT_T1_K2_chmap' and linear
     '''
 
@@ -41,14 +43,24 @@ def find_channel_map(hstype, number_of_channels):
                              17, 21, 29, 25, 1,  5,  13, 9,  11, 15, 23, 19,
                              3,  7,  31, 27]) - 1
 
-    # Ecube eibless-hs64
-    elif hstype == 'eibless-hs64':
+    # Ecube eibless-hs64_port32
+    elif hstype == 'eibless-hs64_port32':
         chan_map = np.array([1,  5,  9,  13, 3,  7,  11, 15, 17, 21, 25, 29,
                              19, 23, 27, 31, 33, 37, 41, 45, 35, 39, 43, 47,
                              49, 53, 57, 61, 51, 55, 59, 63, 2,  6,  10, 14,
                              4,  8,  12, 16, 18, 22, 26, 30, 20, 24, 28, 32,
                              34, 38, 42, 46, 36, 40, 44, 48, 50, 54, 58, 62,
                              52, 56, 60, 64]) - 1
+
+    # Ecube eibless-hs64_port64
+    elif hstype == 'eibless-hs64_port64':
+        chan_map = np.array([1,  5,  3,  7,  9,  13, 11, 15, 17, 21, 19, 23,
+                             25, 29, 27, 31, 33, 37, 35, 39, 41, 45, 43, 47,
+                             49, 53, 51, 55, 57, 61, 59, 63, 2,  6,  4,  8,
+                             10, 14, 12, 16, 18, 22, 20, 24, 26, 30, 28, 32,
+                             34, 38, 36, 40, 42, 46, 44, 48, 50, 54, 52, 56,
+                             58, 62, 60, 64]) - 1
+
 
     # Intan 32
     elif hstype == 'intan32':
