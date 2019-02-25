@@ -73,6 +73,9 @@ tt, ddgc = ntk.load_raw_binary_gain_chmap_nsec(rawfile, number_of_channels, 'hs6
 
 # Load digital data for cameras, etc
 tdig, ddig =load_digital_binary(digitalrawfile)
+
+# Load preprocessed data file
+pdata = load_raw_binary_preprocessed(preprocessedfilename, number_of_channels)
 ```
 
 ## load intan data
