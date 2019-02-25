@@ -121,6 +121,26 @@ def load_raw_binary_gain_chmap_nsec(name, number_of_channels, hstype,
     return tr, dgc
 
 
+
+# Load Ecube HS data preprocessed
+def load_raw_binary_preprocessed(name, number_of_channels):
+    import numpy as np
+
+    '''
+    load ecube data preprocessed
+    load_raw_binary(name, number_of_channels)
+    returns data
+    '''
+
+    f = open(name, 'rb')
+    dr = np.fromfile(f, dtype=np.int16,  count=-1)
+    length = np.int64(np.size(dr)/number_of_channels)
+    drr = np.reshape(dr, [number_of_channels, length], order='F')
+    f.close()
+    return drr
+
+
+
 # Load Ecube Digital data
 def load_digital_binary(name):
     import numpy as np
