@@ -32,6 +32,9 @@ def find_channel_map(hstype, number_of_channels):
     hstype : 'hs64', 'eibless-hs64_port32', 'eibless-hs64_port64',
              'intan', 'Si_64_KS_chmap',
              'Si_64_KT_T1_K2_chmap' and linear
+
+              Si_64_KS_chmap includes  8-K2., 5-KS., 1A-K2. probe
+              Si_64_KT_T1_K2_chmap includes 5-KT. and  5-K2. probe
     '''
 
     # Ecube HS-64
@@ -69,6 +72,9 @@ def find_channel_map(hstype, number_of_channels):
                              16, 15, 14, 13, 12, 11, 10, 9]) - 1
 
     # KS Si probe
+    # 8-K2.  stag. 2 col regular site size
+    # 5-KS.  linear variable site size
+    # 1A-K2. stag. 2 col regular site size
     elif hstype == 'Si_64_KS_chmap':
         chan_map = np.array([7,  45, 5,  56, 4,  48, 1,  62, 9,  53, 10, 42,
                              14, 59, 13, 39, 18, 49, 16, 36, 23, 44, 19, 33,
@@ -78,6 +84,8 @@ def find_channel_map(hstype, number_of_channels):
                              38, 47, 32, 37]) - 1
 
     # KT Si probe
+    # 5-KT. stag. 2 col, small site size
+    # 5-K2. stag. 2 col, regular site
     elif hstype == 'Si_64_KT_T1_K2_chmap':
         chan_map = np.array([14, 59, 10, 42, 9,  53, 1,  62, 4,  48, 5,  56,
                              7,  45, 13, 39, 18, 49, 16, 36, 23, 44, 19, 33,
