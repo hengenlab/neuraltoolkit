@@ -64,7 +64,6 @@ def find_channel_map(hstype, number_of_channels):
                              34, 38, 36, 40, 42, 46, 44, 48, 50, 54, 52, 56,
                              58, 62, 60, 64]) - 1
 
-
     # Intan 32
     elif hstype == 'intan32':
         chan_map = np.array([25, 26, 27, 28, 29, 30, 31, 32, 1,  2,  3,  4,
@@ -103,3 +102,59 @@ def find_channel_map(hstype, number_of_channels):
         raise ValueError('Headstage type not defined!')
 
     return chan_map
+
+
+def create_chanmap_file_for_oe():
+    import numpy as np
+    from neuraltoolkit import ntk_channelmap as ntkc
+
+    '''
+    Create channel mapping file for Open Ephys
+    This is more as a script so answer the questions
+    probe type : 'hs64', 'eibless-hs64_port32', 'eibless-hs64_port64',
+                 'intan', 'Si_64_KS_chmap',
+                 'Si_64_KT_T1_K2_chmap' and linear
+    '''
+
+    # Get number of channels
+    print("Enter total number of probes: ")
+    number_of_probes = np.int16(eval(input()))
+
+    chan_mapt = np.empty(shape=[0, 0], dtype=np.int64)
+    for i in range(number_of_probes):
+
+        # Get number of channels
+        print("Enter total number of channels : ")
+        number_of_channels = np.int16(eval(input()))
+        print(number_of_channels)
+
+        # Get number of channels
+        print("Enter probe type : ")
+        hstype = input()
+        print(hstype)
+
+        chan_map = ntkc.find_channel_map(hstype, number_of_channels)
+        chan_map = chan_map + 1
+        if i == 0:
+            chan_mapt = chan_map
+            if number_of_probes == i+1:
+                break
+        else:
+            chan_map = chan_map + chan_mapt.size
+            chan_mapt = np.concatenate((chan_mapt, chan_map), axis=0)
+
+    # Get filename
+    print("Enter filename to save data: ")
+    filename = input()
+    print(filename)
+
+    # write channel map
+    fid = open(filename, 'w')
+    print('[', file=fid)
+    for ii in range(chan_mapt.size):
+        if ii < chan_mapt.size - 1:
+            print((chan_mapt[ii]), ',', file=fid)
+        else:
+            print((chan_mapt[ii]), file=fid)
+    print(']', file=fid)
+    fid.close()

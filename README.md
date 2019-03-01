@@ -76,6 +76,18 @@ tdig, ddig =load_digital_binary(digitalrawfile)
 
 # Load preprocessed data file
 pdata = load_raw_binary_preprocessed(preprocessedfilename, number_of_channels)
+
+# Create channel mapping file for Open Ephys
+import neuraltoolkit as ntk
+ntk.create_chanmap_file_for_oe()
+Enter total number of probes:
+1
+Enter total number of channels :
+64
+Enter probe type :
+hs64
+Enter filename to save data:
+channelmap_hs64.txt
 ```
 
 ## load intan data
