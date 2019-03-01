@@ -150,11 +150,53 @@ def create_chanmap_file_for_oe():
 
     # write channel map
     fid = open(filename, 'w')
-    print('[', file=fid)
+
+    print('{', file=fid)
+    print('"0": {', file=fid)
+
+    print('"mapping": [', file=fid)
     for ii in range(chan_mapt.size):
         if ii < chan_mapt.size - 1:
             print((chan_mapt[ii]), ',', file=fid)
         else:
             print((chan_mapt[ii]), file=fid)
+    print('],', file=fid)
+
+    print('"reference": [', file=fid)
+    for ii in range(chan_mapt.size):
+        if ii < chan_mapt.size - 1:
+            print('-1', ',', file=fid)
+        else:
+            print('-1', file=fid)
+    print('],', file=fid)
+
+    print('"enabled": [', file=fid)
+    for ii in range(chan_mapt.size):
+        if ii < chan_mapt.size - 1:
+            print('true', ',', file=fid)
+        else:
+            print('true', file=fid)
     print(']', file=fid)
+    print('},', file=fid)
+
+    print('"refs": {', file=fid)
+    print('"channels": [', file=fid)
+    print('-1,', file=fid)
+    print('-1,', file=fid)
+    print('-1,', file=fid)
+    print('-1', file=fid)
+    print(']', file=fid)
+    print('},', file=fid)
+
+    print('"recording": {', file=fid)
+    print('"channels": [', file=fid)
+    for ii in range(chan_mapt.size):
+        if ii < chan_mapt.size - 1:
+            print('false', ',', file=fid)
+        else:
+            print('false', file=fid)
+    print(']', file=fid)
+    print('}', file=fid)
+    print('}', file=fid)
+
     fid.close()
