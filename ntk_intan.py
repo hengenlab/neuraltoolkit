@@ -15,7 +15,8 @@ help(ntk.load_intan_raw_gain_chanmap)
 '''
 
 
-def load_intan_raw_gain_chanmap(rawfile, number_of_channels, hstype):
+def load_intan_raw_gain_chanmap(
+        rawfile, number_of_channels, hstype, nprobes=1):
     import numpy as np
     from neuraltoolkit import ntk_channelmap as ntkc
     from .load_intan_rhd_format_hlab import read_data
@@ -25,6 +26,7 @@ def load_intan_raw_gain_chanmap(rawfile, number_of_channels, hstype):
     load_intan_raw_gain_chanmap(name, number_of_channels, hstype)
     hstype : 'hs64', 'intan32', 'Si_64_KS_chmap', 'Si_64_KT_T1_K2_chmap'
               and linear
+    nprobes : Number of probes (default 1)
     returns first timestamp and data
     '''
 
@@ -36,6 +38,6 @@ def load_intan_raw_gain_chanmap(rawfile, number_of_channels, hstype):
     dg = np.array(a['amplifier_data'])
 
     # Apply channel mapping
-    dgc = ntkc.channel_map_data(dg, number_of_channels, hstype)
+    dgc = ntkc.channel_map_data(dg, number_of_channels, hstype, nprobes)
 
     return tr, dgc
