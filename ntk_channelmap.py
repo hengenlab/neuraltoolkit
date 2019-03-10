@@ -7,7 +7,7 @@ Author :Kiran Bhaskaran-Nair
 '''
 
 
-def channel_map_data(data, number_of_channels, hstype):
+def channel_map_data(data, number_of_channels, hstype, nprobes=1):
     import numpy as np
 
     '''
@@ -16,9 +16,38 @@ def channel_map_data(data, number_of_channels, hstype):
     hstype : 'hs64', 'eibless-hs64_port32', 'eibless-hs64_port64',
              'intan', 'Si_64_KS_chmap',
              'Si_64_KT_T1_K2_chmap' and linear
+    nprobes : Number of probes (default 1)
     '''
 
-    channel_map = find_channel_map(hstype, number_of_channels)
+    print(hstype)
+    if nprobes == 1:
+        channel_map = find_channel_map(hstype, number_of_channels)
+    else:
+        print("Number of probes", nprobes)
+        # Get number of channels
+        # restricted to symmetric probe
+        print('Assuming probes all probes have same number of channels')
+        nchannels_probe = np.int16(number_of_channels/nprobes)
+        print("Number of channels per probe", nchannels_probe)
+        for i in range(nprobes):
+
+            # probe type
+            hstype_probe = hstype[i]
+            print(hstype_probe)
+
+            chan_map = find_channel_map(hstype_probe, nchannels_probe)
+            chan_map = chan_map + 1
+            # print(chan_map)
+            if i == 0:
+                chan_mapt = chan_map
+                if nprobes == i+1:
+                    break
+            else:
+                chan_map = chan_map + chan_mapt.size
+                chan_mapt = np.concatenate((chan_mapt, chan_map), axis=0)
+
+            channel_map = chan_mapt - 1
+
     dc = data[channel_map, :]
     return dc
 
