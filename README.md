@@ -75,7 +75,12 @@ l = np.array([5, 13, 31, 32, 42, 46, 47, 49, 51, 52, 53, 54 ])
 ntk.plot_data_chlist(bdgc, 25000, 50000, l )
 
 # Time and data from rawdata for nsec
+# For single probe
 tt, ddgc = ntk.load_raw_binary_gain_chmap_nsec(rawfile, number_of_channels, 'hs64', 25000, 2)
+# For multiple probes
+# hstype = ['Si_64_KS_chmap', 'Si_64_KT_T1_K2_chmap', 'Si_64_KT_T1_K2_chmap', 'Si_64_KS_chmap']
+# nprobes = 4
+tt, ddgc = ntk.load_raw_binary_gain_chmap_nsec(rawfile, number_of_channels, hstype, 25000, 2, nprobes)
 
 # Load digital data for cameras, etc
 tdig, ddig =load_digital_binary(digitalrawfile)
