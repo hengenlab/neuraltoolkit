@@ -109,8 +109,18 @@ from matplotlib import pyplot as plt
 # Get filename
 rawfile = 'neuraltoolkit/intansimu_170807_205345.rhd'
 
+# Get number of channels
+print("Enter total number of channels : ")
+number_of_channels = np.int16(eval(input()))
+
 # Time and data
-t, dgc = ntk.load_intan_raw_gain_chanmap(rawfile, 32, 'intan32')
+t, dgc = ntk.load_intan_raw_gain_chanmap(rawfile, number_of_channels, 'intan32')
+
+# Time and data for multiple probes with same number of channels
+hstype = ['intan32', 'linear']
+nprobes = 2
+# number_of_channels here is total number of channels in all probes (32 * nprobes = 64)
+t, dgc = ntk.load_intan_raw_gain_chanmap(rawfile, number_of_channels, hstype, nprobes)
 
 # bandpass filter
 bdgc = ntk.butter_bandpass(dgc, 500, 7500, 25000, 3)
