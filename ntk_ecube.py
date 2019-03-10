@@ -83,7 +83,7 @@ def load_raw_binary_gain_chmap(name, number_of_channels, hstype):
     length = np.int64(np.size(dr)/number_of_channels)
     drr = np.reshape(dr, [number_of_channels, length], order='F')
     dg = drr*gain
-    dgc = ntkc.channel_map_data(dg, number_of_channels, 'hs64')
+    dgc = ntkc.channel_map_data(dg, number_of_channels, hstype)
     return tr, dgc
 
 
@@ -117,7 +117,7 @@ def load_raw_binary_gain_chmap_nsec(name, number_of_channels, hstype,
     length = np.int64(np.size(dr)/number_of_channels)
     drr = np.reshape(dr, [number_of_channels, length], order='F')
     dg = drr*gain
-    dgc = ntkc.channel_map_data(dg, number_of_channels, 'hs64')
+    dgc = ntkc.channel_map_data(dg, number_of_channels, hstype)
     return tr, dgc
 
 

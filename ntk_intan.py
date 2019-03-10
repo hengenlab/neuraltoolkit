@@ -36,6 +36,6 @@ def load_intan_raw_gain_chanmap(rawfile, number_of_channels, hstype):
     dg = np.array(a['amplifier_data'])
 
     # Apply channel mapping
-    dgc = ntkc.channel_map_data(dg, number_of_channels, 'intan32')
+    dgc = ntkc.channel_map_data(dg, number_of_channels, hstype)
 
     return tr, dgc
