@@ -26,7 +26,7 @@ def channel_map_data(data, number_of_channels, hstype, nprobes=1):
         print("Number of probes", nprobes)
         # Get number of channels
         # restricted to symmetric probe
-        print('Assuming probes all probes have same number of channels')
+        print('Assuming all probes have same number of channels')
         nchannels_probe = np.int16(number_of_channels/nprobes)
         print("Number of channels per probe", nchannels_probe)
         for i in range(nprobes):
