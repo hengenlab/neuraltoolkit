@@ -12,7 +12,7 @@ def channel_map_data(data, number_of_channels, hstype, nprobes=1):
 
     '''
     Apply channel mapping
-    channel_map_data(data, number_of_channels, hstype)
+    channel_map_data(data, number_of_channels, hstype, nprobes=1)
     hstype : 'hs64', 'eibless-hs64_port32', 'eibless-hs64_port64',
              'intan', 'Si_64_KS_chmap',
              'Si_64_KT_T1_K2_chmap' and linear
