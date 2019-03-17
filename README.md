@@ -162,6 +162,10 @@ print(v.length)
 # play video, please press q to exit
 v.play_video()
 
+# extract_frames to a folder
+outpath = '/home/user/out/'
+v.extract_frames(outpath)
+
 ```
 
 ## filters
