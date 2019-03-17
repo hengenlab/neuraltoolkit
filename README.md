@@ -147,6 +147,8 @@ ntk.plot_data_chlist(bdgc, 25000, 50000, l )
 import neuraltoolkit as ntk
 videofilename = '/home/user/e3v810a-20190307T0740-0840.mp4'
 lstream = 0
+
+# get video attributes
 v = ntk.NTKVideos(videofilename, lstream)
 print(v.fps)
 30.00
@@ -154,8 +156,11 @@ print(v.width)
 640.0
 print(v.height)
 480.0
- print(v.length)
+print(v.length)
 107998.0
+
+# play video, please press q to exit
+v.play_video()
 
 ```
 
