@@ -141,6 +141,24 @@ l = np.array([5, 13])
 ntk.plot_data_chlist(bdgc, 25000, 50000, l )
 ```
 
+## video
+#### List of functions/Class
+```
+import neuraltoolkit as ntk
+videofilename = '/home/user/e3v810a-20190307T0740-0840.mp4'
+lstream = 0
+v = ntk.NTKVideos(videofilename, lstream)
+print(v.fps)
+30.00
+print(v.width)
+640.0
+print(v.height)
+480.0
+ print(v.length)
+107998.0
+
+```
+
 ## filters
 #### List of functions
 * butter_bandpass
