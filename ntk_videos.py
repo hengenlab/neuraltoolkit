@@ -16,6 +16,9 @@ class NTKVideos:
     play video, please press q to exit
     v.play_video()
 
+    extract_frames
+    outpath = '/home/user/out/'
+    v.extract_frames(outpath)
     '''
 
     def __init__(self, name, lstream):
@@ -46,6 +49,23 @@ class NTKVideos:
                     cv2.imshow('video', self.frame)
                     if cv2.waitKey(10) & 0xFF == ord('q'):
                         break
+            self.cap.release()
+            cv2.destroyAllWindows()
+
+    def extract_frames(self, pathout):
+            frame_num = 0
+            while True:
+                frame_num = frame_num + 1
+
+                # Capture frame-by-frame
+                self.ret, self.frame = self.cap.read()
+
+                if self.ret is True:
+                    cv2.imwrite(os.path.join(pathout, "frame%d.jpg") %
+                                frame_num, self.frame)
+                else:
+                    break
+
             self.cap.release()
             cv2.destroyAllWindows()
 
