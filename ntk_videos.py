@@ -19,9 +19,20 @@ class NTKVideos:
     play video, please press q to exit
     v.play_video()
 
-    extract_frames
+    extract all frames
     outpath = '/home/user/out/'
     v.extract_frames(outpath)
+
+    grab a frame
+    grab_frame_num(self, frame_num, pathout)
+    frame_num = 1
+    outpath = '/home/user/out/'
+    # To write frame to disk
+    v,grab_frame_num(frame_num, outpath)
+    # To see the frame, keep outpath empty
+    v,grab_frame_num(frame_num)
+
+
     '''
 
     def __init__(self, name, lstream):
@@ -52,7 +63,7 @@ class NTKVideos:
                     cv2.imshow('video', self.frame)
                     if cv2.waitKey(10) & 0xFF == ord('q'):
                         break
-            self.cap.release()
+            # self.cap.release()
             cv2.destroyAllWindows()
 
     def extract_frames(self, pathout):
@@ -69,8 +80,24 @@ class NTKVideos:
                 else:
                     break
 
-            self.cap.release()
+            # self.cap.release()
             cv2.destroyAllWindows()
+
+    def grab_frame_num(self, frame_num, pathout=None):
+            self.cap.set(1, frame_num)
+            self.ret, self.frame = self.cap.read()
+
+            if self.ret is True:
+                if pathout:
+                    cv2.imwrite(os.path.join(pathout, "frame%d.jpg") %
+                                frame_num, self.frame)
+                else:
+                    cv2.imshow('video', self.frame)
+            else:
+                print('Error could not get frame')
+
+            # self.cap.release()
+            # cv2.destroyAllWindows()
 
 
 if __name__ == '__main__':
