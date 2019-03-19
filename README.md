@@ -166,6 +166,15 @@ v.play_video()
 outpath = '/home/user/out/'
 v.extract_frames(outpath)
 
+# Grab a frame and write to disk
+frame_num = 1
+outpath = '/home/user/out/'
+v.grab_frame_num(frame_num, outpath)
+
+# Grab a frame and show
+frame_num = 100
+v.grab_frame_num(frame_num)
+
 ```
 
 ## filters

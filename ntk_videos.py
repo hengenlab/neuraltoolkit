@@ -28,9 +28,9 @@ class NTKVideos:
     frame_num = 1
     outpath = '/home/user/out/'
     # To write frame to disk
-    v,grab_frame_num(frame_num, outpath)
+    v.grab_frame_num(frame_num, outpath)
     # To see the frame, keep outpath empty
-    v,grab_frame_num(frame_num)
+    v.grab_frame_num(frame_num)
 
 
     '''
