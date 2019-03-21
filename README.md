@@ -55,6 +55,9 @@ number_of_channels = np.int16(eval(input()))
 # Time and data
 t, dgc = ntk.load_raw_binary_gain_chmap(rawfile, number_of_channels, 'hs64')
 
+# Time only
+t = ntk.load_raw_binary_gain_chmap(rawfile, number_of_channels, 'hs64', t_only=1)
+
 # Time and data for multiple probes with same number of channels
 hstype = ['Si_64_KS_chmap', 'Si_64_KT_T1_K2_chmap', 'Si_64_KT_T1_K2_chmap', 'Si_64_KS_chmap']
 nprobes = 4
