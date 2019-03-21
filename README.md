@@ -162,7 +162,7 @@ print(v.length)
 # play video, please press q to exit
 v.play_video()
 
-# extract_frames to a folder
+# extract_frames and save to a folder
 outpath = '/home/user/out/'
 v.extract_frames(outpath)
 
@@ -174,6 +174,13 @@ v.grab_frame_num(frame_num, outpath)
 # Grab a frame and show
 frame_num = 100
 v.grab_frame_num(frame_num)
+
+# Make video from images
+imgpath = '/home/user/img/'
+videopath = '/home/user/img/out/'
+videofilename = video1.avi
+ntk.make_video_from_images(imgpath, videopath, videofilename,
+                           imgext='.jpg', codec='XVID', v_fps=30)
 
 ```
 
