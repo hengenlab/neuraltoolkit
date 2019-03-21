@@ -62,7 +62,8 @@ def load_raw_binary_gain(name, number_of_channels):
     return tr, dg
 
 
-def load_raw_binary_gain_chmap(name, number_of_channels, hstype, nprobes=1):
+def load_raw_binary_gain_chmap(name, number_of_channels, hstype, nprobes=1,
+                               t_only=0):
     import numpy as np
     from neuraltoolkit import ntk_channelmap as ntkc
 
@@ -71,6 +72,8 @@ def load_raw_binary_gain_chmap(name, number_of_channels, hstype, nprobes=1):
     load_raw_binary_gain_chmap(name, number_of_channels, hstype)
     hstype : 'hs64', 'Si_64_KS_chmap', 'Si_64_KT_T1_K2_chmap' and linear
     nprobes : Number of probes (default 1)
+    t_only  : if t_only=1, just return tr, timestamp
+              (Default 0, returns timestamp and data)
     returns first timestamp and data
     '''
 
@@ -79,6 +82,10 @@ def load_raw_binary_gain_chmap(name, number_of_channels, hstype, nprobes=1):
 
     f = open(name, 'rb')
     tr = np.fromfile(f, dtype=np.uint64, count=1)
+    if t_only:
+        f.close()
+        return tr
+
     dr = np.fromfile(f, dtype=np.int16,  count=-1)
     f.close()
     length = np.int64(np.size(dr)/number_of_channels)
