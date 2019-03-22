@@ -88,6 +88,9 @@ tt, ddgc = ntk.load_raw_binary_gain_chmap_nsec(rawfile, number_of_channels, hsty
 # Load digital data for cameras, etc
 tdig, ddig =load_digital_binary(digitalrawfile)
 
+# Load time only from digital data for cameras, etc
+tdig = load_digital_binary(digitalrawfile, t_only=1)
+
 # Load preprocessed data file
 pdata = load_raw_binary_preprocessed(preprocessedfilename, number_of_channels)
 
