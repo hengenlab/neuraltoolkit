@@ -1,14 +1,24 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 '''
 Channel maps for all the probes used in our lab
-Hlab
-Author :Kiran Bhaskaran-Nair
+
+Hengen Lab
+Washington University in St. Louis
+Author: Kiran Bhaskaran-Nair
+Email: kbn.git@gmail.com
+Version:  0.1
+
+List of functions/class in ntk_channelmap
+channel_map_data(data, number_of_channels, hstype, nprobes=1)
+find_channel_map(hstype, number_of_channels)
+create_chanmap_file_for_oe()
 '''
+
+import numpy as np
 
 
 def channel_map_data(data, number_of_channels, hstype, nprobes=1):
-    import numpy as np
 
     '''
     Apply channel mapping
@@ -53,7 +63,6 @@ def channel_map_data(data, number_of_channels, hstype, nprobes=1):
 
 
 def find_channel_map(hstype, number_of_channels):
-    import numpy as np
 
     '''
     Get channel map data
@@ -134,8 +143,6 @@ def find_channel_map(hstype, number_of_channels):
 
 
 def create_chanmap_file_for_oe():
-    import numpy as np
-    from neuraltoolkit import ntk_channelmap as ntkc
 
     '''
     Create channel mapping file for Open Ephys
@@ -144,6 +151,8 @@ def create_chanmap_file_for_oe():
                  'intan', 'Si_64_KS_chmap',
                  'Si_64_KT_T1_K2_chmap' and linear
     '''
+
+    from neuraltoolkit import ntk_channelmap as ntkc
 
     # Get number of channels
     print("Enter total number of probes: ")

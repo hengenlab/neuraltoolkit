@@ -1,26 +1,20 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 '''
 All filter, power  functions
-Hlab
-Author :Kiran Bhaskaran-Nair
 
-from neuraltoolkit import ntk_filters as ntkf
-help(ntkf)
+Hengen Lab
+Washington University in St. Louis
+Author: Kiran Bhaskaran-Nair
+Email: kbn.git@gmail.com
+Version:  0.1
 
-List of functions in ntk_filters
-* butter_bandpass
-* butter_highpass
-* butter_lowpass
-
-bandpass filter
-help(ntkf.butter_bandpass)
-
-lowpass filter
-help(ntkf.butter_lowpass)
-
-highpass filter
-help(ntkf.butter_highpass)
+List of functions/class in ntk_filters
+butter_bandpass(data, highpass, lowpass, fs, order=3)
+butter_lowpass(data, lowpass, fs, order=3)
+butter_highpass(data, highpass, fs, order=3)
+welch_power(data, fs, lengthseg, noverlappoints, axis_n=-1, lplot=0)
+notch_filter(data, fs, Q, ftofilter)
 '''
 
 
@@ -33,7 +27,7 @@ def butter_bandpass(data, highpass, lowpass, fs, order=3):
     result = butter_bandpass(data, 500, 4000, 25000, 3)
     '''
 
-    from scipy.signal import butter, lfilter, filtfilt
+    from scipy.signal import butter, filtfilt
 
     nyq = 0.5 * fs
     high_pass = highpass / nyq
@@ -51,7 +45,7 @@ def butter_lowpass(data, lowpass, fs, order=3):
     result = butter_lowpass(data, 500,  25000, 3)
     '''
 
-    from scipy.signal import butter, lfilter, filtfilt
+    from scipy.signal import butter, filtfilt
 
     nyq = 0.5 * fs
     low_pass = lowpass / nyq
@@ -68,7 +62,7 @@ def butter_highpass(data, highpass, fs, order=3):
     result = butter_highpass(data, 500,  25000, 3)
     '''
 
-    from scipy.signal import butter, lfilter, filtfilt
+    from scipy.signal import butter, filtfilt
 
     nyq = 0.5 * fs
     high_pass = highpass / nyq
@@ -78,8 +72,6 @@ def butter_highpass(data, highpass, fs, order=3):
 
 
 def welch_power(data, fs, lengthseg, noverlappoints, axis_n=-1, lplot=0):
-    from scipy.signal import welch
-    import matplotlib.pyplot as plt
 
     '''
     Welch power of signal
@@ -98,6 +90,9 @@ def welch_power(data, fs, lengthseg, noverlappoints, axis_n=-1, lplot=0):
     welch_power(data, 25000, 2048, 0, -1, 0)
     '''
 
+    from scipy.signal import welch
+    import matplotlib.pyplot as plt
+
     sf, px = welch(data, fs, window='hann', nperseg=lengthseg,
                    noverlap=noverlappoints, axis=axis_n)
 
@@ -109,7 +104,6 @@ def welch_power(data, fs, lengthseg, noverlappoints, axis_n=-1, lplot=0):
 
 
 def notch_filter(data, fs, Q, ftofilter):
-    from scipy.signal import filtfilt, iirnotch
 
     '''
     Notch filter
@@ -124,6 +118,8 @@ def notch_filter(data, fs, Q, ftofilter):
     datan : filtered signal
 
     '''
+
+    from scipy.signal import filtfilt, iirnotch
 
     w0 = ftofilter/(fs/2)  # Normalized Frequency
     print(w0)

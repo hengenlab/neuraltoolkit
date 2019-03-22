@@ -1,3 +1,24 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+'''
+Script to interface opencv functions
+
+Hengen Lab
+Washington University in St. Louis
+Author: Kiran Bhaskaran-Nair
+Email: kbn.git@gmail.com
+Version:  0.1
+
+
+List of functions/class in ntk_videos
+class NTKVideos
+make_video_from_images(imgpath, videopath, videofilename,
+                       imgext='.jpg', codec='XVID', v_fps=30)
+natural_sort(list_unsorted):
+
+'''
+
+
 try:
     import cv2
 except ImportError:

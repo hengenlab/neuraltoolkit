@@ -1,25 +1,28 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 '''
 Functions for plotting
-Hlab
-Author :Kiran Bhaskaran-Nair
 
-List of functions in ntk_plots
+Hengen Lab
+Washington University in St. Louis
+Author: Kiran Bhaskaran-Nair
+Email: kbn.git@gmail.com
+Version:  0.1
 
-Plot one channel data in range
-plot_data
-help(plot_data)
+List of functions/class in ntk_ecube
+plot_data(data, data_beg, data_end, channel=0)
+plot_data_chlist(data, data_beg, data_end, ch_list)
 '''
 
 
 def plot_data(data, data_beg, data_end, channel=0):
-    import matplotlib.pyplot as plt
 
     '''
     Plot data defaults to channel 0
     plot_data(data, data_beg, data_end, channel=0)
     '''
+
+    import matplotlib.pyplot as plt
 
     # plot
     plt.plot(data[channel, data_beg:data_end])
@@ -28,8 +31,6 @@ def plot_data(data, data_beg, data_end, channel=0):
 
 
 def plot_data_chlist(data, data_beg, data_end, ch_list):
-    import matplotlib.pyplot as plt
-    import numpy as np
 
     '''
     plot data in range for channels in the list
@@ -41,6 +42,8 @@ def plot_data_chlist(data, data_beg, data_end, ch_list):
     l = np.array([5, 13, 31, 32, 42, 46, 47, 49, 51, 52, 53, 54 ])
     plot_data_chlist(data, 25000, 50000, l )
     '''
+
+    import matplotlib.pyplot as plt
 
     for i in range(len(ch_list)):
         print(i, " ", ch_list[i])

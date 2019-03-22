@@ -1,34 +1,37 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 '''
 Script to read intan binary file
-Hlab
-Author :Kiran Bhaskaran-Nair
 
-List of functions in ntk_intan
+Hengen Lab
+Washington University in St. Louis
+Author: Kiran Bhaskaran-Nair
+Email: kbn.git@gmail.com
+Version:  0.1
 
-Load raw data apply gain and channel mapping
-load_intan_raw_gain_chanmap
-help(ntk.load_intan_raw_gain_chanmap)
-
-
+List of functions/class in ntk_channelmap
+load_intan_raw_gain_chanmap(
+    rawfile, number_of_channels, hstype, nprobes=1):
 '''
+
+
+import numpy as np
 
 
 def load_intan_raw_gain_chanmap(
         rawfile, number_of_channels, hstype, nprobes=1):
-    import numpy as np
-    from neuraltoolkit import ntk_channelmap as ntkc
-    from .load_intan_rhd_format_hlab import read_data
 
     '''
     load intan data and multiply gain and apply channel mapping
     load_intan_raw_gain_chanmap(name, number_of_channels, hstype)
     hstype : 'hs64', 'intan32', 'Si_64_KS_chmap', 'Si_64_KT_T1_K2_chmap'
-              and linear
+              and 'linear'
     nprobes : Number of probes (default 1)
     returns first timestamp and data
     '''
+
+    from neuraltoolkit import ntk_channelmap as ntkc
+    from .load_intan_rhd_format_hlab import read_data
 
     # Read intan file
     a = read_data(rawfile)

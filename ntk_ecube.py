@@ -1,29 +1,31 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 '''
 Script to read ecube binary file
-Hlab
-Author :Kiran Bhaskaran-Nair
 
-List of functions in ntk_ecube
-
-Load raw data without gain or channel mapping
-load_raw_binary
-help(load_raw_binary)
-
-Load raw data apply gain  no channel mapping
-help(load_raw_binary_gain)
-
-Load raw data apply gain and channel mapping
-help(load_raw_binary_gain_chmap)
+Hengen Lab
+Washington University in St. Louis
+Author: Kiran Bhaskaran-Nair
+Email: kbn.git@gmail.com
+Version:  0.1
 
 
+List of functions/class in ntk_ecube
+load_raw_binary(name, number_of_channels)
+load_raw_binary_gain(name, number_of_channels)
+load_raw_binary_gain_chmap(name, number_of_channels, hstype, nprobes=1,
+                           t_only=0)
+load_raw_binary_gain_chmap_nsec(name, number_of_channels, hstype,
+                                fs, nsec, nprobes=1)
+load_raw_binary_preprocessed(name, number_of_channels)
+load_digital_binary(name, t_only=0)
 '''
+
+import numpy as np
 
 
 # Load Ecube HS data
 def load_raw_binary(name, number_of_channels):
-    import numpy as np
 
     '''
     load ecube data
@@ -41,7 +43,6 @@ def load_raw_binary(name, number_of_channels):
 
 
 def load_raw_binary_gain(name, number_of_channels):
-    import numpy as np
 
     '''
     load ecube data and multiply gain
@@ -64,8 +65,6 @@ def load_raw_binary_gain(name, number_of_channels):
 
 def load_raw_binary_gain_chmap(name, number_of_channels, hstype, nprobes=1,
                                t_only=0):
-    import numpy as np
-    from neuraltoolkit import ntk_channelmap as ntkc
 
     '''
     load ecube data and multiply gain and apply channel mapping
@@ -76,6 +75,8 @@ def load_raw_binary_gain_chmap(name, number_of_channels, hstype, nprobes=1,
               (Default 0, returns timestamp and data)
     returns first timestamp and data
     '''
+
+    from neuraltoolkit import ntk_channelmap as ntkc
 
     # constants
     gain = np.float64(0.19073486328125)
@@ -97,8 +98,6 @@ def load_raw_binary_gain_chmap(name, number_of_channels, hstype, nprobes=1,
 
 def load_raw_binary_gain_chmap_nsec(name, number_of_channels, hstype,
                                     fs, nsec, nprobes=1):
-    import numpy as np
-    from neuraltoolkit import ntk_channelmap as ntkc
 
     '''
     load ecube nsec of data and multiply gain and apply channel mapping
@@ -116,6 +115,8 @@ def load_raw_binary_gain_chmap_nsec(name, number_of_channels, hstype,
                                                    'hs64', 25000, 2)
     '''
 
+    from neuraltoolkit import ntk_channelmap as ntkc
+
     # constants
     gain = np.float64(0.19073486328125)
 
@@ -132,7 +133,6 @@ def load_raw_binary_gain_chmap_nsec(name, number_of_channels, hstype,
 
 # Load Ecube HS data preprocessed
 def load_raw_binary_preprocessed(name, number_of_channels):
-    import numpy as np
 
     '''
     load ecube data preprocessed
@@ -150,7 +150,6 @@ def load_raw_binary_preprocessed(name, number_of_channels):
 
 # Load Ecube Digital data
 def load_digital_binary(name, t_only=0):
-    import numpy as np
 
     '''
     load ecube digital data
