@@ -149,7 +149,7 @@ def load_raw_binary_preprocessed(name, number_of_channels):
 
 
 # Load Ecube Digital data
-def load_digital_binary(name):
+def load_digital_binary(name, t_only=0):
     import numpy as np
 
     '''
@@ -157,12 +157,16 @@ def load_digital_binary(name):
     load_digital_binary(name)
     returns first timestamp and data
     data has to be 1 channel
-
+    t_only  : if t_only=1, just return tr, timestamp
+              (Default 0, returns timestamp and data)
     tdig, ddig =load_digital_binary(digitalrawfile)
     '''
 
     f = open(name, 'rb')
     tr = np.fromfile(f, dtype=np.uint64, count=1)
+    if t_only:
+        f.close()
+        return tr
     dr = np.fromfile(f, dtype=np.int64,  count=-1)
     f.close()
     return tr, dr
