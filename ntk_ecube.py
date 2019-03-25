@@ -21,7 +21,10 @@ load_raw_binary_preprocessed(name, number_of_channels)
 load_digital_binary(name, t_only=0)
 '''
 
-import numpy as np
+try:
+    import numpy as np
+except ImportError:
+    raise ImportError('Run command : conda install numpy')
 
 
 # Load Ecube HS data
