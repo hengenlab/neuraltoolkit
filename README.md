@@ -215,3 +215,25 @@ result = ntk.butter_bandpass(rawdata, 500, 4000, 25000, 3)
 plt.plot(result[1,0:25000])
 plt.show()
 ```
+
+
+## math
+#### List of functions
+
+```
+# import libraries
+import neuraltoolkit as ntk
+import numpy as np
+from matplotlib import pyplot as plt
+
+# interpolate
+t = np.arange(0, 10)
+d = np.cos(t)
+plt.figure(1)
+plt.plot(t,d)
+plt.show(block=False)
+tn, d_tn = ntk.data_intpl(t, d, 4, intpl_kind='cubic')
+plt.figure(2)
+plt.plot(tn,d_tn)
+plt.show(block=False)
+```
