@@ -223,7 +223,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 # load raw data
-rawdata = np.load('P_Headstages_64_Channels_int16_2018-11-15_14-30-49_t_2936265174075_l_7500584_p_0_u_0_chg_1.npy')
+rawdata = np.load('P_Headstages_64_Channels_int16_2018-11-15_14-30-49.npy')
 
 # bandpass filter
 help(ntk.butter_bandpass)
