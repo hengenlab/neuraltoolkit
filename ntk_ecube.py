@@ -151,6 +151,48 @@ def load_raw_binary_preprocessed(name, number_of_channels):
     return drr
 
 
+# Load Ecube HS data and grab 1 channel data
+def load_a_ch(name, number_of_channels, channel_number,
+                                    lraw=1, block_size=25000):
+
+    '''
+    load ecube data preprocessed and return a channels data
+    load_a_ch(name, number_of_channels, channel_number, lraw, block_size)
+    name - name of file
+    number_of_channels - number of channels
+    channel_number - channel data to return
+    lraw - whether raw file or not  (default : raw lraw=1)
+    block_size = block_size to read at a time
+    returns data_of_channel_number
+    '''
+
+    gain = np.float64(0.19073486328125)
+    dp_ch = np.array([])
+
+    f = open(name, 'rb')
+
+    if lraw:
+        f_length = (f.seek(0, 2) - 8)/2/number_of_channels
+        f.seek(8, 0)
+    else:
+        f_length = f.seek(0, 2)/2/number_of_channels
+        f.seek(0, 0)
+    nbs = np.ceil(f_length/block_size)
+
+    for i in range(np.int64(nbs)):
+        d = np.frombuffer(f.read(block_size*2*number_of_channels),
+                          dtype=np.int16)
+        dp_ch = np.append(dp_ch, d[channel_number:-1:number_of_channels])
+
+    f.close()
+
+    if lraw:
+        dp_ch = np.int16(dp_ch * gain)
+
+    return dp_ch
+
+
+
 # Load Ecube Digital data
 def load_digital_binary(name, t_only=0):
 
