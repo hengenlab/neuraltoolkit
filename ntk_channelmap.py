@@ -167,7 +167,7 @@ def create_chanmap_file_for_oe():
         print(number_of_channels)
 
         # Get number of channels
-        print("Enter probe type : ")
+        print("Enter probe type (Ex. hs64) : ")
         hstype = input()
         print(hstype)
 

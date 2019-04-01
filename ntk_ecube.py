@@ -153,7 +153,7 @@ def load_raw_binary_preprocessed(name, number_of_channels):
 
 # Load Ecube HS data and grab 1 channel data
 def load_a_ch(name, number_of_channels, channel_number,
-                                    lraw=1, block_size=25000):
+              lraw=1, block_size=25000):
 
     '''
     load ecube data preprocessed and return a channels data
@@ -191,6 +191,66 @@ def load_a_ch(name, number_of_channels, channel_number,
 
     return dp_ch
 
+
+# Load Ecube HS data and grab data within range
+def load_raw_binary_gain_chmap_range(rawfile, number_of_channels,
+                                     hstype, nprobes=1,
+                                     lraw=1, ts=0, te=25000):
+
+    '''
+    load ecube data preprocessed and return a channels data
+    load_a_ch(name, number_of_channels, channel_number, lraw, block_size)
+    name - name of file
+    number_of_channels - number of channels
+    channel_number - channel data to return
+    hstype : Headstage type, 'hs64'
+    nprobes : Number of probes (default 1)
+    lraw - whether raw file or not  (default : raw lraw=1)
+    ts : sample start (not seconds but samples),
+           default : 0 ( begining of file)
+    ts : sample end (not seconds but samples),
+           default : -1 ( full data)
+    returns time, data
+    '''
+
+    from neuraltoolkit import ntk_channelmap as ntkc
+
+    gain = np.float64(0.19073486328125)
+    d_bgc = np.array([])
+
+    # check time is not negative
+    if te-ts < 1:
+        raise ValueError('Please recheck ts and te')
+
+    f = open(rawfile, 'rb')
+
+    if lraw:
+        tr = np.fromfile(f, dtype=np.uint64, count=1)
+        f.seek(8, 0)
+    else:
+        f.seek(0, 0)
+
+    if (ts == 0) and (te == -1):
+        d = np.frombuffer(f.read(-1), dtype=np.int16)
+    else:
+        f.seek(ts*2*number_of_channels, 1)
+        block_size = (te - ts)*2*number_of_channels
+        d = np.frombuffer(f.read(block_size), dtype=np.int16)
+
+    f.close()
+
+    d_bgc = np.reshape(d, [number_of_channels,
+                       np.int64(d.shape[0]/number_of_channels)], order='F')
+
+    if lraw:
+        d_bgc = ntkc.channel_map_data(d_bgc, number_of_channels,
+                                      hstype, nprobes)
+        d_bgc = np.int16(d_bgc * gain)
+
+    if lraw:
+        return tr, d_bgc
+    else:
+        return d_bgc
 
 
 # Load Ecube Digital data
