@@ -218,9 +218,6 @@ def load_raw_binary_gain_chmap_range(rawfile, number_of_channels,
     gain = np.float64(0.19073486328125)
     d_bgc = np.array([])
 
-    # check time is not negative
-    if te-ts < 1:
-        raise ValueError('Please recheck ts and te')
 
     f = open(rawfile, 'rb')
 
@@ -233,6 +230,9 @@ def load_raw_binary_gain_chmap_range(rawfile, number_of_channels,
     if (ts == 0) and (te == -1):
         d = np.frombuffer(f.read(-1), dtype=np.int16)
     else:
+        # check time is not negative
+        if te-ts < 1:
+            raise ValueError('Please recheck ts and te')
         f.seek(ts*2*number_of_channels, 1)
         block_size = (te - ts)*2*number_of_channels
         d = np.frombuffer(f.read(block_size), dtype=np.int16)

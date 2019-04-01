@@ -110,7 +110,7 @@ te = 2500, read 2500 sample points from ts ( te greater than ts)
 if ts =0 and te = -1,  read from begining to end of file
 t, bdgc = ntk.load_raw_binary_gain_chmap_range(rawfile, number_of_channels,
                                            hstype, nprobes=1,
-                                           lraw=1, ts=0, te=25000):
+                                           lraw=1, ts=0, te=25000)
 
 # Create channel mapping file for Open Ephys
 import neuraltoolkit as ntk
