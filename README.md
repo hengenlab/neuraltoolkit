@@ -99,7 +99,18 @@ number_of_channels = 64
 channel_number = 4
 # lraw is 1 for raw file and for prepocessed file lraw is 0
 ch_data = load_a_ch(rawfile, number_of_channels, channel_number,
-                                    lraw=1)
+                    lraw=1)
+
+# Load ecube data and returns time(if raw) and data in range
+number_of_channels = 64
+lraw is 1 for raw file and for prepocessed file lraw is 0
+hstype,  linear if preprocessed file
+ts = 0, start from begining of file or can be any sample number
+te = 2500, read 2500 sample points from ts ( te greater than ts)
+if ts =0 and te = -1,  read from begining to end of file
+t, bdgc = load_raw_binary_gain_chmap_range(rawfile, number_of_channels,
+                                           hstype, nprobes=1,
+                                           lraw=1, ts=0, te=25000):
 
 # Create channel mapping file for Open Ephys
 import neuraltoolkit as ntk
