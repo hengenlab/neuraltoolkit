@@ -94,6 +94,13 @@ tdig = load_digital_binary(digitalrawfile, t_only=1)
 # Load preprocessed data file
 pdata = load_raw_binary_preprocessed(preprocessedfilename, number_of_channels)
 
+# Load one channel from data
+number_of_channels = 64
+channel_number = 4
+# lraw is 1 for raw file and for prepocessed file lraw is 0
+ch_data = load_a_ch(rawfile, number_of_channels, channel_number,
+                                    lraw=1)
+
 # Create channel mapping file for Open Ephys
 import neuraltoolkit as ntk
 ntk.create_chanmap_file_for_oe()
