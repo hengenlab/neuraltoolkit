@@ -86,19 +86,19 @@ tt, ddgc = ntk.load_raw_binary_gain_chmap_nsec(rawfile, number_of_channels, 'hs6
 tt, ddgc = ntk.load_raw_binary_gain_chmap_nsec(rawfile, number_of_channels, hstype, 25000, 2, nprobes)
 
 # Load digital data for cameras, etc
-tdig, ddig =load_digital_binary(digitalrawfile)
+tdig, ddig = ntk.load_digital_binary(digitalrawfile)
 
 # Load time only from digital data for cameras, etc
-tdig = load_digital_binary(digitalrawfile, t_only=1)
+tdig = ntk.load_digital_binary(digitalrawfile, t_only=1)
 
 # Load preprocessed data file
-pdata = load_raw_binary_preprocessed(preprocessedfilename, number_of_channels)
+pdata = ntk.load_raw_binary_preprocessed(preprocessedfilename, number_of_channels)
 
 # Load one channel from data
 number_of_channels = 64
 channel_number = 4
 # lraw is 1 for raw file and for prepocessed file lraw is 0
-ch_data = load_a_ch(rawfile, number_of_channels, channel_number,
+ch_data = ntk.load_a_ch(rawfile, number_of_channels, channel_number,
                     lraw=1)
 
 # Load ecube data and returns time(if raw) and data in range
@@ -108,7 +108,7 @@ hstype,  linear if preprocessed file
 ts = 0, start from begining of file or can be any sample number
 te = 2500, read 2500 sample points from ts ( te greater than ts)
 if ts =0 and te = -1,  read from begining to end of file
-t, bdgc = load_raw_binary_gain_chmap_range(rawfile, number_of_channels,
+t, bdgc = ntk.load_raw_binary_gain_chmap_range(rawfile, number_of_channels,
                                            hstype, nprobes=1,
                                            lraw=1, ts=0, te=25000):
 
