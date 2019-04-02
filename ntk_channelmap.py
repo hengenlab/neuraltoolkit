@@ -15,6 +15,8 @@ find_channel_map(hstype, number_of_channels)
 create_chanmap_file_for_oe()
 '''
 
+
+from __future__ import print_function
 import numpy as np
 
 
