@@ -38,3 +38,33 @@ def extract_email_fromtxtfile(filename):
             elist.append(re.findall(r'\S+@\S+', sline))
     email_list = list(filter(None, elist))
     return email_list
+
+
+def check_ping_status(ip_system):
+
+    '''
+    Check whether a system is up using ping
+
+    check_ping_status(ip_system)
+    status = check_ping_status("127.0.0.1")
+    ip_system : ip of the system
+
+    return 1 if up or 0 if down
+    '''
+
+    from platform import system as system_name
+    import subprocess
+
+    if system_name().lower() == 'windows':
+        command = str('ping -n 3 ') + str(ip_system)
+    elif system_name().lower() == 'linux':
+        command = str('ping -c 3 ') + str(ip_system)
+    elif system_name().lower() == 'darwin':
+        command = str('ping -c 3 ') + str(ip_system)
+    try:
+        output = subprocess.check_output(command, shell=True)
+        # print(output)
+        return 1
+    except subprocess.CalledProcessError as e:
+        # print(e)
+        return 0
