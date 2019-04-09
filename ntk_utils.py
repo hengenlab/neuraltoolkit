@@ -68,3 +68,35 @@ def check_ping_status(ip_system):
     except subprocess.CalledProcessError as e:
         # print(e)
         return 0
+
+
+def file_to_dict(filename, k_dtype=str, v_dtype=int):
+
+    '''
+     Read contents of filename to dictionary (dict_new)
+
+     contents of name_mobile.txt
+       name1 1111
+       name2 2222
+     dict_sms = ntk.file_to_dict('name_mobile.txt', k_dtype=str, v_dtype=int)
+
+     filename : name of file to read
+     k_dtype : dictionary key data type default(int)
+     v_dtype : dictionary valye data type default(str)
+
+     return dict_new
+    '''
+
+    import os.path as op
+
+    dict_new = {}
+    try:
+        op.isfile(filename)
+    except OSError as e:
+        print("Error: %s - %s." % (e.filename, e.strerror))
+
+    with open(filename) as f2dict:
+        for line in f2dict:
+            (key, val) = line.split()
+            dict_new[k_dtype(key)] = v_dtype(val)
+    return dict_new
