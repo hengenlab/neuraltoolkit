@@ -27,7 +27,7 @@ def plot_data(data, data_beg, data_end, channel=0):
     # plot
     plt.plot(data[channel, data_beg:data_end])
     plt.grid()
-    plt.show(block = False)
+    plt.show()
 
 
 def plot_data_chlist(data, data_beg, data_end, ch_list):
@@ -55,4 +55,4 @@ def plot_data_chlist(data, data_beg, data_end, ch_list):
         plt.yticks([])
         plt.box(on=None)
 
-    plt.show(block = False)
+    plt.show()

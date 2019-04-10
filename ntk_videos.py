@@ -22,7 +22,8 @@ natural_sort(list_unsorted):
 try:
     import cv2
 except ImportError:
-    raise ImportError('Run command : conda install opencv')
+    raise ImportError('conda install ' +
+                      '-c https://conda.binstar.org/menpo opencv')
 import os
 
 
