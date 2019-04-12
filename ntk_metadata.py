@@ -114,6 +114,8 @@ Enter: ''')
 
 		for i in range(int(number_of_restarts)+1):
 			print('Entering information for recording epoch #' + str(i+1) + ':\n')
+			meta_dict['epoch_' + str(i+1) + '_lightdir'] = input("What is the directory that the digital input for lights was saved in for this epoch? (typically Digital Input 1)\nEnter: ")
+			meta_dict['epoch_' + str(i+1) + '_camdir'] = input("What is the directory that the digital input for cameras was saved in for this epoch? (typically Digital Input 2)\nEnter: ")
 			meta_dict['epoch_' + str(i+1) + '_port'] = input('Port # for recording epoch #' + str(i+1) + '\nEnter: ')
 			meta_dict['epoch_' + str(i+1) + '_client'] = input('Client # for recording epoch #' + str(i+1) + '\nEnter: ')
 			meta_dict['epoch_' + str(i+1) + '_start_date'] = input('Start date for recording epoch #' + str(i+1) + '. (enter May 16 2018 as 051618)\nEnter: ')
