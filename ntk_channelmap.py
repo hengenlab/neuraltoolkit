@@ -133,6 +133,12 @@ def find_channel_map(hstype, number_of_channels):
                              21, 55, 20, 52, 29, 50, 24, 46, 34, 43, 28, 41,
                              38, 47, 32, 37]) - 1
 
+    elif hstype == 'PCB_tetrode':
+         chan_map = np.array([2, 41, 50, 62, 6, 39, 42, 47, 34, 44, 51, 56, 
+                              38, 48, 59, 64, 35, 53, 5, 37, 34, 57, 40, 43, 
+                              45, 61, 46, 49, 36, 33, 52, 55, 15, 5, 58, 60, 
+                              18, 9, 63, 1, 32, 14, 4, 7, 26, 20, 10, 13, 19, 
+                              22, 16, 8, 28, 25, 12, 17, 23, 29, 27, 21, 11, 31, 30, 24]) - 1
     # Linear probe
     elif hstype == 'linear':
         chan_map = np.arange(0, number_of_channels, 1)
