@@ -19,7 +19,7 @@ import numpy as np
 
 
 def load_intan_raw_gain_chanmap(
-        rawfile, number_of_channels, hstype, nprobes=1):
+        rawfile, number_of_channels, hstype, nprobes=1, ldin=0):
 
     '''
     load intan data and multiply gain and apply channel mapping
@@ -27,6 +27,7 @@ def load_intan_raw_gain_chanmap(
     hstype : 'hs64', 'intan32', 'Si_64_KS_chmap', 'Si_64_KT_T1_K2_chmap'
               and 'linear'
     nprobes : Number of probes (default 1)
+    ldin : Flag for getting digital input (default 0)
     returns first timestamp and data
     '''
 
@@ -43,4 +44,8 @@ def load_intan_raw_gain_chanmap(
     # Apply channel mapping
     dgc = ntkc.channel_map_data(dg, number_of_channels, hstype, nprobes)
 
-    return tr, dgc
+    if ldin == 1:
+        din = np.array(a['board_dig_in_data'])
+        return tr, dgc, din
+    else:
+        return tr, dgc
