@@ -64,6 +64,7 @@ class NTKVideos:
         if self.cap.isOpened() is True:
             if lstream == 0:
                 self.length = self.cap.get(cv2.CAP_PROP_FRAME_COUNT)
+            self.name = name
             self.width = self.cap.get(cv2.CAP_PROP_FRAME_WIDTH)
             self.height = self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
             self.fps = self.cap.get(cv2.CAP_PROP_FPS)
@@ -98,6 +99,57 @@ class NTKVideos:
                 if cv2.waitKey(10) & 0xFF == ord('q'):
                     break
         # self.cap.release()
+        cv2.destroyAllWindows()
+
+    def rotate_video(self, angle, pathout):
+
+        '''
+        videofilename = '/home/user/e3v810a-20190307T0740-0840.mp4'
+        lstream = 0
+        lstream is 1 is video is streaming or 0 if video is already saved
+        v  = NTKVideos(videofilename, lstream)
+        v contains length, width, height information from video
+
+        rotate video
+        angle = angle to rotate the video
+        outpath = '/home/user/out/', where to save new files
+        v.rotate_video(angle, outpath)
+        '''
+
+        import os.path as op
+
+        img = []
+        img_c = 0
+        videofilename = (op.splitext(self.name)[0] + str("_r") +
+                         op.splitext(self.name)[1])
+        print("angle ", angle)
+        while True:
+            # Capture frame-by-frame
+            self.ret, self.frame = self.cap.read()
+
+            if self.ret is True:
+                M = cv2.getRotationMatrix2D((int(self.width/2),
+                                            int(self.height/2)),
+                                            int(angle), 1)
+                # please check the flags
+                img.append(cv2.warpAffine(self.frame, M,
+                                          (int(self.width),
+                                           int(self.height)),
+                                          flags=cv2.INTER_CUBIC,
+                                          borderMode=cv2.BORDER_REPLICATE))
+                if img_c == 0:
+                    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+                    video = cv2.VideoWriter(
+                                  op.join(str(pathout), str(videofilename)),
+                                  fourcc, float(self.fps),
+                                  (int(self.width), int(self.height)))
+
+                video.write(img[img_c])
+                img_c = img_c + 1
+            else:
+                break
+
+        self.cap.release()
         cv2.destroyAllWindows()
 
     def extract_frames(self, pathout):
