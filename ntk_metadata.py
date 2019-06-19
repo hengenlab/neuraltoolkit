@@ -6,6 +6,7 @@ import csv
 import tkinter
 from tkinter import Tk
 from tkinter import filedialog
+from tkinter.filedialog import askopenfilename
 
 #ask user what directory we should be in (corresponding to that animal)
 continue_to_directory = 'dummy'
@@ -114,8 +115,22 @@ Enter: ''')
 
 		for i in range(int(number_of_restarts)+1):
 			print('Entering information for recording epoch #' + str(i+1) + ':\n')
-			meta_dict['epoch_' + str(i+1) + '_lightdir'] = input("What is the directory that the digital input for lights was saved in for this epoch? (typically Digital Input 1)\nEnter: ")
-			meta_dict['epoch_' + str(i+1) + '_camdir'] = input("What is the directory that the digital input for cameras was saved in for this epoch? (typically Digital Input 2)\nEnter: ")
+			# meta_dict['epoch_' + str(i+1) + '_lightdir'] = input("What is the directory that the digital input for lights was saved in for this epoch? (typically Digital Input 1)\nEnter: ")
+			# meta_dict['epoch_' + str(i+1) + '_camdir'] = input("What is the directory that the digital input for cameras was saved in for this epoch? (typically Digital Input 2)\nEnter: ")
+
+			light_key = 'dummy'
+			while(light_key != '1'):
+				light_key = input("What is the directory that the digital input for lights was saved in for this epoch? (typically Digital Input 1)  Press '1' to select file.\n")
+			Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
+			meta_dict['epoch_' + str(i+1) + '_lightdir'] = filedialog.askdirectory() # show an "Open" dialog box and return the path to the selected file
+
+			cam_key = 'dummy'
+			while(cam_key != '1'):
+				cam_key = input("What is the directory that the digital input for cameras was saved in for this epoch? (typically Digital Input 2)  Press '1' to select file.\n")
+			Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
+			meta_dict['epoch_' + str(i+1) + '_camdir'] = filedialog.askdirectory() # show an "Open" dialog box and return the path to the selected file			
+
+
 			meta_dict['epoch_' + str(i+1) + '_port'] = input('Port # for recording epoch #' + str(i+1) + '\nEnter: ')
 			meta_dict['epoch_' + str(i+1) + '_client'] = input('Client # for recording epoch #' + str(i+1) + '\nEnter: ')
 			meta_dict['epoch_' + str(i+1) + '_start_date'] = input('Start date for recording epoch #' + str(i+1) + '. (enter May 16 2018 as 051618)\nEnter: ')
@@ -151,7 +166,6 @@ Enter: ''')
 		import datetime
 
 		################## Use below to prompt dialog box to select appropriate file ##################
-		from tkinter.filedialog import askopenfilename
 
 		input_key = 'dummy'
 		while(input_key != '1'):
