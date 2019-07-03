@@ -159,6 +159,7 @@ Enter: ''')
 
 		# Euthanization_date
 		meta_dict['euthanization_date'] = input('When was the animal euthanized? (enter May 16 2018 as 051618)\nEnter: ')
+		meta_dict['experimental_notes'] = input('Please enter any additional experimental notes\nEnter: ')
 
 	elif input_section == 's':
 		#scrape from Betsy's spreadsheet so she doesn't have to type it out again
