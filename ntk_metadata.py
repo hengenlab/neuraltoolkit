@@ -36,7 +36,7 @@ elif os.path.isfile('metadata.csv') == False:
 input_section = 'dummyvar'
 
 while (input_section != 'q'):
-	input_section = input('''\n\nWould you like to enter information about\nanimal (1)\nsurgery (2)\nadditional surgery (3)\nrecording (4)\nexperimental details (5)\n
+	input_section = input('''\n\nWould you like to enter information about\nanimal (1)\nsurgery (2)\nadditional surgery (3)\nrecording (4)\nvideo (5)\nexperimental details (6)\n
 (Press 'q' to quit and save/discard changes). \n(Press 's' to scrape data from another animal sheet)\n(Press 'v' to view current metadata.)\n\nEnter: ''')
 
 	if input_section == '1':
@@ -146,6 +146,10 @@ Enter: ''')
 
 
 	elif input_section == '5':
+		meta_dict['video_dir'] = input('What is the directory that the Watchtower videos are saved in?\nEnter: ')
+		meta_dict['camera_IDs'] = input('Which camera(s) were used for this animal? e.g. 8107 812f\nEnter: ')
+
+	elif input_section == '6':
 		# #EXPERIMENTAL NOTES
 
 		#TODO: add the following options:
