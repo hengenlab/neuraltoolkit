@@ -96,3 +96,4 @@ for i in range(len(ch_list)):
     plt.xticks([])
     plt.yticks([])
     # plt.box(on=None)
+plt.show()
