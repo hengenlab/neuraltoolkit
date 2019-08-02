@@ -110,6 +110,8 @@ Enter: ''')
 
 	elif input_section == '4':
 	# #RECORDING INFO
+	# need to make it so you can add more epochs
+
 	# How many recording start/stops?
 		number_of_restarts = input('How many times was the recording restarted?\nEnter: ')
 
@@ -128,7 +130,13 @@ Enter: ''')
 			while(cam_key != '1'):
 				cam_key = input("What is the directory that the digital input for cameras was saved in for this epoch? (typically Digital Input 2)  Press '1' to select file.\n")
 			Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
-			meta_dict['epoch_' + str(i+1) + '_camdir'] = filedialog.askdirectory() # show an "Open" dialog box and return the path to the selected file			
+			meta_dict['epoch_' + str(i+1) + '_camdir'] = filedialog.askdirectory() # show an "Open" dialog box and return the path to the selected file
+
+			vid_key = 'dummy'
+			while(vid_key != '1'):
+				vid_key = input("What is the directory that video was saved in for this epoch?  Press '1' to select file.\n")
+			Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
+			meta_dict['epoch_' + str(i+1) + '_viddir'] = filedialog.askdirectory() # show an "Open" dialog box and return the path to the selected file							
 
 
 			meta_dict['epoch_' + str(i+1) + '_port'] = input('Port # for recording epoch #' + str(i+1) + '\nEnter: ')
