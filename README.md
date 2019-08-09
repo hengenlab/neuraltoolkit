@@ -209,6 +209,12 @@ output_path = '/media/bs001r/ckbn/opencv/'
 v = ntk.NTKVideos(videofilename, lstream)
 v.grayscale_video(output_path)
 
+# diff video
+v.graydiff_video(output_path)
+# diff image
+v.graydiff_img(output_path)
+
+
 
 
 # Make video from images
