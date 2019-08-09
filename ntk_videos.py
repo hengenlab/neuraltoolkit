@@ -261,6 +261,114 @@ class NTKVideos:
         video.release()
         # cv2.destroyAllWindows()
 
+    def graydiff_video(self, pathout):
+
+        '''
+        videofilename = '/home/user/e3v810a-20190307T0740-0840.mp4'
+        lstream = 0
+        lstream is 1 is video is streaming or 0 if video is already saved
+        v  = NTKVideos(videofilename, lstream)
+        v contains length, width, height information from video
+
+        diff_video
+        outpath = '/home/user/out/', where to save new files
+        v.graydiff_video(outpath)
+        '''
+
+        import os.path as op
+
+        threshold_value = 40
+        set_to_value = 255
+        gray_frame_prev = 0
+        # img = []
+        img_c = 0
+        videofilename = (op.splitext(self.name)[0] + str("_r") +
+                         op.splitext(self.name)[1])
+        while True:
+            # Capture frame-by-frame
+            self.ret, self.frame = self.cap.read()
+
+            if self.ret is True:
+                gray_frame = cv2.cvtColor(self.frame, cv2.COLOR_BGR2GRAY)
+                # print(gray_frame.shape)
+                # Take the pixel-by-pixel absolute difference of the two images
+                if img_c != 0:
+                    diff = cv2.absdiff(gray_frame, gray_frame_prev)
+                    # Set every pixel that changed by 40 to 255
+                    # and all others to zero.
+                    ret, gray_framed = cv2.threshold(diff, threshold_value,
+                                                     set_to_value,
+                                                     cv2.THRESH_BINARY)
+                if img_c == 0:
+                    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+                    video = cv2.VideoWriter(
+                                  op.join(str(pathout), str(videofilename)),
+                                  fourcc, float(self.fps),
+                                  (int(self.width), int(self.height)),
+                                  isColor=False)
+
+                if img_c != 0:
+                    video.write(gray_framed)
+                img_c = img_c + 1
+                gray_frame_prev = gray_frame
+            else:
+                break
+
+        # self.cap.release()
+        video.release()
+        # cv2.destroyAllWindows()
+
+    def graydiff_img(self, pathout):
+
+        '''
+        videofilename = '/home/user/e3v810a-20190307T0740-0840.mp4'
+        lstream = 0
+        lstream is 1 is video is streaming or 0 if video is already saved
+        v  = NTKVideos(videofilename, lstream)
+        v contains length, width, height information from video
+
+        diff_video
+        outpath = '/home/user/out/', where to save new files
+        v.graydiff_img(outpath)
+        '''
+
+        # import os.path as op
+
+        # threshold_value = 40
+        # set_to_value = 255
+        gray_frame_prev = 0
+        frame_num = 1
+        # img = []
+        img_c = 0
+        while True:
+            # Capture frame-by-frame
+            self.ret, self.frame = self.cap.read()
+
+            if self.ret is True:
+                gray_frame = cv2.cvtColor(self.frame, cv2.COLOR_BGR2GRAY)
+                # print(gray_frame.shape)
+                # Take the pixel-by-pixel absolute difference of the two images
+                if img_c != 0:
+                    diff = cv2.absdiff(gray_frame, gray_frame_prev)
+                    # Set every pixel that changed by 40 to 255
+                    # and all others to zero.
+                    # ret, gray_framed = cv2.threshold(diff, threshold_value,
+                    # set_to_value, cv2.THRESH_BINARY)
+
+                if img_c == 0:
+                    gray_frame_prev = gray_frame
+                elif img_c != 0:
+                    gray_frame_prev = diff
+                img_c = img_c + 1
+            else:
+                break
+
+        cv2.imwrite(os.path.join(pathout, "frame%d.jpg") %
+                    frame_num, gray_frame_prev)
+        # self.cap.release()
+        # video.release()
+        # cv2.destroyAllWindows()
+
 
 def make_video_from_images(imgpath, videopath, videofilename,
                            imgext='.jpg', codec='XVID', v_fps=30):
