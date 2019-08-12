@@ -277,40 +277,39 @@ def load_digital_binary(name, t_only=0):
     return tr, dr
 
 
-def map_videoframes_to_syncpulse(camera_sync_pulse_files):
+def map_videoframes_to_syncpulse(camera_sync_pulse_files, fs=25000):
     '''
     Reads a set of Camera Sync Pulse data files and aggregates the sequences of 000's and 111's into a map of
     video frame numbers to the raw neural data file and offset across all files in a recording. The output
     includes an entry per each sequence of 000's and 111's in the Camera Sync Pulse data.
 
     Basic usage example:
-        output_matrix, pulse_ix, files = map_videoframes_to_syncpulse('EAB40_Dataset/CameraSyncPulse/*.bin')
+        output_matrix, pulse_ix, files = ntk.map_videoframes_to_syncpulse('EAB40_Dataset/CameraSyncPulse/*.bin')
 
     Output matrix format:
-     [[     -2     0        0   587]   <- First sequence of 587 000's
-      [     -1     0      587   167]   <- First sequence of 167 111's
-      [     -2     0      754  1500]   <- Next sequence of 1500 000's
-      [     -1     0     2254   166]   <- Next sequence of 166 111's
-      [     -2     0     2420  1500]
-      [     -1     0     3920   167]
+     [(     -2,    0,       0,  587,    165967321375)  <- First sequence of 587 000's, ecube time 165967321375
+      (     -1,    0,     587,  167,    165990801375)  <- First sequence of 167 111's
+      (     -2,    0,     754, 1500,    165997481375)  <- Next sequence of 1500 000's
+      (     -1,    0,    2254,  166,    166057481375)  <- Next sequence of 166 111's
+      (     -2,    0,    2420, 1500,    166064121375)
+      (     -1,    0,    3920,  167,    166124121375)
       ...
-      [     -1     0  6604279   166]
-      [     -2     0  6604445  1500]
-      [     -1     0  6605945   167]
-      [     -2     0  6606112  1500]
-      [      0     0  6607612   833]   <- Sync pulse, video frame num 0
-      [     -2     0  6608445   834]   <- Sequence of 834 000's
-      [      1     0  6609279   833]   <- Sequence of 833 111's, frame id 1
-      [     -2     0  6610112   833]
+      (     -2,    0, 6604445, 1500,    168152116319)
+      (     -1,    0, 6605945,  167,    168212116319)
+      (     -2,    0, 6606112, 1500,    168218796319)
+      (      0,    0, 6607612,  833,    168278796319)  <- Sync pulse, video frame num 0
+      (     -2,    0, 6608445,  834,    168312116319)  <- Sequence of 834 000's
+      (      1,    0, 6609279,  833,    168345476319)  <- Sequence of 833 111's, frame num 1
+      (     -2,    0, 6610112,  833,    168378796319)
       ...
-      [5207203  1157  7146241   834]
-      [     -2  1157  7147075   833]
-      [5207204  1157  7147908   833]
-      [     -2  1157  7148741   834]
-      [5207205  1157  7149575   833]   <- Video frame num 5207205
-      [     -2  1157  7150408     8]]  <- Last sequence of 000's, of length 8
-       -------  ----  -------  ----
-         (a)     (b)    (c)     (d)
+      (5207203, 1157, 7146241,  834, 347290571839839)
+      (     -2, 1157, 7147075,  833, 347290605199839)
+      (5207204, 1157, 7147908,  833, 347290638519839)
+      (     -2, 1157, 7148741,  834, 347290671839839)
+      (5207205, 1157, 7149575,  833, 347290705199839)  <- Video frame num 5207205
+      (     -2, 1157, 7150408,    8, 347290738519839)] <- Last sequence of 000's, of length 8
+       -------  ----  -------  ----  ---------------
+         (a)     (b)    (c)     (d)       (e)
 
     (a) frame_id        - starting with the sync pulse this counts each frame from 0 up.
                           (-1) represents a sequence of 111's prior to the sync pulse
@@ -320,47 +319,64 @@ def map_videoframes_to_syncpulse(camera_sync_pulse_files):
                           index into the file directly, to get the index to the file use: (offset * 2 + 4), int16 values
                           plus the 4-byte eCube timestamp offset.
     (d) sequence_length - the length of the sequence of 000's or 111's.
+    (e) ecube_time      - eCube time for the beginning of this sequence, taken based on the offset from the
+                          eCube time recorded at the beginning of each SyncPulse file.
 
     Detailed explanation of a few entries above:
-    [-2, 0, 0, 587]:
+    (-2, 0, 0, 587, 165967321375):
         (-2) tells us that a sequence of 000's was identified; 0 tells us that it is in the first .bin file (files[0]);
-        the sequence starts at (0); and the sequence is 587 long.
-    [-1, 0, 587, 167]:
+        the sequence starts at (0); the sequence is 587 long; and starts at ecube time (165967321375).
+    (-1, 0, 587, 167, 165990801375):
         (-1) tells us that a sequence of 111's before recording was identified. 0 tells us that it is in the
-        first .bin file (files[0]); (587) tells us that the sequence of 111's starts at offset 587 in the dr data array.
-        and (167) tells us that the sequence of 111s is 167 long.
-    [0, 0, 6607612, 833]:
+        first .bin file (files[0]); (587) tells us that the sequence of 111's starts at offset 587 in the dr data array;
+        (167) tells us that the sequence of 111s is 167 long; and starts at ecube time (165990801375).
+    (0, 0, 6607612, 833, 168278796319):
         This entry represents the sync pulse. (0) tells us that this is frame number 0; the second (0) tells us
         that this was found in the first .bin file; (6607612) tells us the offset into the dr data matrix where
-        this sequence of 111's starts; and (833) tells us that the sequence of 111's is 833 long.
-    [5207205, 1157, 7149575, 833]
+        this sequence of 111's starts; (833) tells us that the sequence of 111's is 833 long;
+        and starts at ecube time (168278796319).
+    (5207205, 1157, 7149575, 833, 347290705199839)
         (5207205) represents the frame number, counting frames from the start of recording across all video files;
         (1157) tells us the .bin file index (files[1157]); (7149575) represents the offset in the .bin file where
-        the sequence of 111's starts; (833) represents the length of the sequence of 111's.
+        the sequence of 111's starts; (833) represents the length of the sequence of 111's, and starts at
+        ecube time (347290705199839).
 
     FAQs:
-     - How to get just frame ID from the output_matrix:
-            video_frames_only = output_matrix[output_matrix[:, 0] >= 0]
+     - What is a numpy structured array?
+            A structured array is like a numpy matrix, but lets you reference elements by name and it allows
+            you to use multiple data types within one matrix.
+
+     - How to get array of just eCube times (equivalently for 'frame_ids', 'binfile_ix', 'offsets', 'sequence_length'):
+            output_matrix['ecube_time']
+
+     - How to get all rows with a corresponding frame ID from the output_matrix:
+            video_frames_only = output_matrix[output_matrix['frame_ids'] >= 0]
 
     :param camera_sync_pulse_files: A glob path to the files (example: "EAB40Data/EAB40_Camera_Sync_Pulse/*.bin")
                                     Or a list of filename strings
+    :param fs: sampling rate, 25000 default
 
     :return: tuple(output_matrix, pulse_ix, files)
              output_matrix: is described above, it includes the frame IDs, .bin file reference, offset into .bin
-                            files, and the sequence length.
-             pulse_ix: the index of the pulse sync in output_matrix (this can also be identified by the entry in
-                       output_matrix where the frame ID is 0).
-             files: an ordered list of the camera sync pulse files that were read to produce this result, useful to
-                    validate that the correct files were read.
+                            files, the sequence length, and ecube time.
+             pulse_ix:      the index of the pulse sync in output_matrix (this can also be identified by the entry in
+                            output_matrix where the frame ID is 0).
+             files:         an ordered list of the camera sync pulse files that were read to produce this result,
+                            useful to validate that the correct files were read.
 
     '''
+    assert 1000000000 % fs == 0, 'It is assumed that the sampling rate evenly divides a second, if not this code ' \
+                                 'might not function precisely as expected.'
+
     all_signal_widths = []
     all_file_lengths = []
+    all_ecube_times = []
     dr = None
     change_points = None
+    ecube_interval = 1000000000 // fs
 
     files = sorted(glob.glob(camera_sync_pulse_files)) \
-        if isinstance(camera_sync_pulse_files, str) else camera_sync_pulse_files
+        if isinstance(camera_sync_pulse_files, str) else sorted(camera_sync_pulse_files)
     assert isinstance(files, (list, tuple)) and len(files) > 0
 
     # Initializing with a remainder of 1 will ensure 1 is prepended to the first data file, that allows the first
@@ -375,6 +391,7 @@ def map_videoframes_to_syncpulse(camera_sync_pulse_files):
         if i == 0:
             assert dr[0] == 0, 'This algorithm expects the first value of the first file to always be 0.'
 
+        all_ecube_times.append(t)
         all_file_lengths.append(dr.shape[0])
         dr = np.insert(dr, 0, remainder)  # insert the remainder from the last file to the beginning of this one
 
@@ -385,32 +402,44 @@ def map_videoframes_to_syncpulse(camera_sync_pulse_files):
 
     # Accounts for the very last sequence which gets missed in the loop above
     all_signal_widths.append(np.expand_dims(dr.shape[0] - 1 - change_points[-1], axis=0))
+    sample_count = np.sum([len(x) for x in all_signal_widths])
 
-    # Join all signal widths across all files
-    signal_widths = np.concatenate(all_signal_widths, axis=0)
+    # This will be the final output structured array
+    structured_array_dtypes = [
+        ('frame_ids', np.int32),
+        ('binfile_ix', np.uint32),
+        ('offsets', np.uint32),
+        ('sequence_length', np.uint32),
+        ('ecube_time', np.uint64)
+    ]
+    output_matrix = np.empty((sample_count,), dtype=structured_array_dtypes)
 
-    # The cumulative sums across files and signal widths allows us to compare offsets between files and signal widths
-    cumsum_signal_widths = np.cumsum(signal_widths)
-    cumsum_signal_widths = np.insert(cumsum_signal_widths, 0, 0)[:-1]
-    cumsum_files = np.cumsum([np.sum(x) for x in all_file_lengths])
-    cumsum_files = np.insert(cumsum_files, 0, 0)[:-1]
+    # Join all signal widths across all files, same for ecube times
+    output_matrix['sequence_length'] = np.concatenate(all_signal_widths, axis=0)
+    ecube_times = np.concatenate(all_ecube_times, axis=0)
 
     # Find the beginning of video recording (findPulse)
-    signal_widths_111s = signal_widths[1::2]
+    signal_widths_111s = output_matrix['sequence_length'][1::2]
     pulse_ix = np.argmax(signal_widths_111s > 2 * signal_widths_111s[0]) * 2 + 1
 
     # Compute the frame_id for each signal. Frame id's values are:
     #   -2: Represents a sequence of 000's at any time, both pre and post pulse
     #   -1: Represents a sequence of 111's prior to camera recording
     #   0+: Represents the frame number, starting at 0, counting from the first Pulse signal
-    frame_ids = np.empty(shape=(cumsum_signal_widths.shape[0],), dtype=np.int64)
-    frame_ids[0::2] = -2
-    frame_ids[1:pulse_ix:2] = -1
-    frame_ids[pulse_ix::2] = np.arange(0, signal_widths_111s.shape[0] - (pulse_ix - 1) // 2)
+    output_matrix['frame_ids'][0::2] = -2
+    output_matrix['frame_ids'][1:pulse_ix:2] = -1
+    output_matrix['frame_ids'][pulse_ix::2] = np.arange(0, signal_widths_111s.shape[0] - (pulse_ix - 1) // 2)
 
-    binfile_ix = np.searchsorted(cumsum_files, cumsum_signal_widths, side='right') - 1
-    offsets = cumsum_signal_widths - cumsum_files[binfile_ix]
+    # The cumulative sums across files and signal widths allows us to compare offsets between files and signal widths
+    cumsum_signal_widths = np.cumsum(output_matrix['sequence_length'])
+    cumsum_signal_widths = np.insert(cumsum_signal_widths, 0, 0)[:-1]
+    cumsum_files = np.cumsum([np.sum(x) for x in all_file_lengths])
+    cumsum_files = np.insert(cumsum_files, 0, 0)[:-1]
 
-    result = np.column_stack((frame_ids, binfile_ix, offsets, signal_widths))
+    output_matrix['binfile_ix'] = np.searchsorted(cumsum_files, cumsum_signal_widths, side='right') - 1
+    output_matrix['offsets'] = cumsum_signal_widths - cumsum_files[output_matrix['binfile_ix']]
+    output_matrix['ecube_time'] = ecube_times[output_matrix['binfile_ix']] + ecube_interval * output_matrix['offsets']
 
-    return result, pulse_ix, files
+    # result = np.column_stack((frame_ids, binfile_ix, offsets, signal_widths, ecube_timestamps))
+
+    return output_matrix, pulse_ix, files
