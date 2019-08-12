@@ -294,20 +294,20 @@ def map_videoframes_to_syncpulse(camera_sync_pulse_files, fs=25000):
       (     -2,    0,    2420, 1500,    166064121375)
       (     -1,    0,    3920,  167,    166124121375)
       ...
-      (     -2,    0, 6604445, 1500,    168152116319)
-      (     -1,    0, 6605945,  167,    168212116319)
-      (     -2,    0, 6606112, 1500,    168218796319)
-      (      0,    0, 6607612,  833,    168278796319)  <- Sync pulse, video frame num 0
-      (     -2,    0, 6608445,  834,    168312116319)  <- Sequence of 834 000's
-      (      1,    0, 6609279,  833,    168345476319)  <- Sequence of 833 111's, frame num 1
-      (     -2,    0, 6610112,  833,    168378796319)
+      (     -2,    0, 6604445, 1500,    430145121375)
+      (     -1,    0, 6605945,  167,    430205121375)
+      (     -2,    0, 6606112, 1500,    430211801375)
+      (      0,    0, 6607612,  833,    430271801375)  <- Sync pulse, video frame num 0
+      (     -2,    0, 6608445,  834,    430305121375)  <- Sequence of 834 000's
+      (      1,    0, 6609279,  833,    430338481375)  <- Sequence of 833 111's, frame num 1
+      (     -2,    0, 6610112,  833,    430371801375)
       ...
-      (5207203, 1157, 7146241,  834, 347290571839839)
-      (     -2, 1157, 7147075,  833, 347290605199839)
-      (5207204, 1157, 7147908,  833, 347290638519839)
-      (     -2, 1157, 7148741,  834, 347290671839839)
-      (5207205, 1157, 7149575,  833, 347290705199839)  <- Video frame num 5207205
-      (     -2, 1157, 7150408,    8, 347290738519839)] <- Last sequence of 000's, of length 8
+      (5207203, 1157, 7146241,  834, 347573777601375)
+      (     -2, 1157, 7147075,  833, 347573810961375)
+      (5207204, 1157, 7147908,  833, 347573844281375)
+      (     -2, 1157, 7148741,  834, 347573877601375)
+      (5207205, 1157, 7149575,  833, 347573910961375)  <- Video frame num 5207205
+      (     -2, 1157, 7150408,    8, 347573944281375)] <- Last sequence of 000's, of length 8
        -------  ----  -------  ----  ---------------
          (a)     (b)    (c)     (d)       (e)
 
@@ -352,6 +352,16 @@ def map_videoframes_to_syncpulse(camera_sync_pulse_files, fs=25000):
      - How to get all rows with a corresponding frame ID from the output_matrix:
             video_frames_only = output_matrix[output_matrix['frame_ids'] >= 0]
 
+    eCube timestamp issue note:
+        It has been determined that there is an error in the eCube timestamp in the Camera Pulse files
+        following the first, this can be confirmed by computing the expected eCube timestamp for the first 3
+        SyncPulse files and comparing them to what is actually in the file. The 2nd SyncPulse file will
+        be off by 0.145s, but the third will be correct. We can see in the output of this function that there
+        is no loss of data because the sync pulse widths are maintained perfectly across files. The issue is
+        that all eCube times after the first file will be offset 0.145s forward from where they should be.
+        To side-step this issue this code computes eCube time ONLY from the first files eCube time.
+        Notably this issue has not been noticed in the raw neural files.
+
     :param camera_sync_pulse_files: A glob path to the files (example: "EAB40Data/EAB40_Camera_Sync_Pulse/*.bin")
                                     Or a list of filename strings
     :param fs: sampling rate, 25000 default
@@ -370,7 +380,7 @@ def map_videoframes_to_syncpulse(camera_sync_pulse_files, fs=25000):
 
     all_signal_widths = []
     all_file_lengths = []
-    all_ecube_times = []
+    ecube_start_time = None
     dr = None
     change_points = None
     ecube_interval = 1000000000 // fs
@@ -390,8 +400,8 @@ def map_videoframes_to_syncpulse(camera_sync_pulse_files, fs=25000):
 
         if i == 0:
             assert dr[0] == 0, 'This algorithm expects the first value of the first file to always be 0.'
+            ecube_start_time = t
 
-        all_ecube_times.append(t)
         all_file_lengths.append(dr.shape[0])
         dr = np.insert(dr, 0, remainder)  # insert the remainder from the last file to the beginning of this one
 
@@ -414,9 +424,8 @@ def map_videoframes_to_syncpulse(camera_sync_pulse_files, fs=25000):
     ]
     output_matrix = np.empty((sample_count,), dtype=structured_array_dtypes)
 
-    # Join all signal widths across all files, same for ecube times
+    # Join all signal widths across all files
     output_matrix['sequence_length'] = np.concatenate(all_signal_widths, axis=0)
-    ecube_times = np.concatenate(all_ecube_times, axis=0)
 
     # Find the beginning of video recording (findPulse)
     signal_widths_111s = output_matrix['sequence_length'][1::2]
@@ -438,8 +447,7 @@ def map_videoframes_to_syncpulse(camera_sync_pulse_files, fs=25000):
 
     output_matrix['binfile_ix'] = np.searchsorted(cumsum_files, cumsum_signal_widths, side='right') - 1
     output_matrix['offsets'] = cumsum_signal_widths - cumsum_files[output_matrix['binfile_ix']]
-    output_matrix['ecube_time'] = ecube_times[output_matrix['binfile_ix']] + ecube_interval * output_matrix['offsets']
-
-    # result = np.column_stack((frame_ids, binfile_ix, offsets, signal_widths, ecube_timestamps))
+    # See function docs to understand why ecube_time is only computed relative to the first file and not from all files.
+    output_matrix['ecube_time'] = ecube_start_time + cumsum_signal_widths * ecube_interval
 
     return output_matrix, pulse_ix, files
