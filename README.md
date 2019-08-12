@@ -202,6 +202,21 @@ v.grab_frame_num(frame_num, outpath)
 frame_num = 100
 v.grab_frame_num(frame_num)
 
+# Convert video to grey
+videofilename = '/media/bs001r/ckbn/opencv/e3v8102-20190711T0056-0156.mp4'
+lstream = 0
+output_path = '/media/bs001r/ckbn/opencv/'
+v = ntk.NTKVideos(videofilename, lstream)
+v.grayscale_video(output_path)
+
+# diff video
+v.graydiff_video(output_path)
+# diff image
+v.graydiff_img(output_path)
+
+
+
+
 # Make video from images
 imgpath = '/home/user/img/'
 videopath = '/home/user/img/out/'
