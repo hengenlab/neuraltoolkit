@@ -408,7 +408,7 @@ def map_videoframes_to_syncpulse(camera_sync_pulse_files, fs=25000):
     structured_array_dtypes = [
         ('frame_ids', np.int32),
         ('binfile_ix', np.uint32),
-        ('offsets', np.uint32),
+        ('offsets', np.uint64),
         ('sequence_length', np.uint32),
         ('ecube_time', np.uint64)
     ]
