@@ -252,6 +252,30 @@ plt.plot(result[1,0:25000])
 plt.show()
 ```
 
+## high dimensional data
+#### List of functions
+
+```
+# TSNE
+import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+import seaborn as sns
+import neuraltoolkit as ntk
+data = np.random.rand(800, 4)
+u = ntk.highd_data_to_lowd(data,method=2)
+plt.scatter(u[:,0], u[:,1], c=data)
+
+# UMAP
+import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+import seaborn as sns
+import neuraltoolkit as ntk
+data = np.random.rand(800, 4)
+u = ntk.highd_data_to_lowd(data,method=1)
+plt.scatter(u[:,0], u[:,1], c=data)
+```
 
 ## math
 #### List of functions
