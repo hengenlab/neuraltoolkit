@@ -265,7 +265,9 @@ import neuraltoolkit as ntk
 data = np.random.rand(800, 4)
 # Please adjust parameters, according to data
 # This is just an interface
-u = ntk.highd_data_to_lowd(data,method=2)
+u = ntk.highd_data_tsne(data, perplexity=30.0, n_components=2,
+                        metric='euclidean', n_iter=3000,
+                        verbose=True)
 plt.scatter(u[:,0], u[:,1], c=data)
 
 # UMAP
@@ -277,7 +279,9 @@ import neuraltoolkit as ntk
 data = np.random.rand(800, 4)
 # Please adjust parameters, according to data
 # This is just an interface
-u = ntk.highd_data_to_lowd(data,method=1)
+u = ntk.highd_data_umap(data, n_neighbors=40, n_components=2,
+                        metric='euclidean', min_dist=0.2,
+                        verbose=True)
 plt.scatter(u[:,0], u[:,1], c=data)
 ```
 
