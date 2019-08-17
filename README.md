@@ -263,6 +263,8 @@ from mpl_toolkits.mplot3d import Axes3D
 import seaborn as sns
 import neuraltoolkit as ntk
 data = np.random.rand(800, 4)
+# Please adjust parameters, according to data
+# This is just an interface
 u = ntk.highd_data_to_lowd(data,method=2)
 plt.scatter(u[:,0], u[:,1], c=data)
 
@@ -273,6 +275,8 @@ from mpl_toolkits.mplot3d import Axes3D
 import seaborn as sns
 import neuraltoolkit as ntk
 data = np.random.rand(800, 4)
+# Please adjust parameters, according to data
+# This is just an interface
 u = ntk.highd_data_to_lowd(data,method=1)
 plt.scatter(u[:,0], u[:,1], c=data)
 ```
