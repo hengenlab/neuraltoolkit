@@ -109,6 +109,10 @@ def find_channel_map(hstype, number_of_channels):
         chan_map = np.array([25, 26, 27, 28, 29, 30, 31, 32, 1,  2,  3,  4,
                              5,  6,  7,  8,  24, 23, 22, 21, 20, 19, 18, 17,
                              16, 15, 14, 13, 12, 11, 10, 9]) - 1
+    # Intan 16 Test
+    elif hstype == 'intan16test2':
+        chan_map = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9,  10, 11, 12,
+                             13,  14,  15,  16]) - 1
 
     # KS Si probe
     # 8-K2.  stag. 2 col regular site size
