@@ -45,7 +45,7 @@ def map_videoframes_to_syncpulse(camera_sync_pulse_files, fs=25000):
                           (-2) represents a sequence of 000's anywhere
     (b) .bin file index - An index to the appropriate raw .bin file, this is an index into the files return value.
     (c) offset          - The offset into the data array for the bin file reference in (b). Note that this is not an
-                          index into the file directly, to get the index to the file use: (offset * n_channels * 2 + 4),
+                          index into the file directly, to get the index to the file use: (offset * n_channels * 2 + 8),
                           int16 values, number of channels, plus the 4-byte eCube timestamp offset.
     (d) sequence_length - the length of the sequence of 000's or 111's.
     (e) ecube_time      - eCube time for the beginning of this sequence, taken based on the offset from the
@@ -230,7 +230,7 @@ def map_video_to_neural_and_sleep_state(syncpulse_files: (list, str),
     (e) neural_filename_ix    - Index to the raw neural filename returned in neural_files
     (f) neural_offset         - Sample offset in the neural file reference in neural_filename_ix
                                 Note that this is not an index into the file directly, to get the index to the file use:
-                                (offset * n_channels * 2 + 4), int16 values plus the 4-byte eCube timestamp offset
+                                (offset * n_channels * 2 + 8), int16 values plus the 8-byte eCube timestamp offset
     (g) ecube_time            - The exact ecube time when this frame began the write process
 
     Detailed explanation of a few entries above:
@@ -246,13 +246,13 @@ def map_video_to_neural_and_sleep_state(syncpulse_files: (list, str),
         frame counting from the current video file (the same as the global counter for the first video file naturally);
         (0) is an index to the raw neural data file returned in neural_files; (1272) is the offset of the data samples
         in the raw neural data file (remember this isn't the file offset, to calculate the actual raw file offset
-        compute: 1272 * n_channels* 2 + 4); (713239961375) is the eCube timestamp when the video frame started writing.
+        compute: 1272 * n_channels* 2 + 8); (713239961375) is the eCube timestamp when the video frame started writing.
     ( 1, 1300347,  37,  4437, 287, 7499037,  87119161041375)
         (1) is the sleep state, awake; (1300347) is the global video frame index (counting across all video files);
         (37) is an index to the video file returned in video_files; (4437) is the frame index counting from the current
         video file; (287) is the index to the neural data file returned by neural_files; (7499037) is the offset
         of the data samples in the raw neural data file (remember this isn't the file offset, to compute the actual raw
-        file offset compute: 7499037 * n_channels * 2 + 4); (87119161041375) ) is the eCube timestamp when the video
+        file offset compute: 7499037 * n_channels * 2 + 8); (87119161041375) ) is the eCube timestamp when the video
         frame started writing.
     (-1, 1300348,  37,  4438,  -1,      -1,  87119227721375)
         (-1) tells us there is no sleep data for this video frame; (1300348) is the global video frame index
@@ -281,6 +281,7 @@ def map_video_to_neural_and_sleep_state(syncpulse_files: (list, str),
     sleepstate_files = sleepstate_files if isinstance(sleepstate_files, list) else [sleepstate_files]
     sleepstate_files = [glob.glob(sfg) for sfg in sleepstate_files]
     sleepstate_files = sorted(list(itertools.chain(*sleepstate_files)))
+    assert len(syncpulse_files) > 0 and len(video_files) > 0 and len(neural_files) > 0 and len(sleepstate_files) > 0
 
     # output_matrix data types definition
     structured_array_dtypes = [
@@ -310,6 +311,24 @@ def map_video_to_neural_and_sleep_state(syncpulse_files: (list, str),
     neural_sample_counts = np.array(neural_sample_counts)
     neural_ecube_last_timestamp = \
         neural_ecube_timestamps[-1] + (ecube_interval * neural_sample_counts[-1]).astype(np.uint64)
+
+    # Validate eCube timestamps are correct, issue a warning if they are significantly outside expectation
+    # This is necessary because eCube timestamps have been observed to be erroneous.
+    validate_neural_ecube_timestamps = np.abs(
+        (neural_sample_counts[:-1] * ecube_interval) -
+        (neural_ecube_timestamps[1:] - neural_ecube_timestamps[:-1]).astype(np.int64)
+    )
+    if np.any(np.abs(validate_neural_ecube_timestamps) > ecube_interval * 3):
+        for i in np.where(validate_neural_ecube_timestamps > ecube_interval * 3)[0]:
+            print(
+                'WARNING: eCube timestamp deviation of {:.2f} seconds for file {}, the eCube timestamp does not match '
+                'expectation based on the eCube timestamp of the previous file, eCube time of this file is {:d}, '
+                'and the previous eCube timestamp is {:d}.'
+                .format(validate_neural_ecube_timestamps[i] / 1000000000,
+                        neural_files[i],
+                        neural_ecube_timestamps[1:][i],
+                        neural_ecube_timestamps[i])
+            )
 
     output_matrix = np.empty((total_frames,), dtype=structured_array_dtypes)
 
