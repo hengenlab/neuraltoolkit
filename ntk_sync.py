@@ -329,6 +329,7 @@ def map_video_to_neural_and_sleep_state(syncpulse_files: (list, str),
                         neural_ecube_timestamps[1:][i],
                         neural_ecube_timestamps[i])
             )
+        raise AssertionError('Invalid eCube timestamp detected, this will cause errors in indexing.')
 
     output_matrix = np.empty((total_frames,), dtype=structured_array_dtypes)
 
@@ -347,8 +348,10 @@ def map_video_to_neural_and_sleep_state(syncpulse_files: (list, str),
     # data recording started, in those cases the neural_filename_ix and neural_offset will be -1
     output_matrix['neural_filename_ix'] = \
         np.searchsorted(neural_ecube_timestamps, output_matrix['ecube_time'], side='left') - 1
-    valid_f = np.logical_and(output_matrix['neural_filename_ix'] >= 0,
-                             output_matrix['ecube_time'] < neural_ecube_last_timestamp)
+    valid_f = np.logical_and(
+        output_matrix['neural_filename_ix'] >= 0,
+        output_matrix['ecube_time'] < neural_ecube_last_timestamp,
+    )
 
     # Invalidate any locations where neural data isn't available (either before or after video frames)
     output_matrix['neural_offset'][valid_f] = \
@@ -368,11 +371,12 @@ def map_video_to_neural_and_sleep_state(syncpulse_files: (list, str),
                     num=sleep_state_list[i].shape[0], dtype=np.uint64)
         for i in range(len(sleep_state_list))
     ]
-    sleep_state = np.concatenate(sleep_state_list)
-    sleep_state_ecube_times = np.concatenate(sleep_state_ecube_times_list + [np.array([neural_ecube_last_timestamp])])
+    sleep_state_ecube_times_list.append(np.array([sleep_state_ecube_times_list[-1][-1] + 4000000000], dtype=np.uint64))
 
+    sleep_state = np.concatenate(sleep_state_list)
+    sleep_state_ecube_times = np.concatenate(sleep_state_ecube_times_list)
     sleep_state_ix = np.searchsorted(sleep_state_ecube_times, output_matrix['ecube_time'], side='left') - 1
-    # Any sleep_state_ix value of 0 is a frame before sleep state data is available (not valid),
+    # Any sleep_state_ix value of -1 is a frame before sleep state data is available (not valid),
     # Any sleep state_ix value of sleep_state.shape[0] is data after sleep state data is available (not valid).
     valid_ss = np.logical_and(sleep_state_ix >= 0, sleep_state_ix < sleep_state.shape[0])
     output_matrix['sleep_state'][valid_ss] = sleep_state[sleep_state_ix[valid_ss]]
