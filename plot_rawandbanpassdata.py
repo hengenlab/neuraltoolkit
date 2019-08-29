@@ -27,6 +27,11 @@ import neuraltoolkit as ntk
 print("Enter filename ")
 rawfile = str(input())
 
+# Get DAQ type
+print("Enter 1 if ecube or 2 for intan")
+lecube = np.int8(input())
+print(lecube)
+
 # Get number of channels
 print("Enter total number of probes: ")
 number_of_probes = np.int16(eval(input()))
@@ -72,8 +77,16 @@ print(ch_list)
 
 
 # get data
-tt, ddgc = ntk.load_raw_binary_gain_chmap_nsec(rawfile, number_of_channels, hs,
-                                               25000, nsec, number_of_probes)
+if lecube == 1:
+    tt, ddgc = ntk.load_raw_binary_gain_chmap_nsec(rawfile, number_of_channels,
+                                                   hs, 25000, nsec,
+                                                   number_of_probes)
+elif lecube == 2:
+    t, ddgc = ntk.load_intan_raw_gain_chanmap(rawfile, number_of_channels,
+                                              hs, number_of_probes)
+else:
+    raise ValueError('Error please check input, DAQtype')
+
 
 # bandpass data
 bdgc = ntk.butter_bandpass(ddgc, 500, 7500, 25000, 3)
@@ -104,7 +117,7 @@ if pltbytet == 'n':
 
 elif pltbytet == 'y':
     plt.figure(1)
-    for i in np.arange(0,number_of_channels,4):
+    for i in np.arange(0, number_of_channels, 4):
         ch_list_tet = ch_list[i:(i+4)]
         for j in range(len(ch_list_tet)):
             # print(i, " ", ch_list[i])
@@ -113,5 +126,5 @@ elif pltbytet == 'y':
             plt.xticks([])
             # plt.yticks([])
             # plt.box(on=None)
-            plt.title('Ch '+ str(i+j+1))
+            plt.title('Ch ' + str(i+j+1))
         plt.show()
