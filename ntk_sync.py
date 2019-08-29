@@ -260,6 +260,17 @@ def map_video_to_neural_and_sleep_state(syncpulse_files: (list, str),
         the frame index counting from the current video file; (-1) and (-1) tell us that there is no neural data
         associated with this video frame (in this example the video files continued beyond the neural recording data).
 
+    Issues:
+      - This function should fail on an assert if the eCube timestamps on the neural data files is
+        inconsistent. If it does you need to fix the eCube timestamp in the neural data file, this code
+        requires the eCube timestamps to be consistent and contiguous. This is known to happen in practice.
+      - This function depends on the neural data file size to be correct (it uses file size to compute how
+        many data samples are in a neural data file). If a neural data file is missing or corrupted you
+        can work around the problem by creating a file with the appropriate size and manually adding a
+        timestamp using numpy. For example, in the EAB40 dataset the first data file is missing and
+        is an example where the file Headstages_256_Channels_int16_2019-03-29_10-28-28.bin was created
+        manually with all 0's and an appropriate eCube timestamp, look to this case if you need an example.
+
     :param syncpulse_files: sync pulse filenames, may be a list of filenames or globs or a string.
     :param video_files: video filenames, may be a list of filenames or globs or a string.
     :param neural_files: raw neural files, may be a list of filenames or globs or a string.
