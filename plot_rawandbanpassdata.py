@@ -98,7 +98,7 @@ if pltbytet == 'n':
         ax = plt.subplot(len(ch_list), 1, i+1)
         plt.plot(bdgc[ch_list[i], :])
         plt.xticks([])
-        plt.yticks([])
+        # plt.yticks([])
         # plt.box(on=None)
     plt.show()
 
