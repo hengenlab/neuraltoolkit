@@ -81,6 +81,9 @@ def load_raw_binary_gain_chmap(name, number_of_channels, hstype, nprobes=1,
 
     from neuraltoolkit import ntk_channelmap as ntkc
 
+    assert len(hstype) == nprobes, \
+            'length of hstype not same as nprobes'
+
     # constants
     gain = np.float64(0.19073486328125)
 
@@ -119,6 +122,9 @@ def load_raw_binary_gain_chmap_nsec(name, number_of_channels, hstype,
     '''
 
     from neuraltoolkit import ntk_channelmap as ntkc
+
+    assert len(hstype) == nprobes, \
+            'length of hstype not same as nprobes'
 
     # constants
     gain = np.float64(0.19073486328125)
