@@ -81,6 +81,9 @@ def load_raw_binary_gain_chmap(name, number_of_channels, hstype, nprobes=1,
 
     from neuraltoolkit import ntk_channelmap as ntkc
 
+    if isinstance(hstype, str):
+        hstype = [hstype]
+
     assert len(hstype) == nprobes, \
             'length of hstype not same as nprobes'
 
@@ -122,6 +125,9 @@ def load_raw_binary_gain_chmap_nsec(name, number_of_channels, hstype,
     '''
 
     from neuraltoolkit import ntk_channelmap as ntkc
+
+    if isinstance(hstype, str):
+        hstype = [hstype]
 
     assert len(hstype) == nprobes, \
             'length of hstype not same as nprobes'

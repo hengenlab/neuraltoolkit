@@ -33,7 +33,7 @@ def channel_map_data(data, number_of_channels, hstype, nprobes=1):
 
     print(hstype)
     if nprobes == 1:
-        channel_map = find_channel_map(hstype, number_of_channels)
+        channel_map = find_channel_map(hstype[0], number_of_channels)
     else:
         print("Number of probes", nprobes)
         # Get number of channels

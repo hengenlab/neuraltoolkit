@@ -34,6 +34,9 @@ def load_intan_raw_gain_chanmap(
     from neuraltoolkit import ntk_channelmap as ntkc
     from .load_intan_rhd_format_hlab import read_data
 
+    if isinstance(hstype, str):
+        hstype = [hstype]
+
     assert len(hstype) == nprobes, \
             'length of hstype not same as nprobes'
 
