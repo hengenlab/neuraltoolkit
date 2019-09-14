@@ -285,4 +285,5 @@ def load_digital_binary(name, t_only=0):
         return tr
     dr = np.fromfile(f, dtype=np.int64,  count=-1)
     f.close()
-    return tr, dr
+    # return tr, dr
+    return tr, np.int8(dr)
