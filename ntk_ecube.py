@@ -85,7 +85,7 @@ def load_raw_binary_gain_chmap(name, number_of_channels, hstype, nprobes=1,
         hstype = [hstype]
 
     assert len(hstype) == nprobes, \
-            'length of hstype not same as nprobes'
+        'length of hstype not same as nprobes'
 
     # constants
     gain = np.float64(0.19073486328125)
@@ -130,7 +130,7 @@ def load_raw_binary_gain_chmap_nsec(name, number_of_channels, hstype,
         hstype = [hstype]
 
     assert len(hstype) == nprobes, \
-            'length of hstype not same as nprobes'
+        'length of hstype not same as nprobes'
 
     # constants
     gain = np.float64(0.19073486328125)
@@ -230,7 +230,6 @@ def load_raw_binary_gain_chmap_range(rawfile, number_of_channels,
     gain = np.float64(0.19073486328125)
     d_bgc = np.array([])
 
-
     f = open(rawfile, 'rb')
 
     if lraw:
@@ -285,5 +284,20 @@ def load_digital_binary(name, t_only=0):
         return tr
     dr = np.fromfile(f, dtype=np.int64,  count=-1)
     f.close()
+
+    # Fix for files with values -11 to -9
+    # Digital_64
+    if "Digital_64_Channels_int64_" in name:
+        val_list = np.unique(dr)
+        assert len(val_list) == 2, 'Please check digital files unkown values'
+
+        # convert -11 to 0 and -9 to 1
+        if -11 in val_list:
+            # print("Changing values")
+            dr[np.where(dr == -11)] = 0
+            dr[np.where(dr == -9)] = 1
+        else:
+            raise ValueError('Please check digital files')
+
     # return tr, dr
     return tr, np.int8(dr)
