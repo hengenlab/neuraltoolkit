@@ -19,6 +19,7 @@ load_raw_binary_gain_chmap_nsec(name, number_of_channels, hstype,
                                 fs, nsec, nprobes=1)
 load_raw_binary_preprocessed(name, number_of_channels)
 load_digital_binary(name, t_only=0)
+light_dark_transition(datadir, l7ampm=0, lplot=0)
 '''
 
 try:
@@ -301,3 +302,71 @@ def load_digital_binary(name, t_only=0):
 
     # return tr, dr
     return tr, np.int8(dr)
+
+
+def light_dark_transition(datadir, l7ampm=0, lplot=0):
+    '''
+    light_dark_transition
+    light_dark_transition(datadir, l7ampm=0, lplot=0)
+    datadir - location of digital light data
+    l7ampm - just check files around 7:00 am and 7:00 pm
+            (default 0, check all files), 1 check files only around 7:00 am/pm
+    lplot - plot light to dark transition points (default 0, noplot), 1 to plot
+    returns
+    transition_list - list contains
+                      [filename, index of light-dark transition, time]
+    transition_list = light_dark_transition('/media/bs003r/D1/d1_c1/',
+                                            l7ampm=0, lplot=0)
+
+    '''
+
+    import matplotlib.pyplot as plt
+    import os
+
+    # add flag to check just at time 07:30 and 19:30
+    if l7ampm:
+        sub_string = ["_19-", "_07-"]
+    else:
+        sub_string = ['Digital', 'Digital']
+
+    save_list = []
+
+    for f in np.sort(os.listdir(datadir)):
+        if sub_string[0] in f or sub_string[1] in f:
+            # print(f)
+
+            # load data
+            t, d1 = load_digital_binary(datadir+f)
+
+            # find unique values
+            unique_val = np.unique(d1)
+
+            # transition files has 0 and 1 values
+            if all(x in unique_val for x in [0, 1]):
+                # print(f, " ", np.unique(d1), " ", d1.shape)
+
+                # Find diff
+                d_diff = np.diff(d1)
+
+                # -1 light of
+                if -1 in d_diff:
+                    transition = np.where(np.diff(d1) == -1)[0][0]
+                # 1 for light on
+                elif 1 in d_diff:
+                    transition = np.where(np.diff(d1) == 1)[0][0]
+                # raise error
+                else:
+                    raise ValueError('Unkown Value, ntk_light_pulse')
+
+                # print("transition)
+
+                # add filename, transition index and time of the file
+                print("Filename", f, " index ",  transition, " time ", t[0])
+                save_list.append([f, transition, t[0]])
+
+                # plot
+                if lplot:
+                    plt.figure()
+                    plt.plot(d1[transition-1:transition+2], 'ro')
+
+    return save_list
