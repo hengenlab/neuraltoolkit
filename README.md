@@ -91,6 +91,17 @@ tdig, ddig = ntk.load_digital_binary(digitalrawfile)
 # Load time only from digital data for cameras, etc
 tdig = ntk.load_digital_binary(digitalrawfile, t_only=1)
 
+# Light dark transition
+datadir = '/media/data/D1/d1_c1/'
+l7ampm = 0 # if 1 just check files around 7:00 am and 7:00 pm
+lplot = 0
+ldt = ntk.light_dark_transition(datadir, l7ampm=0, lplot=0)
+ldt - list contains
+      [filename, index of light-dark transition in file, time in file]
+# For example
+[['Digital_1_Channels_int64_10.bin', 2743961, 24082251921475],
+ ['Digital_1_Channels_int64_13.bin', 2677067, 67284509201475]]
+
 # Load preprocessed data file
 pdata = ntk.load_raw_binary_preprocessed(preprocessedfilename, number_of_channels)
 
