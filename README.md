@@ -134,6 +134,29 @@ Enter probe type :
 hs64
 Enter filename to save data:
 channelmap_hs64.txt
+
+
+# make_binaryfiles_ecubeformat
+import numpy as np
+import neuraltoolkit as ntk
+filename = '/home/kbn/HH.bin'
+ltype = 2 # digital files
+t = np.uint64(101)
+if ltype == 1:
+    data_low = -32000
+    data_high = 32000
+    data_rows = 64
+    data_length = 25000*60*5
+    data_type = 'int16'
+elif ltype == 2:
+    data_low = 0
+    data_high = 2
+    data_rows = 1
+    data_length = 25000*60*5
+    data_type = 'int64'
+d = np.random.randint(data_low, data_high, (data_rows, data_length),
+                      dtype=data_type)
+ntk.make_binaryfiles_ecubeformat(t, d, filename, ltype)
 ```
 
 ## load intan data
