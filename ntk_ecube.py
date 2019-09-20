@@ -370,3 +370,45 @@ def light_dark_transition(datadir, l7ampm=0, lplot=0):
                     plt.plot(d1[transition-1:transition+2], 'ro')
 
     return save_list
+
+
+def make_binaryfiles_ecubeformat(t, d, filename, ltype=2):
+
+    '''
+    make_binaryfiles_ecubeformat
+    make_binaryfiles_ecubeformat(t, d, filename, ltype=2)
+    t -  time in nano seconds to be written to binary file
+    d - numpy array to be converted to binary file
+    filename - file name to write with path
+    ltype - digital files (default 2 digital files)
+            for rawdata files 1
+    returns
+
+    '''
+    import struct
+    import os
+
+    # check ltype is 1 or 2
+    assert 0 < ltype < 3, 'Unknown ltype'
+
+    # Exit if file exist already
+    if os.path.exists(filename):
+        raise FileExistsError('filename already exists')
+
+    if ltype == 2:
+        assert d.shape[0] == 1, 'Only supports 1-d array'
+        assert len(np.unique(d)) <= 2, 'Supports only 1 and 0'
+
+    # Open file to write
+    with open(filename, "wb") as binary_file:
+        # Write time
+        binary_file.write(struct.pack('L', t))
+
+        # Write data rawdata/digital
+        if ltype == 1:
+            binary_file.write(struct.pack('h'*d.size,
+                              *d.transpose().flatten()))
+        elif ltype == 2:
+            binary_file.write(struct.pack('q'*d.size,  *d.flatten()))
+        else:
+            raise ValueError('Unkown value')
