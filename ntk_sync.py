@@ -212,21 +212,22 @@ def map_video_to_neural_data(syncpulse_files: (list, str),
       all neural files, eCube timestamps, and file sizes, instead of requiring all
       raw neural data files (which are large), see the neural_files function parameter docs below for details.
 
-    [(           0,          0,   0,     0,  -1,      -1, -1, [ -1.  ,  -1.  ,  -1.  ,  -1.  ,  -1.  ,  -1.  ]),  (  i)
-     (           0,          1,   0,     1,  -1,      -1, -1, [ -1.  ,  -1.  ,  -1.  ,  -1.  ,  -1.  ,  -1.  ]),
-     (           0,          2,   0,     2,  -1,      -1, -1, [ -1.  ,  -1.  ,  -1.  ,  -1.  ,  -1.  ,  -1.  ]),
-     ...
-     (           0,     555118,  10, 15127,  -1,      -1, -1, [ -1.  ,  -1.  ,  -1.  ,  -1.  ,  -1.  ,  -1.  ]),
-     (           0,     555119,  10, 15128,  -1,      -1, -1, [ -1.  ,  -1.  ,  -1.  ,  -1.  ,  -1.  ,  -1.  ]),
-     (430271801375,     555120,  10, 15129,   0,  427068,  2, [ -1.  ,  -1.  ,  -1.  ,  -1.  ,  -1.  ,  -1.  ]),  ( ii)
-     (430338481375,     555121,  10, 15130,   0,  428735,  2, [ -1.  ,  -1.  ,  -1.  ,  -1.  ,  -1.  ,  -1.  ]),
+    output_matrix format:
 
+    [(             0,        0,   0,     0,  -1,      -1, -1, [ -1.  ,  -1.  ,  -1.  ,  -1.  ,  -1.  ,  -1.  ]),  (  i)
+     (             0,        1,   0,     1,  -1,      -1, -1, [ -1.  ,  -1.  ,  -1.  ,  -1.  ,  -1.  ,  -1.  ]),
+     (             0,        2,   0,     2,  -1,      -1, -1, [ -1.  ,  -1.  ,  -1.  ,  -1.  ,  -1.  ,  -1.  ]),
      ...
-     (530508401375,     556624,  10, 16633,   0, 2932983,  2, [ -1.  ,  -1.  ,  -1.  ,  -1.  ,  -1.  ,  -1.  ]),
-     (530575041375,     556625,  10, 16634,   0, 2934649,  2, [ -1.  ,  -1.  ,  -1.  ,  -1.  ,  -1.  ,  -1.  ]),
-     (530641721375,     556626,  11,     0,   0, 2936316,  2, [242.85,  79.17,   0.95, 239.24,  77.09,   0.  ]),  (iii)
-     (530708401375,     556627,  11,     1,   0, 2937983,  2, [242.65,  78.98,   0.96, 239.19,  77.01,   0.  ]),
-     (530775041375,     556628,  11,     2,   0, 2939649,  2, [242.43,  78.82,   0.96, 239.16,  76.85,   0.  ]),
+     (             0,   555118,  10, 15127,  -1,      -1, -1, [ -1.  ,  -1.  ,  -1.  ,  -1.  ,  -1.  ,  -1.  ]),
+     (             0,   555119,  10, 15128,  -1,      -1, -1, [ -1.  ,  -1.  ,  -1.  ,  -1.  ,  -1.  ,  -1.  ]),
+     (  430271801375,   555120,  10, 15129,   0,  427068,  2, [ -1.  ,  -1.  ,  -1.  ,  -1.  ,  -1.  ,  -1.  ]),  ( ii)
+     (  430338481375,   555121,  10, 15130,   0,  428735,  2, [ -1.  ,  -1.  ,  -1.  ,  -1.  ,  -1.  ,  -1.  ]),
+     ...
+     (  530508401375,   556624,  10, 16633,   0, 2932983,  2, [ -1.  ,  -1.  ,  -1.  ,  -1.  ,  -1.  ,  -1.  ]),
+     (  530575041375,   556625,  10, 16634,   0, 2934649,  2, [ -1.  ,  -1.  ,  -1.  ,  -1.  ,  -1.  ,  -1.  ]),
+     (  530641721375,   556626,  11,     0,   0, 2936316,  2, [242.85,  79.17,   0.95, 239.24,  77.09,   0.  ]),  (iii)
+     (  530708401375,   556627,  11,     1,   0, 2937983,  2, [242.65,  78.98,   0.96, 239.19,  77.01,   0.  ]),
+     (  530775041375,   556628,  11,     2,   0, 2939649,  2, [242.43,  78.82,   0.96, 239.16,  76.85,   0.  ]),
      ...
      (87119094361375,  1855466,  35,  2860, 288, 7497370, -1, [290.42, 165.84,   1.  , 243.44, 186.94,   1.  ]),
      (87119161041375,  1855467,  35,  2861, 288, 7499037, -1, [290.58, 165.39,   1.  , 243.37, 186.47,   1.  ]),  ( iv)
@@ -240,7 +241,8 @@ def map_video_to_neural_data(syncpulse_files: (list, str),
 
     (  i) First video frame has no sleep state, no DLC data, and no neural data, also no ecube_time
     ( ii) Video frame 555,120, first frame with neural & sleep
-    (iii) First frame with DLC (Deep lab cut) labels (check for a positive value in column h)
+    (iii) First frame with DLC (Deep lab cut) labels (check for a positive value in column h), also the first video
+          frame of video_files[11].
     ( iv) Last video frame with neural & sleep data
     (  v) Video frames beyond neural & sleep data (-1)
     ( vi) Last video frame where DLC labels exist.
@@ -262,7 +264,7 @@ def map_video_to_neural_data(syncpulse_files: (list, str),
         # Get all frames with valid neural data (non negative):
         output_matrix[np.positive(output_matrix['neural_filename_ix'])]
 
-        # Get all frames with valid DLC data:
+        # Get all frames with valid DLC data (non negative, looking at just the first DLC value):
         output_matrix[np.positive(output_matrix['dlc_label'][:, 0])]
 
         # Get all video frames from file index #11:
@@ -298,8 +300,8 @@ def map_video_to_neural_data(syncpulse_files: (list, str),
                                       Note that if this is used the video mapping will not be precise.
     :param ignore_dlc_label_mismatch: ignore cases when the DLC label count doesn't match the video frame count,
                                       this issue has been observed in some cases with DLC labels that are split.
-                                      Using this option will leave remainder frames unlabeled and will most likely
-                                      constitute a mismatch between DLC labels and frames.
+                                      Using this option will leave remainder frames unlabeled and will
+                                      constitute a small mismatch between DLC labels and frames.
     :return: output_matrix, video_files, neural_files, sleepstate_files, syncpulse_files,
              camera_pulse_output_matrix, pulse_ix
     """
