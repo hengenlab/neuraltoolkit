@@ -436,6 +436,58 @@ def natural_sort(list_unsorted):
                                     for s in re.split(r'(\d+)', nats)])
 
 
+def get_video_length_list(videodir, lstream=0):
+
+    '''
+    Read video files and return list of all video lengths
+
+    get_video_length_list(videodir, lstream):
+
+    Parameters
+    ----------
+    videodir : directory of videos
+    lstream : 1 is video is streaming or 0 (defualt) if video is already saved
+
+    Returns
+    -------
+    video_length_list : list of all video lengths
+
+    Raises
+    ------
+
+    See Also
+    --------
+
+    Notes
+    -----
+
+    Examples
+    --------
+    vl = ntk.get_video_length_list('/home/kbn/watchtower_current/data/',0)
+
+    '''
+
+    from neuraltoolkit import ntk_videos as ntkv
+    import numpy as np
+    import os
+    import re
+
+    video_length_list = []
+    files = \
+        np.sort([f for f in os.listdir(videodir) if re.match(r'.*\.mp4', f)])
+    print("length of files ", len(files))
+    for f in files:
+        if f.endswith(".mp4"):
+            # print(f)
+            filename_with_path = os.path.join(videodir, f)
+            # print(filename_with_path)
+            v = ntkv.NTKVideos(filename_with_path, lstream)
+            print(v.length)
+            video_length_list.append(v.length)
+
+    return video_length_list
+
+
 if __name__ == '__main__':
     videofilename = 'e3v810a-20190307T0740-0840.mp4'
     # videofilename = 0
