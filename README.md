@@ -236,6 +236,9 @@ v.grab_frame_num(frame_num, outpath)
 frame_num = 100
 v.grab_frame_num(frame_num)
 
+# Read video files and return list of all video lengths
+v_lengths = ntk.get_video_length_list('/home/kbn/watchtower_current/data/')
+
 # Convert video to grey
 videofilename = '/media/bs001r/ckbn/opencv/e3v8102-20190711T0056-0156.mp4'
 lstream = 0
