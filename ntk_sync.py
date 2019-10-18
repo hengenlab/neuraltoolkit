@@ -189,8 +189,8 @@ def map_videoframes_to_syncpulse(syncpulse_files: (str, list), fs: int = 25000):
 def map_video_to_neural_data(syncpulse_files: (list, str),
                              video_files: (list, str),
                              neural_files: (list, str),
-                             sleepstate_files: (list, str),
-                             dlclabel_files: (list, str),
+                             sleepstate_files: (list, str) = (),
+                             dlclabel_files: (list, str) = (),
                              fs: int = 25000, n_channels: int = 256,
                              manual_video_frame_offset: int = 0,
                              ignore_dlc_label_mismatch: bool = False):
@@ -306,22 +306,24 @@ def map_video_to_neural_data(syncpulse_files: (list, str),
              camera_pulse_output_matrix, pulse_ix
     """
     # Resolve all inputs to lists of files
-    syncpulse_files = syncpulse_files if isinstance(syncpulse_files, list) else [syncpulse_files]
+    syncpulse_files = syncpulse_files if isinstance(syncpulse_files, (list, tuple)) else [syncpulse_files]
     syncpulse_files = [glob.glob(sfg) for sfg in syncpulse_files]
     syncpulse_files = sorted(list(itertools.chain(*syncpulse_files)))
-    video_files = video_files if isinstance(video_files, list) else [video_files]
+    video_files = video_files if isinstance(video_files, (list, tuple)) else [video_files]
     video_files = [glob.glob(vfg) for vfg in video_files]
     video_files = sorted(list(itertools.chain(*video_files)))
-    neural_files = neural_files if isinstance(neural_files, list) else [neural_files]
+    neural_files = neural_files if isinstance(neural_files, (list, tuple)) else [neural_files]
     neural_files = [glob.glob(nfg) for nfg in neural_files]
     neural_files = sorted(list(itertools.chain(*neural_files)))
-    sleepstate_files = sleepstate_files if isinstance(sleepstate_files, list) else [sleepstate_files]
+    sleepstate_files = sleepstate_files if isinstance(sleepstate_files, (list, tuple)) else [sleepstate_files]
     sleepstate_files = [glob.glob(sfg) for sfg in sleepstate_files]
     sleepstate_files = sorted(list(itertools.chain(*sleepstate_files)))
-    dlclabel_files = dlclabel_files if isinstance(dlclabel_files, list) else [dlclabel_files]
+    dlclabel_files = dlclabel_files if isinstance(dlclabel_files, (list, tuple)) else [dlclabel_files]
     dlclabel_files = [glob.glob(sfg) for sfg in dlclabel_files]
     dlclabel_files = sorted(list(itertools.chain(*dlclabel_files)))
-    assert len(syncpulse_files) > 0 and len(video_files) > 0 and len(neural_files) > 0
+    assert len(syncpulse_files) > 0, 'Found no syncpulse_files.'
+    assert len(video_files) > 0, 'Found no video_files.'
+    assert len(neural_files) > 0, 'Found no neural_files.'
 
     # output_matrix data types definition
     structured_array_dtypes = [
