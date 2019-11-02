@@ -412,3 +412,50 @@ def make_binaryfiles_ecubeformat(t, d, filename, ltype=2):
             binary_file.write(struct.pack('q'*d.size,  *d.flatten()))
         else:
             raise ValueError('Unkown value')
+
+
+def visual_grating_transition(datadir):
+    '''
+    visual_grating_transition
+    visual_grating_transition(datadir)
+    datadir - location of digital gratings data
+    returns
+    transition_list - list contains
+                      [filename, index of grating transitions, time]
+    transition_list = visual_grating_transition('/media/bs003r/D1/d1_vg1/')
+
+    '''
+
+    import os
+
+    # check only Digital files
+    sub_string = ['Digital', 'Digital']
+
+    save_list = []
+
+    for f in np.sort(os.listdir(datadir)):
+        if sub_string[0] in f or sub_string[1] in f:
+            # print(f)
+
+            # load data
+            t, d1 = load_digital_binary(datadir+f)
+
+            # find unique values
+            unique_val = np.unique(d1)
+
+            # transition files has 0 and 1 values
+            if all(x in unique_val for x in [0, 1]):
+                # print(f, " ", np.unique(d1), " ", d1.shape)
+
+                # Find diff
+                d_diff = np.diff(d1)
+
+                # 1 for gratings on
+                if 1 in d_diff:
+                    transition = np.where(np.diff(d1) == 1)[0]
+
+                # add filename, transition index and time of the file
+                print("Filename", f, " index ",  transition, " time ", t[0])
+                save_list.append([f, transition, t[0]])
+
+    return save_list
