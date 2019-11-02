@@ -102,6 +102,22 @@ ldt - list contains
 [['Digital_1_Channels_int64_10.bin', 2743961, 24082251921475],
  ['Digital_1_Channels_int64_13.bin', 2677067, 67284509201475]]
 
+# Visual grating transition
+datadir = '/media/bs003r/D1/d1_vg1/'
+transition_list = visual_grating_transition(datadir)
+transition_list - list contains
+      [filename, indices of visual grating transition in file, time in file]
+#For example
+Filename Digital_1_Channels_int64_1.bin
+index  [  73042  273202  473699  674109  874218 1074640 1275357 1476104 1676162
+ 7287946 7488659]  time  3783012466437
+Filename Digital_1_Channels_int64_2.bin
+index  [ 189390  390242  590800  791281  991778 1192327 1392627 1593098 1793569
+6005899 6206417 6406882 6607754 6808203 7008951 7209624]  time  4083006706437
+Filename Digital_1_Channels_int64_3.bin
+index  [5573869 5774268 5974585 6175289 6375922 6576758 6777207 6977770 7177962
+7378361]  time  4983018546437
+
 # Load preprocessed data file
 pdata = ntk.load_raw_binary_preprocessed(preprocessedfilename, number_of_channels)
 
