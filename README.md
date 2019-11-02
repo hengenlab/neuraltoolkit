@@ -104,7 +104,7 @@ ldt - list contains
 
 # Visual grating transition
 datadir = '/media/bs003r/D1/d1_vg1/'
-transition_list = visual_grating_transition(datadir)
+transition_list = ntk.visual_grating_transition(datadir)
 transition_list - list contains
       [filename, indices of visual grating transition in file, time in file]
 #For example
