@@ -279,6 +279,25 @@ ntk.make_video_from_images(imgpath, videopath, videofilename,
 
 ```
 
+# dlc
+```
+import neuraltoolkit as ntk
+dlc_h5file = 'D17_trial1DeepCut_resnet50_crickethuntJul18shuffle1_15000.h5'
+pos, fnames = ntk.dlc_get_position(dlc_h5file)
+pos : contains x, y positions for all features
+fnames : name of all features
+# For example
+pos
+array([[357.29413831, 439.93870854, 482.14195955, ..., 159.27687836,
+        469.79700255, 183.82241535],
+       ...,
+       [         nan,          nan,          nan, ...,          nan,
+                 nan,          nan]])
+fnames
+['cricket', 'snout', 'tailbase', 'leftear', 'rightear']
+```
+
+
 ## filters
 #### List of functions
 * butter_bandpass
