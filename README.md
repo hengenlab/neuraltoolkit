@@ -283,7 +283,8 @@ ntk.make_video_from_images(imgpath, videopath, videofilename,
 ```
 import neuraltoolkit as ntk
 dlc_h5file = 'D17_trial1DeepCut_resnet50_crickethuntJul18shuffle1_15000.h5'
-pos, fnames = ntk.dlc_get_position(dlc_h5file)
+cutoff : cutoff based on confidence
+pos, fnames = ntk.dlc_get_position(dlc_h5file, cutoff=0.6)
 pos : contains x, y positions for all features
 fnames : name of all features
 # For example
