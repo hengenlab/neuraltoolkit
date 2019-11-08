@@ -38,7 +38,7 @@ def load_intan_raw_gain_chanmap(
         hstype = [hstype]
 
     assert len(hstype) == nprobes, \
-            'length of hstype not same as nprobes'
+        'length of hstype not same as nprobes'
 
     # Read intan file
     a = read_data(rawfile)
@@ -55,3 +55,25 @@ def load_intan_raw_gain_chanmap(
         return tr, dgc, din
     else:
         return tr, dgc
+
+
+# Load Intan aux data from ntksorting
+def load_aux_binary_data(name, number_of_channels, factor=3.74e-5):
+
+    '''
+    load intan aux data preprocessed
+    load_aux_binary_data(name, number_of_channels, factor)
+    name - name of file
+    number_of_channels - number of channels
+    factor - 3.74e-5
+    returns aux_data
+    '''
+
+    f = open(name, 'rb')
+    dr = np.fromfile(f, dtype=np.uint16,  count=-1)
+    length = np.int64(np.size(dr)/number_of_channels)
+    drr = np.reshape(dr, [number_of_channels, length], order='F')
+    f.close()
+    print("Factor ", factor)
+    drr = drr * factor
+    return drr
