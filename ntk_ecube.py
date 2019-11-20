@@ -266,7 +266,7 @@ def load_raw_binary_gain_chmap_range(rawfile, number_of_channels,
 
 
 # Load Ecube Digital data
-def load_digital_binary(name, t_only=0):
+def load_digital_binary(name, t_only=0, lcheckdigi64=1):
 
     '''
     load ecube digital data
@@ -275,6 +275,14 @@ def load_digital_binary(name, t_only=0):
     data has to be 1 channel
     t_only  : if t_only=1, just return tr, timestamp
               (Default 0, returns timestamp and data)
+    lcheckdigi64 : Default 1, check for digital file with 64 channel
+              accidental recordings and correct -11->0 and -9->1
+              lcheckdigi64=0, no checks are done read the file and
+              return output.
+    lcheckdigi64 : Default 1, check for digital file with 64 channel
+             (atypical recordings) and correct values of -11 to 0 and -9 to 1
+             lcheckdigi64=0, no checks are done, just read the file and
+             returns timestamp and data
     tdig, ddig =load_digital_binary(digitalrawfile)
     '''
 
@@ -284,21 +292,25 @@ def load_digital_binary(name, t_only=0):
         f.close()
         return tr
     dr = np.fromfile(f, dtype=np.int64,  count=-1)
+    print("unique ", np.unique(dr))
     f.close()
 
-    # Fix for files with values -11 to -9
-    # Digital_64
-    if "Digital_64_Channels_int64_" in name:
-        val_list = np.unique(dr)
-        assert len(val_list) == 2, 'Please check digital files unkown values'
+    if lcheckdigi64:
+        # Fix for files with values -11 to -9
+        # Digital_64
+        if "Digital_64_Channels_int64_" in name:
+            val_list = np.unique(dr)
+            print("val_list ", val_list)
+            print("len ", len(val_list))
+            assert len(val_list) == 2, 'Error: digital files unkown values'
 
-        # convert -11 to 0 and -9 to 1
-        if -11 in val_list:
-            # print("Changing values")
-            dr[np.where(dr == -11)] = 0
-            dr[np.where(dr == -9)] = 1
-        else:
-            raise ValueError('Please check digital files')
+            # convert -11 to 0 and -9 to 1
+            if -11 in val_list:
+                # print("Changing values")
+                dr[np.where(dr == -11)] = 0
+                dr[np.where(dr == -9)] = 1
+            else:
+                raise ValueError('Please check digital files')
 
     # return tr, dr
     return tr, np.int8(dr)
