@@ -86,7 +86,14 @@ tt, ddgc = ntk.load_raw_binary_gain_chmap_nsec(rawfile, number_of_channels, 'hs6
 tt, ddgc = ntk.load_raw_binary_gain_chmap_nsec(rawfile, number_of_channels, hstype, 25000, 2, nprobes)
 
 # Load digital data for cameras, etc
-tdig, ddig = ntk.load_digital_binary(digitalrawfile)
+digitalrawfile = '/home/kbn/Digital_64_Channels_int64_2018-11-04_11-18-12.bin'
+t_only  : if t_only=1, just return  timestamp
+          (Default 0, returns timestamp and data)
+lcheckdigi64 : Default 1, check for digital file with 64 channel
+          (atypical recordings) and correct values of -11 to 0 and -9 to 1
+          lcheckdigi64=0, no checks are done, just read the file and
+          returns timestamp and data
+tdig, ddig = ntk.load_digital_binary(digitalrawfile, t_only=0, lcheckdigi64=1)
 
 # Load time only from digital data for cameras, etc
 tdig = ntk.load_digital_binary(digitalrawfile, t_only=1)
@@ -97,7 +104,8 @@ l7ampm = 0 # if 1 just check files around 7:00 am and 7:00 pm
 lplot = 0
 ldt = ntk.light_dark_transition(datadir, l7ampm=0, lplot=0)
 ldt - list contains
-      [filename, index of light-dark transition in file, time in file]
+      [filename, index of light-dark transition in file, start time of the file]
+
 # For example
 [['Digital_1_Channels_int64_10.bin', 2743961, 24082251921475],
  ['Digital_1_Channels_int64_13.bin', 2677067, 67284509201475]]
