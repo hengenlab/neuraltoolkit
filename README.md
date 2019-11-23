@@ -34,7 +34,7 @@ export PYTHONPATH=/location_of_neuraltoolkit:$PYTHONPATH
 
 ## load ecube data
 #### List of functions
- 
+
 * load_raw_binary                 : To load plain raw data
 * load_raw_binary_gain            : To load raw data with gain
 * load_raw_binary_gain_chmap      : To load raw data with gain and channel mapping
@@ -462,4 +462,39 @@ plt.show(block=False)
 ###### 'linear'
         [1:number_of_channels]
  
+## sync
+Functions to sync data across: raw neural, sync pulse, video files and frames, sleep state labels, and deep lab cut labels.
 
+#### List of functions
+* `map_video_to_neural_data` 
+Maps video to neural data and optionally maps sleeps state and DLC labels. 
+See the function documentation in `ntk_sync.py` for detailed documentation on the output format.
+* `map_videoframes_to_syncpulse`
+Reads a set of Camera Sync Pulse data files and aggregates the sequences of 000's and 111's into a map of video frame numbers to the raw neural data file and offset across all files in a recording. The output includes an entry per each sequence of 000's and 111's in the Camera Sync Pulse data.
+See the function documentation in `ntk_sync.py` for detailed documentation on the output format.
+
+#### Command line functionality
+* `python ntk_sync.py --help` 
+  Get command line help output.
+* `python ntk_sync.py save_neural_files_bom [--output_filename FILENAME.csv] [[--neural_files NEURAL_FILENAMES_GLOB] --neural_files ...]` 
+  Produces a CSV containing the eCube timestamps of a set of neural files which can be used instead of passing the neural files to the functions below (useful when the neural files are large and possibly difficult to access on demand).
+* `python ntk_sync.py save_output_matrix --syncpulse_files FILENAME_GLOBS --video_files FILENAME_GLOBS --neural_files FILENAME_GLOBS [--sleepstate_files FILENAME_GLOBS] [--dlclabel_files FILENAME_GLOBS] [--output_filename map_video_to_neural_data.npz] [--fs 25000] [--n_channels 256] [--manual_video_frame_offset 0] [--recording_config EAB40.cfg]`
+Calls save_output_matrix(...) which saves the results of map_video_to_neural_data(...) to a NPZ file.
+
+```
+import neuraltoolkit as ntk
+
+# map_video_to_neural_data example usage:
+output_matrix, video_files, neural_files, sleepstate_files, syncpulse_files, dlclabel_files = \
+    ntk.map_video_to_neural_data(
+        syncpulse_files='EAB40Data/EAB40_Camera_Sync_Pulse/*.bin'
+        video_files=['EAB40Data/EAB40_Video/3_29-4_02/*.mp4',
+                     'EAB40Data/EAB40_Video/4_02-4_05/*.mp4'],
+        neural_files='EAB40Data/EAB40_Neural_Data/3_29-4_02/*.bin',
+        dlclabel_files='EAB40Data/EAB40_DLC_Labels/*.h5'
+        sleepstate_files='EAB40Data/EAB40_Sleep_States/*.npy'
+    )
+
+# map_videoframes_to_syncpulse example usage:
+output_matrix, pulse_ix, files = ntk.map_videoframes_to_syncpulse('EAB40_Dataset/CameraSyncPulse/*.bin')
+```

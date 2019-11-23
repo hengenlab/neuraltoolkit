@@ -9,6 +9,13 @@ import csv
 import configparser
 import h5py
 import distutils.util
+import importlib
+import urllib.parse
+# optional import for S3 file support, for S3 file support: pip install fs_s3fs_ng
+try:
+    from fs_s3fs import S3FS
+except ImportError as ie:
+    pass
 
 
 def map_videoframes_to_syncpulse(syncpulse_files: (str, list), fs: int = 25000):
@@ -111,9 +118,7 @@ def map_videoframes_to_syncpulse(syncpulse_files: (str, list), fs: int = 25000):
                                  'might not function precisely as expected.'
 
     # Resolve all inputs to lists of files
-    syncpulse_files = syncpulse_files if isinstance(syncpulse_files, list) else [syncpulse_files]
-    syncpulse_files = [glob.glob(sfg) for sfg in syncpulse_files]
-    syncpulse_files = sorted(list(itertools.chain(*syncpulse_files)))
+    syncpulse_files = _resolve_files(syncpulse_files)
 
     all_signal_widths = []
     all_file_lengths = []
@@ -186,12 +191,13 @@ def map_videoframes_to_syncpulse(syncpulse_files: (str, list), fs: int = 25000):
     return output_matrix, pulse_ix, syncpulse_files
 
 
-def map_video_to_neural_data(syncpulse_files: (list, str),
-                             video_files: (list, str),
-                             neural_files: (list, str),
-                             sleepstate_files: (list, str) = (),
-                             dlclabel_files: (list, str) = (),
-                             fs: int = 25000, n_channels: int = 256,
+def map_video_to_neural_data(syncpulse_files: (list, tuple, str),
+                             video_files: (list, tuple, str),
+                             neural_files: (list, tuple, str),
+                             sleepstate_files: (list, tuple, str) = (),
+                             dlclabel_files: (list, tuple, str) = (),
+                             fs: int = 25000, n_channels: int = None,
+                             neural_bin_files_per_sleepstate_file: int = 12,
                              manual_video_frame_offset: int = 0,
                              ignore_dlc_label_mismatch: bool = False):
     """
@@ -287,43 +293,45 @@ def map_video_to_neural_data(syncpulse_files: (list, str),
     :param syncpulse_files: sync pulse filenames, may be a list or single string of filenames or globs.
     :param video_files: video filenames, may be a list or single string of filenames or globs.
     :param neural_files: raw neural files, may be a list or single string of filenames or globs, or a
-                         bill of materials CSV file that describes the set of neural datafiles in the form:
-                         eCube_time, file_size, neural_filename.
+           bill of materials CSV file that describes the set of neural datafiles
+           in the form: eCube_time, file_size, neural_filename.
     :param sleepstate_files: Optional sleep state numpy files, may be a list or single string of filenames or globs.
     :param dlclabel_files: Optional DLC label numpy files, may be a list or single string of filenames or globs.
     :param fs: sample rate, default = 25000
-    :param n_channels: number of channels in data files, default = 256
+    :param n_channels: None == autodetect. Number of channels in data files, if unspecified (None) the
+           number of channels will be inferred from the filename of the first neural .bin file.
+    :param neural_bin_files_per_sleepstate_file: Number of neural binary files that are covered by each sleep state
+           numpy file. For example in EAB40 there are 12 neural files per sleep state file, therefore the
+           parameter is 12; in SCF05 there is only one sleep state file for ALL neural data files, in this case the
+           parameter is -1 for ALL. The default is 12, which is 1hr of sleep state data per numpy file.
     :param manual_video_frame_offset: in case the video started before neural recordings the only way
-                                      to align them is to manually compute the number of video frames that
-                                      occur before the neural recording started, this is the number of such
-                                      frames that exist and will be added to the pulse_ix value computed.
-                                      Note that if this is used the video mapping will not be precise.
+           to align them is to manually compute the number of video frames that occur before the neural recording
+           started, this is the number of such frames that exist and will be added to the pulse_ix value computed.
+           Note that if this is used the video mapping will not be precise.
     :param ignore_dlc_label_mismatch: ignore cases when the DLC label count doesn't match the video frame count,
-                                      this issue has been observed in some cases with DLC labels that are split.
-                                      Using this option will leave remainder frames unlabeled and will
-                                      constitute a small mismatch between DLC labels and frames.
+           this issue has been observed in some cases with DLC labels that are split. Using this option will
+           leave remainder frames unlabeled and will constitute a small mismatch between DLC labels and frames.
     :return: output_matrix, video_files, neural_files, sleepstate_files, syncpulse_files,
              camera_pulse_output_matrix, pulse_ix
     """
     # Resolve all inputs to lists of files
-    syncpulse_files = syncpulse_files if isinstance(syncpulse_files, (list, tuple)) else [syncpulse_files]
-    syncpulse_files = [glob.glob(sfg) for sfg in syncpulse_files]
-    syncpulse_files = sorted(list(itertools.chain(*syncpulse_files)))
-    video_files = video_files if isinstance(video_files, (list, tuple)) else [video_files]
-    video_files = [glob.glob(vfg) for vfg in video_files]
-    video_files = sorted(list(itertools.chain(*video_files)))
-    neural_files = neural_files if isinstance(neural_files, (list, tuple)) else [neural_files]
-    neural_files = [glob.glob(nfg) for nfg in neural_files]
-    neural_files = sorted(list(itertools.chain(*neural_files)))
-    sleepstate_files = sleepstate_files if isinstance(sleepstate_files, (list, tuple)) else [sleepstate_files]
-    sleepstate_files = [glob.glob(sfg) for sfg in sleepstate_files]
-    sleepstate_files = sorted(list(itertools.chain(*sleepstate_files)))
-    dlclabel_files = dlclabel_files if isinstance(dlclabel_files, (list, tuple)) else [dlclabel_files]
-    dlclabel_files = [glob.glob(sfg) for sfg in dlclabel_files]
-    dlclabel_files = sorted(list(itertools.chain(*dlclabel_files)))
+    syncpulse_files = _resolve_files(syncpulse_files)
+    video_files = _resolve_files(video_files)
+    neural_files = _resolve_files(neural_files)
+    sleepstate_files = _resolve_files(sleepstate_files)
+    dlclabel_files = _resolve_files(dlclabel_files)
+
+    # Resolve n_channels from the first neural filename if n_channels is None
+    # Example expected filename: Headstages_64_Channels_int16_2018-12-05_21-42-37.bin
+    n_channels = n_channels if isinstance(n_channels, int) else int(re.findall(r'_(\d*)_Channels')[0])
+
+    # Validation
     assert len(syncpulse_files) > 0, 'Found no syncpulse_files.'
     assert len(video_files) > 0, 'Found no video_files.'
     assert len(neural_files) > 0, 'Found no neural_files.'
+    assert neural_bin_files_per_sleepstate_file == -1 or neural_bin_files_per_sleepstate_file >= 1, \
+        'neural_bin_files_per_sleepstate_file must be -1 or a value of 1 or more, value found: {}'\
+        .format(neural_bin_files_per_sleepstate_file)
 
     # output_matrix data types definition
     structured_array_dtypes = [
@@ -343,7 +351,7 @@ def map_video_to_neural_data(syncpulse_files: (list, str),
     total_frames = np.sum(frame_counts)
 
     # Extract just the eCube timestamp from each raw neural recording file
-    neural_files_bom = resolve_neural_files_bom(neural_files)
+    neural_files_bom = _resolve_neural_files_bom(neural_files)
     neural_ecube_timestamps = [int(row[0]) for row in neural_files_bom]
     neural_sample_counts = [(int(row[1]) - 8) // (2 * n_channels) for row in neural_files_bom]
     neural_files = [row[2] for row in neural_files_bom]
@@ -366,11 +374,12 @@ def map_video_to_neural_data(syncpulse_files: (list, str),
                 'expectation based on the eCube timestamp of the previous file, eCube time of this file is {:d}, '
                 'and the previous eCube timestamp is {:d}.'
                 .format(validate_neural_ecube_timestamps[i] / 1000000000,
-                        neural_files[i],
+                        neural_files[i + 1],
                         neural_ecube_timestamps[1:][i],
                         neural_ecube_timestamps[i])
             )
-        raise AssertionError('Invalid eCube timestamp detected, this will cause errors in indexing.')
+        raise AssertionError('Invalid eCube timestamp detected, this will cause errors in indexing, '
+                             'see previous warning messages for details.')
 
     output_matrix = np.empty((total_frames,), dtype=structured_array_dtypes)
 
@@ -408,25 +417,44 @@ def map_video_to_neural_data(syncpulse_files: (list, str),
     #
     # Map in sleep states based on eCube time
     #
-    neural_ecube_timestamps_per_sleep_state_file = neural_ecube_timestamps[::12]
-    sleep_state_list = [np.load(sfile) for sfile in sleepstate_files]
-    assert len(neural_ecube_timestamps_per_sleep_state_file) > len(sleep_state_list), \
-        'There are more sleep state files than neural recording files.'
-    sleep_state_ecube_times_list = [
-        np.linspace(start=neural_ecube_timestamps_per_sleep_state_file[i],
-                    stop=neural_ecube_timestamps_per_sleep_state_file[i + 1],
-                    num=sleep_state_list[i].shape[0], dtype=np.uint64)
-        for i in range(len(sleep_state_list))
-    ]
-    sleep_state_ecube_times_list.append(np.array([sleep_state_ecube_times_list[-1][-1] + 4000000000], dtype=np.uint64))
-    sleep_state = np.concatenate(sleep_state_list)
-    sleep_state_ecube_times = np.concatenate(sleep_state_ecube_times_list)
-    sleep_state_ix = np.searchsorted(sleep_state_ecube_times, output_matrix['ecube_time'], side='left') - 1
-    # Any sleep_state_ix value of -1 is a frame before sleep state data is available (not valid),
-    # Any sleep state_ix value of sleep_state.shape[0] is data after sleep state data is available (not valid).
-    valid_ss = np.logical_and(sleep_state_ix >= 0, sleep_state_ix < sleep_state.shape[0])
-    output_matrix['sleep_state'][valid_ss] = sleep_state[sleep_state_ix[valid_ss]]
-    output_matrix['sleep_state'][~valid_ss] = -1
+    if len(sleepstate_files) > 0:
+        s = len(neural_ecube_timestamps) if neural_bin_files_per_sleepstate_file == -1 \
+            else neural_bin_files_per_sleepstate_file
+        neural_ecube_timestamps_per_sleep_state_file = neural_ecube_timestamps[::s]
+        # Compute neural_sample_counts_per_sleep_state_file to compute end eCube times per neural ecube time
+        neural_sample_counts_per_sleep_state_file = [
+            np.sum(nsc) for nsc in np.split(neural_sample_counts, range(s, len(neural_sample_counts), s))
+        ]
+        sleep_state_list = [np.load(sfile) for sfile in sleepstate_files]
+        assert len(neural_ecube_timestamps_per_sleep_state_file) >= len(sleep_state_list), \
+            'There are more sleep state files than neural recording files.'
+        sleep_state_ecube_times_list = []
+        for i in range(len(sleep_state_list)):
+            start_ecube_time = neural_ecube_timestamps_per_sleep_state_file[i]
+            stop_ecube_time = neural_ecube_timestamps_per_sleep_state_file[i] + \
+                              neural_sample_counts_per_sleep_state_file[i] * ecube_interval
+            sleep_state_ecube_times_list.append(np.linspace(
+                start=start_ecube_time, stop=stop_ecube_time, num=sleep_state_list[i].shape[0], dtype=np.uint64
+            ))
+            # Validate that the eCube range used is within +/- 4 seconds of the number of sleep state samples
+            ecube_timestamp_range_sec = (stop_ecube_time - start_ecube_time) / 1e+9
+            sleep_state_range_sec = sleep_state_list[i].shape[0] * 4
+            assert abs(ecube_timestamp_range_sec - sleep_state_range_sec) < 4, \
+                'The range of eCube timestamps across {} neural files ({:0.1f} seconds) does not match the time ' \
+                'range covered by sleep state file [{}] ({:0.1f} seconds)'.format(
+                    s, ecube_timestamp_range_sec, sleepstate_files[i], sleep_state_range_sec
+                )
+        # sleep_state_ecube_times_list.append(np.array([sleep_state_ecube_times_list[-1][-1] + 4000000000], dtype=np.uint64))
+        sleep_state = np.concatenate(sleep_state_list)
+        sleep_state_ecube_times = np.concatenate(sleep_state_ecube_times_list)
+        sleep_state_ix = np.searchsorted(sleep_state_ecube_times, output_matrix['ecube_time'], side='left') - 1
+        # Any sleep_state_ix value of -1 is a frame before sleep state data is available (not valid),
+        # Any sleep state_ix value of sleep_state.shape[0] is data after sleep state data is available (not valid).
+        valid_ss = np.logical_and(sleep_state_ix >= 0, sleep_state_ix < sleep_state.shape[0])
+        output_matrix['sleep_state'][valid_ss] = sleep_state[sleep_state_ix[valid_ss]]
+        output_matrix['sleep_state'][~valid_ss] = -1
+    else:
+        output_matrix['sleep_state'] = -1
 
     #
     # Map in DLC labels, mapping 1:1 with video frames using the DLC & Video filename prefix
@@ -466,7 +494,40 @@ def map_video_to_neural_data(syncpulse_files: (list, str),
         camera_pulse_output_matrix, pulse_ix
 
 
-def resolve_neural_files_bom(neural_files_or_bom: list = None):
+def _resolve_files(files: (list, tuple, str)):
+    """ Resolves filename glob or string or list of filename strings to a static list of filenames. """
+    files = [files] if isinstance(files, str) else files
+    files = [_resolve_glob(f) for f in files]
+    files = sorted(list(itertools.chain(*files)))
+    return files
+
+
+def _resolve_glob(file_glob):
+    if file_glob.startswith('s3://'):
+        _verify_s3_support()
+        o = urllib.parse.urlparse(file_glob)
+        bucket = o.netloc
+        key = o.path
+
+        s3fs = S3FS(bucket, endpoint_url=os.environ.get('ENDPOINT_URL', None), strict=False)
+        result = ['s3://{}{}'.format(bucket, match.path) for match in s3fs.glob(key)]
+    else:
+        result = glob.glob(file_glob)
+
+    return result
+
+
+def _verify_s3_support():
+    assert importlib.util.find_spec('fs_s3fs') is not None, \
+        'PIP package fs_s3fs_ng is required for accessing S3 files: pip install fs_s3fs_ng'
+
+    # Print a warning if ENDPOINT_URL is not set, since anticipated use cases will want this set.
+    if 'ENDPOINT_URL' not in os.environ:
+        print('Warning, environment variable ENDPOINT_URL is not set, the default endpoint is AWS.\n'
+              'To set it to the PRP/S3 endpoint: export ENDPOINT_URL=https://s3.nautilus.optiputer.net')
+
+
+def _resolve_neural_files_bom(neural_files_or_bom: list = None):
     """
     This function is typically used internally by map_video_to_neural_and_sleep_state(...),
 
@@ -480,44 +541,60 @@ def resolve_neural_files_bom(neural_files_or_bom: list = None):
                                 ecube_time, file_size, neural_filename
     :return: list in the form [(ecube_time, file_size, neural_filename), (...), ...]
     """
-    assert neural_files_or_bom is not None
+    assert neural_files_or_bom is not None and len(neural_files_or_bom) > 0, 'No neural files found.'
+    uses_s3 = any([f.startswith('s3://') for f in neural_files_or_bom])
+    if uses_s3:
+        _verify_s3_support()
 
     if len(neural_files_or_bom) == 1 and neural_files_or_bom[0].endswith('.csv'):
         with open(neural_files_or_bom[0], 'r') as csv_file:
             csv_reader = csv.reader(csv_file)
-            return [tuple(row) for row in csv_reader]
+            result = [tuple(row) for row in csv_reader]
     else:
         result = []
         for nfile in neural_files_or_bom:
-            with open(nfile, 'rb') as f:
-                ecube_time = np.fromfile(f, dtype=np.uint64, count=1)[0]
-                file_size = os.fstat(f.fileno()).st_size
-                filename = os.path.split(nfile)[-1]
-                result.append((ecube_time, file_size, filename))
-        return result
+            if nfile.startswith('s3://'):
+                o = urllib.parse.urlparse(nfile)
+                bucket = o.netloc
+                key = o.path
+                with S3FS(bucket, endpoint_url=os.environ.get('ENDPOINT_URL', None), strict=False) as s3fs:
+                    s3f = s3fs.openbin(key)
+                    ecube_time = np.frombuffer(s3f.read(8), dtype=np.uint64)[0]
+                    file_size = s3f.size
+            else:
+                with open(nfile, 'rb') as f:
+                    ecube_time = np.fromfile(f, dtype=np.uint64, count=1)[0]
+                    file_size = os.fstat(f.fileno()).st_size
+
+            filename = os.path.split(nfile)[-1]
+            result.append((ecube_time, file_size, filename))
+
+    return result
 
 
 def save_neural_files_bom(output_filename: str = None, neural_files: (list, str) = None):
     """
     Example Usage:
-        python ntk_sync.py --output_filename neural_files_bom.csv --neural_files EAB40_Neural_data/*.bin
+        python ntk_sync.py save_neural_files_bom --output_filename neural_files_bom.csv --neural_files EAB40_Neural_data/*.bin
+        python ntk_sync.py save_neural_files_bom --output_filename neural_files_bom.csv --neural_files s3://hengenlab/SCF05/Neural_Files/*.bin
 
     Saves a CSV bill of materials record of the neural_files. This eliminates needing to have the neural_files
     available when using the map_video_to_neural_and_sleep_state(...). Since the neural files are very large
     it may be inconvenient to make them available just to generate the mapping data.
 
+    Note, this function uses an external package, you need to: `pip install fs_s3fs_ng`
+
     :param output_filename: output CSV filename for the bill of materials (BOM) file, default: neural_files_bom.csv
-    :param neural_files: raw neural files, may be a list of filenames or globs or a string
+    :param neural_files: raw neural files, may be a list of filenames or globs or a string, both local files and
+           s3 urls work (s3 example: 's3://BUCKET/path/*.bin), if using s3files you must install fs and fs_s3fs_ng
+           pip packages.
     :return:
     """
     assert output_filename is not None
     assert neural_files is not None
 
-    neural_files = neural_files if isinstance(neural_files, list) else [neural_files]
-    neural_files = [glob.glob(nfg) for nfg in neural_files]
-    neural_files = sorted(list(itertools.chain(*neural_files)))
-
-    bom = resolve_neural_files_bom(neural_files)
+    neural_files = _resolve_files(neural_files)
+    bom = _resolve_neural_files_bom(neural_files)
 
     with open(output_filename, 'w') as csv_file:
         csv_writer = csv.writer(csv_file)
@@ -532,7 +609,8 @@ def save_output_matrix(output_filename: str = None,
                        sleepstate_files: (str, list) = None,
                        dlclabel_files: (str, list) = None,
                        fs: int = 25000,
-                       n_channels: int = 256,
+                       n_channels: int = None,
+                       neural_bin_files_per_sleepstate_file: int = None,
                        manual_video_frame_offset: int = 0,
                        ignore_dlc_mismatch: bool = False,
                        recording_config: str = None):
@@ -544,6 +622,7 @@ def save_output_matrix(output_filename: str = None,
         n_channels = int(config.get('n_channels', n_channels))
         manual_video_frame_offset = int(config.get('manual_video_frame_offset', manual_video_frame_offset))
         ignore_dlc_mismatch = bool(distutils.util.strtobool((config.get('ignore_dlc_mismatch', ignore_dlc_mismatch))))
+        neural_bin_files_per_sleepstate_file = int(config.get('neural_bin_files_per_sleepstate_file', 12))
 
     assert syncpulse_files is not None \
         and video_files is not None \
@@ -551,7 +630,6 @@ def save_output_matrix(output_filename: str = None,
         and sleepstate_files is not None \
         and dlclabel_files is not None \
         and fs is not None \
-        and n_channels is not None \
         and manual_video_frame_offset is not None \
         and ignore_dlc_mismatch is not None, \
         'None value not valid.'
@@ -560,7 +638,7 @@ def save_output_matrix(output_filename: str = None,
         dlclabel_files, camera_pulse_output_matrix, pulse_ix \
         = map_video_to_neural_data(
             syncpulse_files, video_files, neural_files, sleepstate_files, dlclabel_files,
-            fs, n_channels, manual_video_frame_offset, ignore_dlc_mismatch
+            fs, n_channels, neural_bin_files_per_sleepstate_file, manual_video_frame_offset, ignore_dlc_mismatch
         )
 
     np.savez(
@@ -626,7 +704,7 @@ def parse_args():
     )
     parser_save_output_matrix.add_argument(
         '--n_channels', type=int, required=False, default=256,
-        help='Number of channels, default=256.'
+        help='Number of channels in neural data, if unspecified the value will be inferred from the neural file names.'
     )
     parser_save_output_matrix.add_argument(
         '--manual_video_frame_offset', type=int, required=False, default=0,
