@@ -323,7 +323,7 @@ def map_video_to_neural_data(syncpulse_files: (list, tuple, str),
 
     # Resolve n_channels from the first neural filename if n_channels is None
     # Example expected filename: Headstages_64_Channels_int16_2018-12-05_21-42-37.bin
-    n_channels = n_channels if isinstance(n_channels, int) else int(re.findall(r'_(\d*)_Channels')[0])
+    n_channels = n_channels if isinstance(n_channels, int) else int(re.findall(r'_(\d*)_Channels', neural_files[0])[0])
 
     # Validation
     assert len(syncpulse_files) > 0, 'Found no syncpulse_files.'
@@ -613,10 +613,10 @@ def save_output_matrix(output_filename: str = None,
                        neural_bin_files_per_sleepstate_file: int = None,
                        manual_video_frame_offset: int = 0,
                        ignore_dlc_mismatch: bool = False,
-                       recording_config: str = None):
-    if recording_config is not None:
+                       dataset_config: str = None):
+    if dataset_config is not None:
         config_parser = configparser.ConfigParser()
-        config_parser.read(recording_config)
+        config_parser.read(dataset_config)
         config = config_parser['CONFIG']
         fs = int(config.get('fs', fs))
         n_channels = int(config.get('n_channels', n_channels))
