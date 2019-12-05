@@ -26,6 +26,7 @@ try:
     import numpy as np
 except ImportError:
     raise ImportError('Run command : conda install numpy')
+import os
 
 
 # Load Ecube HS data
@@ -471,3 +472,94 @@ def visual_grating_transition(datadir):
                 save_list.append([f, transition, t[0]])
 
     return save_list
+
+
+# Convert ecube_raw_to_preprocessed all channels or just a tetrode
+# To add
+#   1.split by probes
+#   2.Same name as ntksorting
+def ecube_raw_to_preprocessed(rawfile, outdir, number_of_channels,
+                              hstype, nprobes=1,
+                              ts=0, te=25000,
+                              tetrode_channels=None):
+
+    '''
+    Convert ecube_raw_to_preprocessed all channels or just a tetrode
+    ecube_raw_to_preprocessed(rawfile, outdir, number_of_channels,
+                              hstype, nprobes=1,
+                              ts=0, te=25000,
+                              tetrode_channels=None)
+    rawfile - name of rawfile with path, '/home/ckbn/Headstage.bin'
+    outdir - directory to save preprocessed file, '/home/ckbn/output/'
+    number_of_channels - number of channels in rawfile
+    hstype : Headstage type, 'hs64' (see manual for full list)
+    nprobes : Number of probes (default 1)
+    ts : sample start (not seconds but samples),
+           default : 0 ( begining of file)
+    ts : sample end (not seconds but samples),
+           default : -1 ( full data)
+    tetrode_channels : default (None, all channels)
+                     to select tetrodes give channel numbers as a list
+                     Example: tetrode_channels=[4, 5, 6, 7] for second tetrode
+    returns
+    '''
+
+    from neuraltoolkit import ntk_channelmap as ntkc
+    import struct
+
+    gain = np.float64(0.19073486328125)
+    d_bgc = np.array([])
+
+    # Check file exists
+    if not (os.path.isfile(rawfile)):
+        raise FileExistsError('Raw file not found')
+
+    # Check outdir exists
+    print("os.path.isdir(outdir) ", os.path.isdir(outdir))
+    if not (os.path.isdir(outdir)):
+        raise FileExistsError('Output directory does not exists')
+
+    # Get pfilename
+    pbasename = str('P_') + os.path.splitext(os.path.basename(rawfile))[0] \
+        + str('.bin')
+    print("pbasename ", pbasename)
+    pfilename = os.path.join(outdir, pbasename)
+    print("pfilename ", pfilename)
+
+    # Read binary file and order based on channelmap
+    f = open(rawfile, 'rb')
+
+    tr = np.fromfile(f, dtype=np.uint64, count=1)
+    print("Time ", tr)
+    f.seek(8, 0)
+
+    if (ts == 0) and (te == -1):
+        d = np.frombuffer(f.read(-1), dtype=np.int16)
+    else:
+        # check time is not negative
+        if te-ts < 1:
+            raise ValueError('Please recheck ts and te')
+        f.seek(ts*2*number_of_channels, 1)
+        block_size = (te - ts)*2*number_of_channels
+        d = np.frombuffer(f.read(block_size), dtype=np.int16)
+
+    f.close()
+
+    d_bgc = np.reshape(d, [number_of_channels,
+                       np.int64(d.shape[0]/number_of_channels)], order='F')
+
+    d_bgc = ntkc.channel_map_data(d_bgc, number_of_channels,
+                                  hstype, nprobes)
+    d_bgc = np.int16(d_bgc * gain)
+
+    if tetrode_channels:
+        print("tetrode_channels ", tetrode_channels)
+        d_bgc = d_bgc[tetrode_channels, :]
+    else:
+        print("tetrode_channels is empty saving all tetrodes")
+
+    # write preprocessed file
+    with open(pfilename, "wb") as binary_file:
+        # Write data rawdata/digital
+        binary_file.write(struct.pack('h'*d_bgc.size,
+                          *d_bgc.transpose().flatten()))
