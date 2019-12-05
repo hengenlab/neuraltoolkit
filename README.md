@@ -181,6 +181,27 @@ elif ltype == 2:
 d = np.random.randint(data_low, data_high, (data_rows, data_length),
                       dtype=data_type)
 ntk.make_binaryfiles_ecubeformat(t, d, filename, ltype)
+
+
+# convert ecube_raw_to_preprocessed all channels or just a tetrode
+import neuraltoolkit as ntk
+rawfile - name of rawfile with path, '/home/ckbn/Headstage.bin'
+rawfile = '/home/ckbn/Headstages_64.bin'
+outdir - directory to save preprocessed file, '/home/ckbn/output/'
+outdir ='/home/ckbn/out/'
+number_of_channels - number of channels in rawfile
+number_of_channels = 64
+hstype : Headstage type, 'hs64' (see manual for full list)
+hstype = ['hs64']
+nprobes : Number of probes (default 1)
+ts = 0, start from begining of file or can be any sample number
+te = 2500, read 2500 sample points from ts ( te greater than ts)
+if ts=0 and te = -1,  read from begining to end of file
+ntk.ecube_raw_to_preprocessed(rawfile, outdir
+                              number_of_channels,
+                              hstype, nprobes=1,
+                              ts=0, te=25000,
+                              tetrode_channels=[0,1,2,3])
 ```
 
 ## load intan data
