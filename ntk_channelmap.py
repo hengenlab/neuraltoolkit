@@ -30,7 +30,6 @@ def channel_map_data(data, number_of_channels, hstype, nprobes=1):
              'Si_64_KT_T1_K2_chmap' and linear
     nprobes : Number of probes (default 1)
     '''
-
     print(hstype)
     if nprobes == 1:
         channel_map = find_channel_map(hstype[0], number_of_channels)
@@ -144,6 +143,12 @@ def find_channel_map(hstype, number_of_channels):
                               18, 9, 63, 1, 32, 14, 4, 7, 26, 20, 10, 13, 19,
                               22, 16, 8, 28, 25, 12, 17, 23, 29, 27, 21, 11,
                               31, 30, 24]) - 1
+
+    elif hstype == 'EAB50chmap_00':
+        chan_map = np.array([ 2,  4, 20, 35,  3, 19, 22, 32,  5, 15, 26, 31,  6,  9, 14, 38,  7,
+       10, 21, 24,  8, 17, 29, 34, 12, 13, 16, 28, 25, 27, 37, 47, 36, 39,
+       46, 64, 40, 48, 51, 54, 42, 45, 52, 58, 43, 56, 62, 63, 44, 49, 57,
+       60, 53, 55, 59, 61,  1, 11, 18, 23, 30, 33, 41, 50]) - 1
 
     # Linear probe
     elif hstype == 'linear':
