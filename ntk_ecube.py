@@ -287,31 +287,21 @@ def load_digital_binary(name, t_only=0, lcheckdigi64=1):
     tdig, ddig =load_digital_binary(digitalrawfile)
     '''
 
-    f = open(name, 'rb')
-    tr = np.fromfile(f, dtype=np.uint64, count=1)
-    if t_only:
-        f.close()
-        return tr
-    dr = np.fromfile(f, dtype=np.int64,  count=-1)
-    print("unique ", np.unique(dr))
-    f.close()
+    with open(name, 'rb') as f:
+        tr = np.fromfile(f, dtype=np.uint64, count=1)
+        if t_only:
+            return tr
+        dr = np.fromfile(f, dtype=np.int64,  count=-1)
 
     if lcheckdigi64:
-        # Fix for files with values -11 to -9
-        # Digital_64
-        if "Digital_64_Channels_int64_" in name:
-            val_list = np.unique(dr)
-            print("val_list ", val_list)
-            print("len ", len(val_list))
-            assert len(val_list) == 2, 'Error: digital files unkown values'
-
-            # convert -11 to 0 and -9 to 1
-            if -11 in val_list:
-                # print("Changing values")
-                dr[np.where(dr == -11)] = 0
-                dr[np.where(dr == -9)] = 1
-            else:
-                raise ValueError('Please check digital files')
+        # convert and -9 to 1 and other values to 0, occurs in Digital_64 files.
+        unique = np.unique(dr)
+        if -9 in unique:
+            print("File {} contains {} values, converting -9 to 1 and other values to 0: {}"
+                  .format(name, len(unique), unique))
+            dr_corrected = np.zeros_like(dr)
+            dr_corrected[np.where(dr == -9)] = 1
+            dr = dr_corrected
 
     # return tr, dr
     return tr, np.int8(dr)
