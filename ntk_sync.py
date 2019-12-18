@@ -2,6 +2,7 @@
 import glob
 import itertools
 import os
+import re
 import numpy as np
 import neuraltoolkit as ntk
 import argparse
@@ -24,7 +25,7 @@ def map_videoframes_to_syncpulse(syncpulse_files: (str, list), fs: int = 25000):
     video frame numbers to the raw neural data file and offset across all files in a recording. The output
     includes an entry per each sequence of 000's and 111's in the Camera Sync Pulse data.
 
-    Basic usage example:
+    EXAMPLE USAGE:
         output_matrix, pulse_ix, files = ntk.map_videoframes_to_syncpulse('EAB40_Dataset/CameraSyncPulse/*.bin')
 
     Output matrix format:
@@ -261,7 +262,7 @@ def map_video_to_neural_data(syncpulse_files: (list, tuple, str),
     (e) neural_filename_ix    - Index to the raw neural filename returned in neural_files
     (f) neural_offset         - Sample offset in the neural file reference in neural_filename_ix
                                 Note that this is not an index into the file directly, to get the index to the file use:
-                                (offset * n_channels * 2 + 8), int16 values plus the 8-byte eCube timestamp offset
+                                (neural_offset * n_channels * 2 + 8), int16 values plus the 8-byte eCube timestamp offset
     (g) sleep_state           - Sleep state (1=wake, 2=NREM, 3=REM)
     (h) dlc_label[6]          - DLC label which is an array of 6 Deep Lab Cut label values reduced to float32 precision.
 
@@ -321,9 +322,12 @@ def map_video_to_neural_data(syncpulse_files: (list, tuple, str),
     sleepstate_files = _resolve_files(sleepstate_files)
     dlclabel_files = _resolve_files(dlclabel_files)
 
+    # Resolve neural files to a bill-of-materials list containing the ecube timestamps
+    neural_files_bom = _resolve_neural_files_bom(neural_files)
+
     # Resolve n_channels from the first neural filename if n_channels is None
     # Example expected filename: Headstages_64_Channels_int16_2018-12-05_21-42-37.bin
-    n_channels = n_channels if isinstance(n_channels, int) else int(re.findall(r'_(\d*)_Channels', neural_files[0])[0])
+    n_channels = n_channels if isinstance(n_channels, int) else int(re.findall(r'_(\d*)_Channels', neural_files_bom[0][2])[0])
 
     # Validation
     assert len(syncpulse_files) > 0, 'Found no syncpulse_files.'
@@ -351,7 +355,6 @@ def map_video_to_neural_data(syncpulse_files: (list, tuple, str),
     total_frames = np.sum(frame_counts)
 
     # Extract just the eCube timestamp from each raw neural recording file
-    neural_files_bom = _resolve_neural_files_bom(neural_files)
     neural_ecube_timestamps = [int(row[0]) for row in neural_files_bom]
     neural_sample_counts = [(int(row[1]) - 8) // (2 * n_channels) for row in neural_files_bom]
     neural_files = [row[2] for row in neural_files_bom]
@@ -496,7 +499,7 @@ def map_video_to_neural_data(syncpulse_files: (list, tuple, str),
 
 def _resolve_files(files: (list, tuple, str)):
     """ Resolves filename glob or string or list of filename strings to a static list of filenames. """
-    files = [files] if isinstance(files, str) else files
+    files = [files] if isinstance(files, str) else files if files is not None else ()
     files = [_resolve_glob(f) for f in files]
     files = sorted(list(itertools.chain(*files)))
     return files
@@ -627,11 +630,10 @@ def save_output_matrix(output_filename: str = None,
     assert syncpulse_files is not None \
         and video_files is not None \
         and neural_files is not None \
-        and sleepstate_files is not None \
-        and dlclabel_files is not None \
         and fs is not None \
         and manual_video_frame_offset is not None \
-        and ignore_dlc_mismatch is not None, \
+        and ignore_dlc_mismatch is not None \
+        and neural_bin_files_per_sleepstate_file is not None, \
         'None value not valid.'
 
     output_matrix, video_files, neural_files, sleepstate_files, syncpulse_files, \
@@ -651,6 +653,7 @@ def save_output_matrix(output_filename: str = None,
 def parse_args():
     parser_parent = argparse.ArgumentParser(description='Command line utilities for saving sync file data.')
     subparsers = parser_parent.add_subparsers(dest='command')
+    subparsers.required = True
 
     # save_neural_files_bom
     parser_save_neural_file_bom = subparsers.add_parser(
@@ -703,7 +706,7 @@ def parse_args():
         help='Pulse speed in ns, default=25000.'
     )
     parser_save_output_matrix.add_argument(
-        '--n_channels', type=int, required=False, default=256,
+        '--n_channels', type=int, required=False, default=None,
         help='Number of channels in neural data, if unspecified the value will be inferred from the neural file names.'
     )
     parser_save_output_matrix.add_argument(
@@ -712,15 +715,16 @@ def parse_args():
              'started before the neural recording.'
     )
     parser_save_output_matrix.add_argument(
-        '--recording_config', type=str, required=False,
-        help='The config file (example: EAB40.cfg) which specifies the various defaults and quirks of this recording. '
-             'This config file provides fs, n_channels, manual_video_frame_offset, and other notes such as corruptions.'
+        '--neural_bin_files_per_sleepstate_file', type=int, default=12,
+        help='Number of neural binary files that are covered by each sleep state '
+             'numpy file. For example in EAB40 there are 12 neural files per sleep state file, therefore the '
+             'parameter is 12; in SCF05 there is only one sleep state file for ALL neural data files, in this case the '
+             'parameter is -1 for ALL.'
     )
-
-    return parser_parent.parse_args()
+    return vars(parser_parent.parse_args())
 
 
 if __name__ == '__main__':
-    args = vars(parse_args())               # Parse command line arguments
+    args = parse_args()                     # Parse command line arguments
     func = globals()[args.pop('command')]   # Get the function name from args['command']
     func(**args)                            # Call the appropriate function passing the rest of the args
