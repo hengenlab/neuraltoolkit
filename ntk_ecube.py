@@ -289,14 +289,19 @@ def load_raw_gain_chmap_1probe(rawfile, number_of_channels,
     '''
 
     from neuraltoolkit import ntk_channelmap as ntkc
+    import time
 
+    tic = time.time()
     gain = np.float64(0.19073486328125)
-    d_bgc = np.array([])
+    # d_bgc = np.array([])
 
     if ((number_of_channels/probechans) != nprobes):
         raise ValueError("number of channels/probechans != nprobes")
 
     f = open(rawfile, 'rb')
+    toc = time.time()
+    print('ntk opening file took {} seconds'.format(toc - tic))
+    tic = time.time()
 
     if lraw:
         tr = np.fromfile(f, dtype=np.uint64, count=1)
@@ -305,28 +310,44 @@ def load_raw_gain_chmap_1probe(rawfile, number_of_channels,
         f.seek(0, 0)
 
     if (ts == 0) and (te == -1):
-        d = np.frombuffer(f.read(-1), dtype=np.int16)
+        d_bgc = np.frombuffer(f.read(-1), dtype=np.int16)
     else:
         # check time is not negative
         if te-ts < 1:
             raise ValueError('Please recheck ts and te')
         f.seek(ts*2*number_of_channels, 1)
         block_size = (te - ts)*2*number_of_channels
-        d = np.frombuffer(f.read(block_size), dtype=np.int16)
+        d_bgc = np.frombuffer(f.read(block_size), dtype=np.int16)
 
     f.close()
+    toc = time.time()
+    print('ntk reading file took {} seconds'.format(toc - tic))
+    tic = time.time()
 
-    d_bgc = np.reshape(d, [number_of_channels,
-                       np.int64(d.shape[0]/number_of_channels)], order='F')
+    d_bgc = np.reshape(d_bgc, [number_of_channels,
+                       np.int64(d_bgc.shape[0]/number_of_channels)], order='F')
+    toc = time.time()
+    print('ntk reshaping file took {} seconds'.format(toc - tic))
 
     if lraw:
-        d_bgc = ntkc.channel_map_data(d_bgc, number_of_channels,
-                                      hstype, nprobes)
-
+        tic = time.time()
         d_bgc = d_bgc[((probenum)*probechans):
                       ((probenum+1)*probechans), :]
         print("d_bgc shape ", d_bgc.shape)
+        toc = time.time()
+        print('ntk probe selecting file took {} seconds'.format(toc - tic))
+        tic = time.time()
+        # d_bgc = ntkc.channel_map_data(d_bgc, number_of_channels,
+        #                               hstype, nprobes)
+        d_bgc = ntkc.channel_map_data(d_bgc, probechans,
+                                      list([hstype[probenum]]), 1)
+        toc = time.time()
+        print('ntk channel mapping file took {} seconds'.format(toc - tic))
+
+        tic = time.time()
         d_bgc = np.int16(d_bgc * gain)
+        toc = time.time()
+        print('ntk adding gain to file took {} seconds'.format(toc - tic))
 
     if lraw:
         return tr, d_bgc
