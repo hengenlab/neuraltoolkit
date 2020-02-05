@@ -64,6 +64,7 @@ nprobes = 4
 # number_of_channels here is total number of channels in all probes (64 * nprobes = 256)
 t, dgc = ntk.load_raw_binary_gain_chmap(rawfile, number_of_channels, hstype, nprobes)
 
+
 # bandpass filter
 bdgc = ntk.butter_bandpass(dgc, 500, 7500, 25000, 3)
 
@@ -146,6 +147,23 @@ if ts =0 and te = -1,  read from begining to end of file
 t, bdgc = ntk.load_raw_binary_gain_chmap_range(rawfile, number_of_channels,
                                            hstype, nprobes=1,
                                            lraw=1, ts=0, te=25000)
+
+# Load only one probe from raw file
+rawfile = '/home/kbn/Headstages_512_Channels_int16_2019-06-21_03-55-09.bin'
+number_of_channels = 512
+hstype = ['EAB50chmap_00', 'EAB50chmap_00', 'EAB50chmap_00',
+          'EAB50chmap_00', 'EAB50chmap_00', 'EAB50chmap_00',
+          'EAB50chmap_00', 'EAB50chmap_00']   # Channel map
+ts = 0, start from begining of file or can be any sample number
+te = 2500, read 2500 sample points from ts ( te greater than ts)
+if ts =0 and te = -1,  read from begining to end of file
+nprobes = 8
+probenum = 0  # which probe to return (starts from zero)
+probechans = 64  #  number of channels per probe (symmetric)
+t,dgc = ntk.load_raw_gain_chmap_1probe(rawfile, number_of_channels,
+                                       hstype, nprobes=nprobes)
+                                       lraw=1, ts=0, te=-1,
+                                       probenum=0, probechans=64):
 
 # Create channel mapping file for Open Ephys
 import neuraltoolkit as ntk
