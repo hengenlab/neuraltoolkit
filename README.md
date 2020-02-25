@@ -1,10 +1,25 @@
 # Neuraltoolkit
+---
+A powerful and fast set of tools for loading data, filtering, processing,
+working with data formats, and basic utilities for electrophysiology and
+behavioral data.
 
+---
 ## Installation
 
 ### Download neuraltoolkit
+```
 git clone https://github.com/hengenlab/neuraltoolkit.git 
-Enter your username and password
+```
+
+### Using pip
+```
+cd locationofneuraltoolkit/neuraltoolkit/
+pip install .
+```
+
+---
+### Installation by adding to path
 
 #### Windows
 My Computer > Properties > Advanced System Settings > Environment Variables >  
@@ -29,7 +44,16 @@ to add location where neuraltoolkit is located add the line below
 
 export PYTHONPATH=/location_of_neuraltoolkit:$PYTHONPATH
 
+---
 
+### Test import
+```
+Open powershell/terminal
+    ipython
+    import neuraltoolkit as ntk
+```
+
+---
 
 
 ## load ecube data
