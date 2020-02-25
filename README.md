@@ -561,3 +561,14 @@ output_matrix, video_files, neural_files, sleepstate_files, syncpulse_files, dlc
 # map_videoframes_to_syncpulse example usage:
 output_matrix, pulse_ix, files = ntk.map_videoframes_to_syncpulse('EAB40_Dataset/CameraSyncPulse/*.bin')
 ```
+
+## FAQ
+```
+1. ImportError: bad magic number in 'neuraltoolkit': b'\x03\xf3\r\n'
+Please go to neuraltoolkit folder and remove *.pyc files
+```
+
+## Issues
+
+```Please slack Kiran ```
+---
