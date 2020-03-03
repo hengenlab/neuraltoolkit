@@ -378,7 +378,7 @@ def map_video_to_neural_data(syncpulse_files: (list, tuple, str),
     if np.any(np.abs(validate_neural_ecube_timestamps) > ecube_interval * 3):
         for i in np.where(validate_neural_ecube_timestamps > ecube_interval * 3)[0]:
             print(
-                'WARNING: eCube timestamp deviation of {:.2f} seconds for file {}, the eCube timestamp does not match '
+                'WARNING: eCube timestamp deviation of {:.4f} seconds for file {}, the eCube timestamp does not match '
                 'expectation based on the eCube timestamp of the previous file, eCube time of this file is {:d}, '
                 'and the previous eCube timestamp is {:d}.'
                 .format(validate_neural_ecube_timestamps[i] / 1000000000,
