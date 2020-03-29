@@ -1,6 +1,9 @@
+ipython
 numpy
 matplotlib
-pandas
-scipy
-opencv-python
 seaborn
+pandas
+opencv-python
+scipy
+h5py
+tables

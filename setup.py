@@ -23,7 +23,7 @@ setup(
    download_url="https://github.com/hengenlab/neuraltoolkit",
    packages=['neuraltoolkit'],
    install_requires=['ipython', 'numpy', 'matplotlib', 'seaborn', 'pandas',
-                     'opencv-python', 'scipy', 'h5py'],
+                     'opencv-python', 'scipy', 'h5py', 'tables'],
    classifiers=[
         'Development Status :: 1 - Pre-Alpha',
         'Natural Language :: English',
