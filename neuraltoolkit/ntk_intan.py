@@ -52,9 +52,9 @@ def load_intan_raw_gain_chanmap(
 
     if ldin == 1:
         din = np.array(a['board_dig_in_data'])
-        return tr, dgc, din
+        return np.int64(tr), np.int16(dgc), din
     else:
-        return tr, dgc
+        return np.int64(tr), np.int16(dgc)
 
 
 # Load Intan aux data from ntksorting
