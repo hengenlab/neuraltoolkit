@@ -201,7 +201,8 @@ def map_video_to_neural_data(syncpulse_files: (list, tuple, str),
                              neural_bin_files_per_sleepstate_file: int = 12,
                              manual_video_frame_offset: int = 0,
                              ignore_dlc_label_mismatch: bool = False,
-                             initial_neural_file_for_sleepstate_mapping: int = 0):
+                             initial_neural_file_for_sleepstate_mapping: int = 0,
+                             ignore_ecube_deviation_sec: float = 0.00012):
     """
     Maps video to neural data and optionally maps sleeps state and DLC labels.
 
@@ -317,6 +318,13 @@ def map_video_to_neural_data(syncpulse_files: (list, tuple, str),
            present in the dataset, set this parameter to the number of neural files to skip before mapping to the
            sleep state data. For example, EAB50 maps sleep state to location 228 (0 indexed), which is file:
            Headstages_512_Channels_int16_2019-06-21_12-05-11.bin
+    :param ignore_ecube_deviation_sec: A deviation in ecube times indicates that the number of samples found
+           in the .bin file differs from the ecube timestamp found in the beginning of the file compared to the
+           timestamp of the next file. Ideally the number of samples will exactly match the ecube times reported
+           across files. Small deviations of the default 0.00012 sec deviation equate to a maximum of 3 samples
+           being dropped. Any deviation above this value will report a detail error and fail the process.
+           Increase this value to ignore larger deviations, being aware that the deviation may
+           represent a problem in the data and in mapping the neural data to video, labels, etc.
     :return: output_matrix, video_files, neural_files, sleepstate_files, syncpulse_files,
              camera_pulse_output_matrix, pulse_ix
     """
@@ -375,16 +383,18 @@ def map_video_to_neural_data(syncpulse_files: (list, tuple, str),
         (neural_sample_counts[:-1] * ecube_interval) -
         (neural_ecube_timestamps[1:] - neural_ecube_timestamps[:-1]).astype(np.int64)
     )
-    if np.any(np.abs(validate_neural_ecube_timestamps) > ecube_interval * 3):
-        for i in np.where(validate_neural_ecube_timestamps > ecube_interval * 3)[0]:
+    acceptable_ecube_error = 1e9 * ignore_ecube_deviation_sec
+    if np.any(np.abs(validate_neural_ecube_timestamps) > acceptable_ecube_error):
+        for i in np.where(validate_neural_ecube_timestamps > acceptable_ecube_error)[0]:
             print(
                 'WARNING: eCube timestamp deviation of {:.4f} seconds for file {}, the eCube timestamp does not match '
                 'expectation based on the eCube timestamp of the previous file, eCube time of this file is {:d}, '
-                'and the previous eCube timestamp is {:d}.'
+                'and the previous eCube timestamp is {:d}. The expected eCube time for this file is {}.'
                 .format(validate_neural_ecube_timestamps[i] / 1000000000,
                         neural_files[i + 1],
                         neural_ecube_timestamps[1:][i],
-                        neural_ecube_timestamps[i])
+                        neural_ecube_timestamps[i],
+                        neural_sample_counts[:-1][i] * ecube_interval + neural_ecube_timestamps[i])
             )
         raise AssertionError('Invalid eCube timestamp detected, this will cause errors in indexing, '
                              'see previous warning messages for details.')
