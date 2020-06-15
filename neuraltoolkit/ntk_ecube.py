@@ -668,3 +668,50 @@ def find_samples_per_chan(rawfile, number_of_channels,
             (os.path.getsize(rawfile))/2/number_of_channels
 
     return np.int64(number_of_samples_per_chan)
+
+
+def samples_between_two_binfiles(binfile1, binfile2, number_of_channels,
+                                 hstype, nprobes=1, lb1=1, lb2=1,
+                                 fs=25000):
+
+    '''
+    Calculates number of samples between two ecube raw files
+    binfile1 - name of first file
+    binfile2 - name of second file
+    number_of_channels - number of channels
+    hstype : Headstage type, 'hs64'
+    nprobes : Number of probes (default 1)
+    lb1 : default 1, binfile1 is rawfile, 0 if digital file
+    lb2 : default 1, binfile2 is rawfile, 0 if digital file
+    returns samples_between
+
+    '''
+
+    # check file
+    if not os.path.exists(binfile1):
+        raise FileExistsError('binfile {} not found'.format(binfile1))
+    if not os.path.exists(binfile2):
+        raise FileExistsError('binfile {} not found'.format(binfile2))
+
+    # fact = np.int(fs/1000)
+
+    if lb1:
+        t1 = load_raw_binary_gain_chmap(binfile1, number_of_channels,
+                                        hstype, nprobes=nprobes,
+                                        t_only=1)
+    else:
+        t1 = load_digital_binary(binfile1, t_only=1, lcheckdigi64=1)
+
+    if lb2:
+        t2 = load_raw_binary_gain_chmap(binfile2, number_of_channels,
+                                        hstype, nprobes=nprobes,
+                                        t_only=1)
+    else:
+        t2 = load_digital_binary(binfile2, t_only=1, lcheckdigi64=1)
+    # samples_between = np.int64((np.int64(t2-t1)/1e6)*fact)
+    # print("t1 ", t1, " t2 ", t2)
+    # samples_between = np.int64((np.int64(t2-t1)/1e6)*25)
+    samples_between = np.float64((np.float64(t2-t1)/1e6)*25)
+    # print("samples_between binfiles {} and {} is {}"
+    #       .format(binfile1, binfile2, samples_between))
+    return samples_between
