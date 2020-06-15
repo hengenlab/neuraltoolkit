@@ -189,6 +189,13 @@ t,dgc = ntk.load_raw_gain_chmap_1probe(rawfile, number_of_channels,
                                        lraw=1, ts=0, te=-1,
                                        probenum=0, probechans=64):
 
+# Find number of samples per channel in a ecube file
+rawfile = '/home/kbn/Headstages_512_Channels_int16_2019-06-28_18-13-24.bin'
+number_of_channels = 512
+lraw is 1 for raw file and for prepocessed file lraw is 0
+number_of_samples_per_chan = ntk.find_samples_per_chan(rawfile, 512, lraw=1)
+
+
 # Create channel mapping file for Open Ephys
 import neuraltoolkit as ntk
 ntk.create_chanmap_file_for_oe()

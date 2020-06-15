@@ -642,3 +642,29 @@ def ecube_raw_to_preprocessed(rawfile, outdir, number_of_channels,
         # Write data rawdata/digital
         binary_file.write(struct.pack('h'*d_bgc.size,
                           *d_bgc.transpose().flatten()))
+
+
+def find_samples_per_chan(rawfile, number_of_channels,
+                          lraw=1):
+
+    '''
+    Find number of sample points in each channel
+    number_of_samples(name, number_of_channels, lraw)
+    rawfile - name of file
+    number_of_channels - number of channels
+    lraw - whether raw file or not  (default : raw lraw=1)
+    returns number_of_samples_per_chan
+    '''
+
+    # check file
+    if not os.path.exists(rawfile):
+        raise FileExistsError('Rawfile {} not found'.format(rawfile))
+
+    if lraw:
+        number_of_samples_per_chan = \
+            (os.path.getsize(rawfile)-8)/2/number_of_channels
+    else:
+        number_of_samples_per_chan = \
+            (os.path.getsize(rawfile))/2/number_of_channels
+
+    return np.int64(number_of_samples_per_chan)
