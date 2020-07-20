@@ -35,7 +35,7 @@ def extract_email_fromtxtfile(filename):
         for line in emailfile:
             # remove '\n' at end of line
             sline = line.rstrip()
-            elist.append(re.findall(r'\S+@\S+', sline))
+            elist.extend(re.findall(r'\S+@\S+', sline))
     email_list = list(filter(None, elist))
     return email_list
 
