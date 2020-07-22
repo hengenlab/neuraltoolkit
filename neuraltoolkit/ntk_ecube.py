@@ -293,10 +293,20 @@ def load_raw_gain_chmap_1probe(rawfile, number_of_channels,
 
     # tic = time.time()
     gain = np.float64(0.19073486328125)
+    probename = ["first", "second", "third", "fourth", "fifth",
+                 "sixth", "seventh", "eight", "ninth", "tenth"]
     # d_bgc = np.array([])
 
     if ((number_of_channels/probechans) != nprobes):
         raise ValueError("number of channels/probechans != nprobes")
+
+    # check probe number is in range 0 9
+    # max probe in a recording is limitted to 10
+    if ((probenum < 0) or (probenum > 9)):
+        raise ValueError("Please check probenum {}".format(probenum))
+
+    # Print probe number of probenum is 0 to avoid confusion
+    print("Loading data from {} probe\n".format(probename[probenum]))
 
     f = open(rawfile, 'rb')
     # toc = time.time()
