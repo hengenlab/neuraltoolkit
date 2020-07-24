@@ -5,7 +5,7 @@ with open("README.md", 'r') as f:
 
 setup(
    name='neuraltoolkit',
-   version='0.2.0',
+   version='0.3.0',
    description='A powerful and fast set of tools for loading data, filtering,\
                 processing, working with data formats, and basic utilities for\
                 electrophysiology and behavioral data.',
