@@ -268,7 +268,7 @@ def load_raw_binary_gain_chmap_range(rawfile, number_of_channels,
 
 def load_raw_gain_chmap_1probe(rawfile, number_of_channels,
                                hstype, nprobes=1,
-                               lraw=1, ts=0, te=25000,
+                               lraw=1, ts=0, te=-1,
                                probenum=0, probechans=64):
 
     '''
