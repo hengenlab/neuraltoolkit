@@ -504,7 +504,7 @@ def make_binaryfiles_ecubeformat(t, d, filename, ltype=2):
     # Open file to write
     with open(filename, "wb") as binary_file:
         # Write time
-        binary_file.write(struct.pack('L', t))
+        binary_file.write(struct.pack('Q', t))
 
         # Write data rawdata/digital
         if ltype == 1:
