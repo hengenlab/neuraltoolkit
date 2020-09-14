@@ -748,7 +748,7 @@ def delete_probe(name, number_of_channels, hstype, nprobes=1,
     # gain = 1
 
     # Block it until fully debugged
-    raise NotImplementedError('Error: Not implementated, not debugged')
+    # raise NotImplementedError('Error: Not implementated, not debugged')
 
     # check file exists
     if not (os.path.exists(name) and os.path.isfile(name)):
@@ -789,7 +789,7 @@ def delete_probe(name, number_of_channels, hstype, nprobes=1,
     probename = ["first", "second", "third", "fourth", "fifth",
                  "sixth", "seventh", "eight", "ninth", "tenth"]
     # Please make changes in labnotes to reflect deletion of probe
-    print("Please make changes in labnotes to reflect deletion of probe {}"
+    print("Please make changes in labnotes to reflect deletion of {} probe"
           .format(probename[probenum]))
     print("Deleting data from {} probe\n".format(probename[probenum]))
 
