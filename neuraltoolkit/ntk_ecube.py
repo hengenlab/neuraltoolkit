@@ -725,3 +725,86 @@ def samples_between_two_binfiles(binfile1, binfile2, number_of_channels,
     # print("samples_between binfiles {} and {} is {}"
     #       .format(binfile1, binfile2, samples_between))
     return samples_between
+
+
+def delete_probe(name, number_of_channels, hstype, nprobes=1,
+                 probenum=0, probechans=64):
+
+    '''
+    delete a probes data, replace rawfile
+    delete_probe(name, number_of_channels, hstype, nprobes=1,
+                 probenum=0, probechans=64)
+
+    name - name of file
+    number_of_channels - number of channels
+    hstype : Headstage type, 'hs64'
+    nprobes : Number of probes (default 1)
+    probenum : which probe to delete (starts from zero)
+    probechans : number of channels per probe (symmetric)
+
+    '''
+    # remove gain after debug
+    # gain = np.float64(0.19073486328125)
+    # gain = 1
+
+    # Block it until fully debugged
+    raise NotImplementedError('Error: Not implementated, not debugged')
+
+    # check file exists
+    if not (os.path.exists(name) and os.path.isfile(name)):
+        raise FileNotFoundError("File {} does not exists".format(name))
+
+    # check number_of_channels
+    # Ecube recording range is 64-640 currently per probe
+    if ((number_of_channels < int(probechans - 1)) |
+       (number_of_channels > int(probechans * 10))):
+        raise ValueError("number of channels/probechans != nprobes")
+
+    # check hstype
+    if isinstance(hstype, str):
+        hstype = [hstype]
+
+    assert len(hstype) == nprobes, \
+        'length of hstype not same as nprobes'
+
+    # check nprobes
+    if ((nprobes < 1) or (nprobes > 10)):
+        raise ValueError("Please check nprobes {}".format(nprobes))
+
+    # check probe number is in range 0 9
+    # max probe in a recording is limitted to 10
+    if ((probenum < 0) or (probenum > 9)):
+        raise ValueError("Please check probenum {}".format(probenum))
+
+    # check probechans, currently probechans are only 64
+    if not (probechans == 64):
+        raise ValueError("Check probechans {}".format(probechans))
+
+    # check number_of_channels factor of nprobes
+    if ((number_of_channels/probechans) != nprobes):
+        raise ValueError("number of channels/probechans != nprobes")
+
+    # To be clear write probe number in words too
+    # Print probe number of probenum is 0 to avoid confusion
+    probename = ["first", "second", "third", "fourth", "fifth",
+                 "sixth", "seventh", "eight", "ninth", "tenth"]
+    print("Deleting data from {} probe\n".format(probename[probenum]))
+
+    # open file
+    f = open(name, 'rb')
+    tr = np.fromfile(f, dtype=np.uint64, count=1)
+    dr = np.fromfile(f, dtype=np.int16,  count=-1)
+    f.close()
+
+    length = np.int64(np.size(dr)/number_of_channels)
+    drr = np.reshape(dr, [number_of_channels, length], order='F')
+    drr = np.int16(drr)
+    drr = np.delete(drr, np.arange(((probenum)*probechans),
+                                   ((probenum+1)*probechans), 1), axis=0)
+    file_string = name.split('_')
+    file_string[1] = str(int(number_of_channels - probechans))
+    filename = '_'.join(file_string)
+    # print("type tr[0] ", type(tr[0]))
+    # print("dtype tr[0] ", tr[0].dtype)
+    make_binaryfiles_ecubeformat(tr[0], drr,
+                                 filename, ltype=1)
