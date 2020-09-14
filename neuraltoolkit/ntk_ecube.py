@@ -788,6 +788,9 @@ def delete_probe(name, number_of_channels, hstype, nprobes=1,
     # Print probe number of probenum is 0 to avoid confusion
     probename = ["first", "second", "third", "fourth", "fifth",
                  "sixth", "seventh", "eight", "ninth", "tenth"]
+    # Please make changes in labnotes to reflect deletion of probe
+    print("Please make changes in labnotes to reflect deletion of probe {}"
+          .format(probename[probenum]))
     print("Deleting data from {} probe\n".format(probename[probenum]))
 
     # open file
