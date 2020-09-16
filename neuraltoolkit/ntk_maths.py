@@ -39,7 +39,7 @@ def data_intpl(tvec, dvec, nfact, intpl_kind='cubic'):
     '''
 
     npoints = tvec.shape[0] * nfact
-    print("npoints is", npoints)
+    # print("npoints is", npoints)
     tvect_intpl = np.linspace(tvec[0], tvec[-1], npoints)
 
     data_intpl = interpolate.interp1d(tvec, dvec, kind=intpl_kind)

@@ -1,0 +1,9 @@
+ipython
+numpy
+matplotlib
+seaborn
+pandas
+opencv-python
+scipy
+h5py
+tables

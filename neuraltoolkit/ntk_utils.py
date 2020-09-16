@@ -35,7 +35,7 @@ def extract_email_fromtxtfile(filename):
         for line in emailfile:
             # remove '\n' at end of line
             sline = line.rstrip()
-            elist.append(re.findall(r'\S+@\S+', sline))
+            elist.extend(re.findall(r'\S+@\S+', sline))
     email_list = list(filter(None, elist))
     return email_list
 
@@ -100,3 +100,52 @@ def file_to_dict(filename, k_dtype=str, v_dtype=int):
             (key, val) = line.split()
             dict_new[k_dtype(key)] = v_dtype(val)
     return dict_new
+
+
+def send_sms(from_email, from_pass, to_email_list, msg):
+
+    '''
+    To send sms using email
+    send_sms(from_email, from_pass, to_email_list, msg)
+
+    from_email: Email from which emails for sms are send
+    from_pass: Passwork of email from which emails for sms are send
+    to_email_list: list of mobile numbers with appropriate email extension
+                   for example, '1234567890@@mms.att.net'
+    msg: message to send
+
+    ntk.send_sms('username@gmail.com', 'password',
+                 ['mobilenumber@mms.att.net'], 'ecubeissues')
+    '''
+
+    import smtplib
+
+    # checks
+    if not isinstance(from_email, str):
+        raise ValueError('Argument {} not a string'.format(from_email))
+    if not isinstance(from_pass, str):
+        raise ValueError('Argument {} not a string'.format(from_pass))
+    if not isinstance(msg, str):
+        raise ValueError('Argument {} not a string'.format(msg))
+
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+    server.starttls()
+
+    # Next, log in to the server
+    # server.login("youremailusername", "password")
+    server.login(from_email.split('@')[0], from_pass)
+
+    # Send the mail
+    if isinstance(to_email_list, str):
+        server.sendmail(from_email, to_email_list, msg)
+    elif isinstance(to_email_list, list):
+        for to_email in to_email_list:
+            if isinstance(to_email, str):
+                server.sendmail(from_email, to_email, msg)
+            else:
+                raise ValueError('Argument {} is not a string or list'
+                                 .format(to_email_list))
+
+    else:
+        raise ValueError('Argument {} is not a string or list'
+                         .format(to_email_list))

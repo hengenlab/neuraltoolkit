@@ -54,6 +54,22 @@ def butter_lowpass(data, lowpass, fs, order=3):
     return y
 
 
+def cheby1_lowpass(data, lowpass, fs, order=3, ripple=0.8):
+
+    '''
+    Chebyshev type I lowpass filter
+    cheby1_lowpass(data, lowpass, fs, order=3, ripple=0.8)
+    result = cheby1_lowpass(data, 500,  25000, order=3, ripple=0.8)
+    '''
+
+    from scipy.signal import cheby1, filtfilt
+    nyq = 0.5 * fs
+    low_pass = lowpass / nyq
+    b, a = cheby1(order, ripple, low_pass, 'low')
+    y = filtfilt(b, a, data)
+    return y
+
+
 def butter_highpass(data, highpass, fs, order=3):
 
     '''

@@ -1,10 +1,25 @@
 # Neuraltoolkit
+---
+A powerful and fast set of tools for loading data, filtering, processing,
+working with data formats, and basic utilities for electrophysiology and
+behavioral data.
 
+---
 ## Installation
 
 ### Download neuraltoolkit
+```
 git clone https://github.com/hengenlab/neuraltoolkit.git 
-Enter your username and password
+```
+
+### Using pip
+```
+cd locationofneuraltoolkit/neuraltoolkit/
+pip install .
+```
+
+---
+### Installation by adding to path
 
 #### Windows
 My Computer > Properties > Advanced System Settings > Environment Variables >  
@@ -29,12 +44,21 @@ to add location where neuraltoolkit is located add the line below
 
 export PYTHONPATH=/location_of_neuraltoolkit:$PYTHONPATH
 
+---
 
+### Test import
+```
+Open powershell/terminal
+    ipython
+    import neuraltoolkit as ntk
+```
+
+---
 
 
 ## load ecube data
 #### List of functions
- 
+
 * load_raw_binary                 : To load plain raw data
 * load_raw_binary_gain            : To load raw data with gain
 * load_raw_binary_gain_chmap      : To load raw data with gain and channel mapping
@@ -63,6 +87,7 @@ hstype = ['Si_64_KS_chmap', 'Si_64_KT_T1_K2_chmap', 'Si_64_KT_T1_K2_chmap', 'Si_
 nprobes = 4
 # number_of_channels here is total number of channels in all probes (64 * nprobes = 256)
 t, dgc = ntk.load_raw_binary_gain_chmap(rawfile, number_of_channels, hstype, nprobes)
+
 
 # bandpass filter
 bdgc = ntk.butter_bandpass(dgc, 500, 7500, 25000, 3)
@@ -147,6 +172,39 @@ t, bdgc = ntk.load_raw_binary_gain_chmap_range(rawfile, number_of_channels,
                                            hstype, nprobes=1,
                                            lraw=1, ts=0, te=25000)
 
+# Load only one probe from raw file
+rawfile = '/home/kbn/Headstages_512_Channels_int16_2019-06-21_03-55-09.bin'
+number_of_channels = 512
+hstype = ['EAB50chmap_00', 'EAB50chmap_00', 'EAB50chmap_00',
+          'EAB50chmap_00', 'EAB50chmap_00', 'EAB50chmap_00',
+          'EAB50chmap_00', 'EAB50chmap_00']   # Channel map
+ts = 0, start from begining of file or can be any sample number
+te = 2500, read 2500 sample points from ts ( te greater than ts)
+if ts =0 and te = -1,  read from begining to end of file
+nprobes = 8
+probenum = 0  # which probe to return (starts from zero)
+probechans = 64  #  number of channels per probe (symmetric)
+t,dgc = ntk.load_raw_gain_chmap_1probe(rawfile, number_of_channels,
+                                       hstype, nprobes=nprobes)
+                                       lraw=1, ts=0, te=-1,
+                                       probenum=0, probechans=64):
+
+# Find number of samples per channel in a ecube file
+rawfile = '/home/kbn/Headstages_512_Channels_int16_2019-06-28_18-13-24.bin'
+number_of_channels = 512
+lraw is 1 for raw file and for prepocessed file lraw is 0
+number_of_samples_per_chan = ntk.find_samples_per_chan(rawfile, 512, lraw=1)
+
+# Find number of samples between two ecube raw or digital files
+Assumes there is no corrupt/failed recording files.
+binfile1 = '/home/kbn/Headstages_512_Channels_int16_2019-06-28_18-13-24.bin'
+binfile2 = '/home/kbn/Digital_1_Channels_int64_2019-06-30_13-11-07.bin'
+number_of_channels = 512  # in the raw file
+lb1 : default 1, binfile1 is rawfile, 0 if digital file
+lb2 : default 1, binfile2 is rawfile, 0 if digital file
+samples_between = ntk.samples_between_two_binfiles(binfile1, binfile2, number_of_channels,
+                                                   hstype, nprobes=8, lb1=1, lb2=0)
+
 # Create channel mapping file for Open Ephys
 import neuraltoolkit as ntk
 ntk.create_chanmap_file_for_oe()
@@ -181,6 +239,27 @@ elif ltype == 2:
 d = np.random.randint(data_low, data_high, (data_rows, data_length),
                       dtype=data_type)
 ntk.make_binaryfiles_ecubeformat(t, d, filename, ltype)
+
+
+# convert ecube_raw_to_preprocessed all channels or just a tetrode
+import neuraltoolkit as ntk
+rawfile - name of rawfile with path, '/home/ckbn/Headstage.bin'
+rawfile = '/home/ckbn/Headstages_64.bin'
+outdir - directory to save preprocessed file, '/home/ckbn/output/'
+outdir ='/home/ckbn/out/'
+number_of_channels - number of channels in rawfile
+number_of_channels = 64
+hstype : Headstage type, 'hs64' (see manual for full list)
+hstype = ['hs64']
+nprobes : Number of probes (default 1)
+ts = 0, start from begining of file or can be any sample number
+te = 2500, read 2500 sample points from ts ( te greater than ts)
+if ts=0 and te = -1,  read from begining to end of file
+ntk.ecube_raw_to_preprocessed(rawfile, outdir
+                              number_of_channels,
+                              hstype, nprobes=1,
+                              ts=0, te=25000,
+                              tetrode_channels=[0,1,2,3])
 ```
 
 ## load intan data
@@ -458,8 +537,71 @@ plt.show(block=False)
         45, 61, 46, 49, 36, 33, 52, 55, 15, 5, 58, 60,  
         18, 9, 63, 1, 32, 14, 4, 7, 26, 20, 10, 13, 19, 
         22, 16, 8, 28, 25, 12, 17, 23, 29, 27, 21, 11, 31, 30, 24]
+
+###### 'EAB50chmap_00'
+        [2,  4, 20, 35, 3, 19, 22, 32, 5, 15, 26, 31,
+         6,  9, 14, 38, 7, 10, 21, 24,  8, 17, 29, 34,
+         12, 13, 16, 28, 25, 27, 37, 47, 36, 39, 46,
+         64, 40, 48, 51, 54, 42, 45, 52, 58, 43, 56,
+         62, 63, 44, 49, 57, 60, 53, 55, 59, 61, 1,
+         11, 18, 23, 30, 33, 41, 50]
+
+###### 'APT_PCB'
+        [2, 5, 1, 22, 9, 14, 18, 47, 23, 26, 31, 3, 35, 4,
+         7, 16, 34, 21, 12, 10, 29, 17, 8, 13, 11, 6, 38,
+         19, 24, 20, 15, 25, 37, 32, 28, 27, 52, 46, 41,
+         30, 61, 57, 54, 33, 55, 43, 63, 36, 58, 51, 60,
+         42, 40, 50, 64, 48, 59, 49, 44, 45, 62, 56, 53,
+         39]
+
        
 ###### 'linear'
         [1:number_of_channels]
  
+## sync
+Functions to sync data across: raw neural, sync pulse, video files and frames, sleep state labels, and deep lab cut labels.
 
+#### List of functions
+* `map_video_to_neural_data` 
+Maps video to neural data and optionally maps sleeps state and DLC labels. 
+See the function documentation in `ntk_sync.py` for detailed documentation on the output format.
+* `map_videoframes_to_syncpulse`
+Reads a set of Camera Sync Pulse data files and aggregates the sequences of 000's and 111's into a map of video frame numbers to the raw neural data file and offset across all files in a recording. The output includes an entry per each sequence of 000's and 111's in the Camera Sync Pulse data.
+See the function documentation in `ntk_sync.py` for detailed documentation on the output format.
+
+#### Command line functionality
+* `python ntk_sync.py --help` 
+  Get command line help output.
+* `python ntk_sync.py save_neural_files_bom [--output_filename FILENAME.csv] [[--neural_files NEURAL_FILENAMES_GLOB] --neural_files ...]` 
+  Produces a CSV containing the eCube timestamps of a set of neural files which can be used instead of passing the neural files to the functions below (useful when the neural files are large and possibly difficult to access on demand).
+* `python ntk_sync.py save_output_matrix --syncpulse_files FILENAME_GLOBS --video_files FILENAME_GLOBS --neural_files FILENAME_GLOBS [--sleepstate_files FILENAME_GLOBS] [--dlclabel_files FILENAME_GLOBS] [--output_filename map_video_to_neural_data.npz] [--fs 25000] [--n_channels 256] [--manual_video_frame_offset 0] [--recording_config EAB40.cfg]`
+Calls save_output_matrix(...) which saves the results of map_video_to_neural_data(...) to a NPZ file.
+
+```
+import neuraltoolkit as ntk
+
+# map_video_to_neural_data example usage:
+output_matrix, video_files, neural_files, sleepstate_files, syncpulse_files, dlclabel_files = \
+    ntk.map_video_to_neural_data(
+        syncpulse_files='EAB40Data/EAB40_Camera_Sync_Pulse/*.bin'
+        video_files=['EAB40Data/EAB40_Video/3_29-4_02/*.mp4',
+                     'EAB40Data/EAB40_Video/4_02-4_05/*.mp4'],
+        neural_files='EAB40Data/EAB40_Neural_Data/3_29-4_02/*.bin',
+        dlclabel_files='EAB40Data/EAB40_DLC_Labels/*.h5'
+        sleepstate_files='EAB40Data/EAB40_Sleep_States/*.npy'
+    )
+
+# map_videoframes_to_syncpulse example usage:
+output_matrix, pulse_ix, files = ntk.map_videoframes_to_syncpulse('EAB40_Dataset/CameraSyncPulse/*.bin')
+```
+
+## FAQ
+```
+1. ImportError: bad magic number in 'neuraltoolkit': b'\x03\xf3\r\n'
+Please go to neuraltoolkit folder and remove *.pyc files
+```
+
+## Issues
+
+```Please slack Kiran ```
+---
