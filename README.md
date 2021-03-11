@@ -19,7 +19,7 @@ pip install .
 ```
 
 ---
-### Installation by adding to path
+### Installation by adding to path (not recommended)
 
 #### Windows
 My Computer > Properties > Advanced System Settings > Environment Variables >  
