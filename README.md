@@ -185,7 +185,7 @@ nprobes = 8
 probenum = 0  # which probe to return (starts from zero)
 probechans = 64  #  number of channels per probe (symmetric)
 t,dgc = ntk.load_raw_gain_chmap_1probe(rawfile, number_of_channels,
-                                       hstype, nprobes=nprobes)
+                                       hstype, nprobes=nprobes,
                                        lraw=1, ts=0, te=-1,
                                        probenum=0, probechans=64):
 
@@ -439,6 +439,12 @@ result = ntk.butter_bandpass(rawdata, 500, 4000, 25000, 3)
 # Plot result
 plt.plot(result[1,0:25000])
 plt.show()
+
+# lowpass filter for lfp
+fs = 25000
+lowpass = 250
+lfp = ntk.butter_lowpass(rawdata, lowpass, fs, order=3)
+
 ```
 
 ## high dimensional data
