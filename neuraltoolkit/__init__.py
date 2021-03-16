@@ -1,3 +1,7 @@
+try:
+    from ._version import __git_version__
+except Exception as e:
+    pass
 from .ntk_ecube import *
 from .ntk_filters import *
 from .ntk_channelmap import *

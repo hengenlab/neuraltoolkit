@@ -3,6 +3,19 @@ from setuptools import setup
 with open("README.md", 'r') as f:
     long_description = f.read()
 
+import subprocess
+try:
+    process = subprocess.check_output(['git', 'describe'], shell=False)
+    __git_version__ = process.strip().decode('ascii')
+except Exception as e:
+    __git_version__ = 'unknown'
+print("__git_version__ ", __git_version__)
+try:
+    with open('neuraltoolkit/_version.py', 'w') as fp:
+        fp.write("__git_version__ = '" + str(__git_version__) + "'")
+except Exception as e:
+    print("Error : ", e)
+
 setup(
    name='neuraltoolkit',
    version='0.3.0',
