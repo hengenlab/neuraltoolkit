@@ -17,7 +17,7 @@ git clone https://github.com/hengenlab/neuraltoolkit.git
 cd locationofneuraltoolkit/neuraltoolkit/
 pip install .
 ```
-
+<!--
 ---
 ### Installation by adding to path (not recommended)
 
@@ -43,7 +43,7 @@ then open  .profile using your favourite text editor (open -a TextEdit .profile)
 to add location where neuraltoolkit is located add the line below
 
 export PYTHONPATH=/location_of_neuraltoolkit:$PYTHONPATH
-
+-->
 ---
 
 ### Test import
@@ -57,58 +57,35 @@ Open powershell/terminal
 
 
 ## load ecube data
-#### List of functions
 
-* load_raw_binary                 : To load plain raw data
-* load_raw_binary_gain            : To load raw data with gain
-* load_raw_binary_gain_chmap      : To load raw data with gain and channel mapping
-* load_raw_binary_gain_chmap_nsec : To load nsec of raw data with gain and channel mapping
 
 ```
 import neuraltoolkit as ntk
 import numpy as np
-from matplotlib import pyplot as plt
+import matplotlib.pyplot as plt
 
-# Get filename
-rawfile = 'neuraltoolkit/Headstages_64_Channels_int16_2018-04-06_10-01-57.bin'
-
-# Get number of channels
-print("Enter total number of channels : ")
-number_of_channels = np.int16(eval(input()))
-
-# Time and data
-t, dgc = ntk.load_raw_binary_gain_chmap(rawfile, number_of_channels, 'hs64')
-
-# Time only
-t = ntk.load_raw_binary_gain_chmap(rawfile, number_of_channels, 'hs64', t_only=1)
-
-# Time and data for multiple probes with same number of channels
-hstype = ['Si_64_KS_chmap', 'Si_64_KT_T1_K2_chmap', 'Si_64_KT_T1_K2_chmap', 'Si_64_KS_chmap']
-nprobes = 4
-# number_of_channels here is total number of channels in all probes (64 * nprobes = 256)
-t, dgc = ntk.load_raw_binary_gain_chmap(rawfile, number_of_channels, hstype, nprobes)
-
+# Load only one probe from raw file
+rawfile = '/home/kbn/Headstages_512_Channels_int16_2019-06-21_03-55-09.bin'
+number_of_channels = 512
+hstype = ['EAB50chmap_00', 'EAB50chmap_00', 'EAB50chmap_00',
+          'EAB50chmap_00', 'EAB50chmap_00', 'EAB50chmap_00',
+          'EAB50chmap_00', 'EAB50chmap_00']   # Channel map
+ts = 0, start from begining of file or can be any sample number
+te = 2500, read 2500 sample points from ts ( te greater than ts)
+if ts =0 and te = -1,  read from begining to end of file
+nprobes = 8
+probenum = 0  # which probe to return (starts from zero)
+probechans = 64  #  number of channels per probe (symmetric)
+t,dgc = ntk.load_raw_gain_chmap_1probe(rawfile, number_of_channels,
+                                       hstype, nprobes=nprobes,
+                                       lraw=1, ts=0, te=-1,
+                                       probenum=0, probechans=64)
 
 # bandpass filter
 bdgc = ntk.butter_bandpass(dgc, 500, 7500, 25000, 3)
 
-# plot raw data
-ntk.plot_data(dgc, 0, 25000, 1)
-
-# plot bandpassed data
-ntk.plot_data(bdgc, 0, 25000, 1)
-
-# plot data in channel list
-l = np.array([5, 13, 31, 32, 42, 46, 47, 49, 51, 52, 53, 54 ])
-ntk.plot_data_chlist(bdgc, 25000, 50000, l )
-
-# Time and data from rawdata for nsec
-# For single probe
-tt, ddgc = ntk.load_raw_binary_gain_chmap_nsec(rawfile, number_of_channels, 'hs64', 25000, 2)
-# For multiple probes
-# hstype = ['Si_64_KS_chmap', 'Si_64_KT_T1_K2_chmap', 'Si_64_KT_T1_K2_chmap', 'Si_64_KS_chmap']
-# nprobes = 4
-tt, ddgc = ntk.load_raw_binary_gain_chmap_nsec(rawfile, number_of_channels, hstype, 25000, 2, nprobes)
+# Time only
+t = ntk.load_raw_binary_gain_chmap(rawfile, number_of_channels, 'hs64', t_only=1)
 
 # Load digital data for cameras, etc
 digitalrawfile = '/home/kbn/Digital_64_Channels_int64_2018-11-04_11-18-12.bin'
@@ -151,43 +128,6 @@ Filename Digital_1_Channels_int64_3.bin
 index  [5573869 5774268 5974585 6175289 6375922 6576758 6777207 6977770 7177962
 7378361]  time  4983018546437
 
-# Load preprocessed data file
-pdata = ntk.load_raw_binary_preprocessed(preprocessedfilename, number_of_channels)
-
-# Load one channel from data
-number_of_channels = 64
-channel_number = 4
-# lraw is 1 for raw file and for prepocessed file lraw is 0
-ch_data = ntk.load_a_ch(rawfile, number_of_channels, channel_number,
-                    lraw=1)
-
-# Load ecube data and returns time(if raw) and data in range
-number_of_channels = 64
-lraw is 1 for raw file and for prepocessed file lraw is 0
-hstype,  linear if preprocessed file
-ts = 0, start from begining of file or can be any sample number
-te = 2500, read 2500 sample points from ts ( te greater than ts)
-if ts =0 and te = -1,  read from begining to end of file
-t, bdgc = ntk.load_raw_binary_gain_chmap_range(rawfile, number_of_channels,
-                                           hstype, nprobes=1,
-                                           lraw=1, ts=0, te=25000)
-
-# Load only one probe from raw file
-rawfile = '/home/kbn/Headstages_512_Channels_int16_2019-06-21_03-55-09.bin'
-number_of_channels = 512
-hstype = ['EAB50chmap_00', 'EAB50chmap_00', 'EAB50chmap_00',
-          'EAB50chmap_00', 'EAB50chmap_00', 'EAB50chmap_00',
-          'EAB50chmap_00', 'EAB50chmap_00']   # Channel map
-ts = 0, start from begining of file or can be any sample number
-te = 2500, read 2500 sample points from ts ( te greater than ts)
-if ts =0 and te = -1,  read from begining to end of file
-nprobes = 8
-probenum = 0  # which probe to return (starts from zero)
-probechans = 64  #  number of channels per probe (symmetric)
-t,dgc = ntk.load_raw_gain_chmap_1probe(rawfile, number_of_channels,
-                                       hstype, nprobes=nprobes,
-                                       lraw=1, ts=0, te=-1,
-                                       probenum=0, probechans=64):
 
 # Find number of samples per channel in a ecube file
 rawfile = '/home/kbn/Headstages_512_Channels_int16_2019-06-28_18-13-24.bin'
@@ -261,16 +201,15 @@ ntk.ecube_raw_to_preprocessed(rawfile, outdir
                               ts=0, te=25000,
                               tetrode_channels=[0,1,2,3])
 ```
-
+---
 ## load intan data
-#### List of functions
-* load_intan_raw_gain_chanmap	: To load raw data with gain and channel mapping
+
 
 ```
 # import libraries
 import neuraltoolkit as ntk
 import numpy as np
-from matplotlib import pyplot as plt
+import matplotlib.pyplot as plt
 
 # Get filename
 rawfile = 'neuraltoolkit/intansimu_170807_205345.rhd'
@@ -333,9 +272,9 @@ plt.show()
  
 
 ```
-
+---
 ## video
-#### List of functions/Class
+
 ```
 import neuraltoolkit as ntk
 videofilename = '/home/user/e3v810a-20190307T0740-0840.mp4'
@@ -414,14 +353,9 @@ fnames
 ['cricket', 'snout', 'tailbase', 'leftear', 'rightear']
 ```
 
-
+---
 ## filters
-#### List of functions
-* butter_bandpass
-* butter_highpass
-* butter_lowpass
-* welch_power
-* notch_filter
+
 ```
 
 # import libraries
@@ -446,9 +380,9 @@ lowpass = 250
 lfp = ntk.butter_lowpass(rawdata, lowpass, fs, order=3)
 
 ```
-
+---
 ## high dimensional data
-#### List of functions
+
 
 ```
 # TSNE
@@ -481,13 +415,12 @@ plt.scatter(u[:,0], u[:,1], c=data)
 ```
 
 ## math
-#### List of functions
 
 ```
 # import libraries
 import neuraltoolkit as ntk
 import numpy as np
-from matplotlib import pyplot as plt
+import matplotlib.pyplot as plt
 
 # interpolate
 t = np.arange(0, 10)
@@ -500,8 +433,8 @@ plt.figure(2)
 plt.plot(tn,d_tn)
 plt.show(block=False)
 ```
-
-#### Channel mappings
+---
+## Channel mappings
 ###### 'hs64'
       [26, 30, 6,  2,  18, 22, 14, 10, 12, 16, 8,  4,  28, 32, 24, 20, 
       48,  44, 36, 40, 64, 60, 52, 56, 54, 50, 42, 46, 62, 58, 34, 38, 
@@ -563,7 +496,7 @@ plt.show(block=False)
        
 ###### 'linear'
         [1:number_of_channels]
- 
+--- 
 ## sync
 Functions to sync data across: raw neural, sync pulse, video files and frames, sleep state labels, and deep lab cut labels.
 
@@ -600,12 +533,75 @@ output_matrix, video_files, neural_files, sleepstate_files, syncpulse_files, dlc
 # map_videoframes_to_syncpulse example usage:
 output_matrix, pulse_ix, files = ntk.map_videoframes_to_syncpulse('EAB40_Dataset/CameraSyncPulse/*.bin')
 ```
+---
+## Legacy ecube functions
+
+```
+# filename
+rawfile = 'neuraltoolkit/Headstages_64_Channels_int16_2018-04-06_10-01-57.bin'
+
+# Get number of channels
+print("Enter total number of channels : ")
+number_of_channels = np.int16(eval(input()))
+
+# Time and data
+t, dgc = ntk.load_raw_binary_gain_chmap(rawfile, number_of_channels, 'hs64')
+
+# Time and data for multiple probes with same number of channels
+hstype = ['Si_64_KS_chmap', 'Si_64_KT_T1_K2_chmap', 'Si_64_KT_T1_K2_chmap', 'Si_64_KS_chmap']
+nprobes = 4
+# number_of_channels here is total number of channels in all probes (64 * nprobes = 256)
+t, dgc = ntk.load_raw_binary_gain_chmap(rawfile, number_of_channels, hstype, nprobes)
+
+# plot raw data
+ntk.plot_data(dgc, 0, 25000, 1)
+
+# plot bandpassed data
+ntk.plot_data(bdgc, 0, 25000, 1)
+
+# plot data in channel list
+l = np.array([5, 13, 31, 32, 42, 46, 47, 49, 51, 52, 53, 54 ])
+ntk.plot_data_chlist(bdgc, 25000, 50000, l )
+
+# Time and data from rawdata for nsec
+# For single probe
+tt, ddgc = ntk.load_raw_binary_gain_chmap_nsec(rawfile, number_of_channels, 'hs64', 25000, 2)
+
+# For multiple probes
+# hstype = ['Si_64_KS_chmap', 'Si_64_KT_T1_K2_chmap', 'Si_64_KT_T1_K2_chmap', 'Si_64_KS_chmap']
+# nprobes = 4
+tt, ddgc = ntk.load_raw_binary_gain_chmap_nsec(rawfile, number_of_channels, hstype, 25000, 2, nprobes)
+
+# Load preprocessed data file
+pdata = ntk.load_raw_binary_preprocessed(preprocessedfilename, number_of_channels)
+
+# Load one channel from data
+number_of_channels = 64
+channel_number = 4
+# lraw is 1 for raw file and for prepocessed file lraw is 0
+ch_data = ntk.load_a_ch(rawfile, number_of_channels, channel_number,
+                    lraw=1)
+
+# Load ecube data and returns time(if raw) and data in range
+number_of_channels = 64
+lraw is 1 for raw file and for prepocessed file lraw is 0
+hstype,  linear if preprocessed file
+ts = 0, start from begining of file or can be any sample number
+te = 2500, read 2500 sample points from ts ( te greater than ts)
+if ts =0 and te = -1,  read from begining to end of file
+t, bdgc = ntk.load_raw_binary_gain_chmap_range(rawfile, number_of_channels,
+                                           hstype, nprobes=1,
+                                           lraw=1, ts=0, te=25000)
+```
+---
+
 
 ## FAQ
 ```
 1. ImportError: bad magic number in 'neuraltoolkit': b'\x03\xf3\r\n'
 Please go to neuraltoolkit folder and remove *.pyc files
 ```
+---
 
 ## Issues
 
