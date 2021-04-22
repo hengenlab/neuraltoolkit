@@ -12,9 +12,19 @@ import h5py
 import distutils.util
 import importlib
 import urllib.parse
-# optional import for S3 file support, for S3 file support: pip install fs_s3fs_ng
+import functools
+import multiprocessing
+
+
+# optional import for S3 file support, for S3 file support: pip install awswrangler
 try:
-    from fs_s3fs import S3FS
+    import awswrangler as wr
+    import smart_open
+    prp_s3_endpoint = 'https://s3.nautilus.optiputer.net'
+    wr.config.s3_endpoint_url = os.environ.get('ENDPOINT_URL', prp_s3_endpoint)
+    smart_open.open = functools.partial(smart_open.open, transport_params={
+        'resource_kwargs': {'endpoint_url': os.environ.get('ENDPOINT_URL', prp_s3_endpoint)}
+    })
 except ImportError as ie:
     pass
 
@@ -138,7 +148,7 @@ def map_videoframes_to_syncpulse(syncpulse_files: (str, list), fs: int = 25000):
         t, dr = ntk.load_digital_binary(df)
 
         if i == 0:
-            assert dr[0] == 0, 'This algorithm expects the first value of the first file to always be 0.'
+            assert dr[0] == 0, 'This algorithm expects the first value of the first digital file to always be 0.'
             ecube_start_time = t
 
         all_file_lengths.append(dr.shape[0])
@@ -537,12 +547,7 @@ def _resolve_files(files: (list, tuple, str)):
 def _resolve_glob(file_glob):
     if file_glob.startswith('s3://'):
         _verify_s3_support()
-        o = urllib.parse.urlparse(file_glob)
-        bucket = o.netloc
-        key = o.path
-
-        s3fs = S3FS(bucket, endpoint_url=os.environ.get('ENDPOINT_URL', None), strict=False)
-        result = ['s3://{}{}'.format(bucket, match.path) for match in s3fs.glob(key)]
+        result = wr.s3.list_objects(file_glob)
     else:
         result = glob.glob(file_glob)
 
@@ -550,13 +555,9 @@ def _resolve_glob(file_glob):
 
 
 def _verify_s3_support():
-    assert importlib.util.find_spec('fs_s3fs') is not None, \
-        'PIP package fs_s3fs_ng is required for accessing S3 files: pip install fs_s3fs_ng'
-
-    # Print a warning if ENDPOINT_URL is not set, since anticipated use cases will want this set.
-    if 'ENDPOINT_URL' not in os.environ:
-        print('Warning, environment variable ENDPOINT_URL is not set, the default endpoint is AWS.\n'
-              'To set it to the PRP/S3 endpoint: export ENDPOINT_URL=https://s3.nautilus.optiputer.net')
+    assert importlib.util.find_spec('awswrangler') and importlib.util.find_spec('smart_open') is not None, \
+        'PIP packages awswrangler and smart_open are required for accessing ' \
+        'S3 files: python -m pip install awswrangler smart_open'
 
 
 def _resolve_neural_files_bom(neural_files_or_bom: list = None):
@@ -579,29 +580,26 @@ def _resolve_neural_files_bom(neural_files_or_bom: list = None):
         _verify_s3_support()
 
     if len(neural_files_or_bom) == 1 and neural_files_or_bom[0].endswith('.csv'):
-        with open(neural_files_or_bom[0], 'r') as csv_file:
+        with smart_open.open(neural_files_or_bom[0], 'r') as csv_file:
             csv_reader = csv.reader(csv_file)
             result = [tuple(row) for row in csv_reader]
     else:
         result = []
-        for nfile in neural_files_or_bom:
-            if nfile.startswith('s3://'):
-                o = urllib.parse.urlparse(nfile)
-                bucket = o.netloc
-                key = o.path
-                with S3FS(bucket, endpoint_url=os.environ.get('ENDPOINT_URL', None), strict=False) as s3fs:
-                    s3f = s3fs.openbin(key)
-                    ecube_time = np.frombuffer(s3f.read(8), dtype=np.uint64)[0]
-                    file_size = s3f.size
-            else:
-                with open(nfile, 'rb') as f:
-                    ecube_time = np.fromfile(f, dtype=np.uint64, count=1)[0]
-                    file_size = os.fstat(f.fileno()).st_size
-
-            filename = os.path.split(nfile)[-1]
-            result.append((ecube_time, file_size, filename))
+        # for nfile in neural_files_or_bom:  TODO delete
+        # This process can take a long time when the files are on S3, parallelize
+        with multiprocessing.Pool(20) as pool:
+            result = pool.map(_read_ecube_time_and_file_size, neural_files_or_bom)
+            # result.append((ecube_time, file_size, filename))  TODO delete
 
     return result
+
+
+def _read_ecube_time_and_file_size(nfile):
+    with smart_open.open(nfile, 'rb') as f:
+        ecube_time = np.frombuffer(f.read(8), dtype=np.uint64, count=1)[0]
+        file_size = wr.s3.size_objects(nfile)[nfile] if nfile.startswith('s3://') else os.fstat(f.fileno()).st_size
+        filename = os.path.split(nfile)[-1]
+        return ecube_time, file_size, filename
 
 
 def save_neural_files_bom(output_filename: str = None, neural_files: (list, str) = None):
