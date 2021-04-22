@@ -502,19 +502,100 @@ Functions to sync data across: raw neural, sync pulse, video files and frames, s
 
 #### List of functions
 * `map_video_to_neural_data` 
-Maps video to neural data and optionally maps sleeps state and DLC labels. 
-See the function documentation in `ntk_sync.py` for detailed documentation on the output format.
+This is the primary method of performing synchronization of multiple data types: neural, video, digital (sync pulse),
+  manual sleep scored labels, and DLC (deep lab cut) labels. All values (ecube times, sleep scores, and DLC labels)
+  are mapped to each video frame. See the 
+  [function documentation](https://github.com/hengenlab/neuraltoolkit/blob/fa096a16a974a599a2f4ee45c9564e5a1a6b9336/neuraltoolkit/ntk_sync.py#L32) 
+  in `ntk_sync.py` for detailed documentation on the output format.
 * `map_videoframes_to_syncpulse`
-Reads a set of Camera Sync Pulse data files and aggregates the sequences of 000's and 111's into a map of video frame numbers to the raw neural data file and offset across all files in a recording. The output includes an entry per each sequence of 000's and 111's in the Camera Sync Pulse data.
-See the function documentation in `ntk_sync.py` for detailed documentation on the output format.
+This is a lower level function which only reads the Camera Sync Pulse digital data files and aggregates the 
+  sequences of 000's and 111's into a summarized for. The output includes an entry per each sequence of 000's and 111's in 
+  the Camera Sync Pulse data. See the 
+  [function documentation](https://github.com/hengenlab/neuraltoolkit/blob/fa096a16a974a599a2f4ee45c9564e5a1a6b9336/neuraltoolkit/ntk_sync.py#L205)
+  in `ntk_sync.py` for detailed documentation on the output format.
+
+#### How to sync video when the digital ecube data is incorrect
+In recordings prior to CAF99 the ecube time on the digital channel may not have been properly synced to the 
+neural data channel, in these cases you can only sync the video using the filename timestamps in the 
+neural and video files (this is +/- 1 second accuracy). This guide shows you how to manually compute the time offset and override
+`map_video_to_neural_data` to use the manually computed value instead of the value from the SyncPulse files.
+
+- **Step 1:** Compute the difference between neural data start and video start.
+  - Neural data start time is found the first neural data file, for example in CAF42 the neural file
+    `Headstages_320_Channels_int16_2020-09-14_17-20-37.bin` has a start time of `17:20:37`.
+  - Video data start time is found in the first video MP4 file, for example in CAF42 the video file
+    `e3v81a6-20200914T172236-182237.mp4` has a start time of `17:22:36`.
+    - Gotchas: Some video file timestamps have an erroneous start time, for example with CAF26 
+      `e3v819c-20200807T1404-1509.mp4` the start time should be `14:09` not `14:04`. Use the 2nd value
+      of the timestamp and count 1 hour back from that. Also note that this video file does not have
+      the seconds listed. You will need to open this video and find the seconds in the timestamp in the
+      video. In this example the video timestamp is `12:09:08 08/07/20`, just take the seconds, so the correct
+      timestamp in this case is `14:09:08`. 
+  - The difference in times in this example for CAF42 is `00:01:59` (1 min, 59 seconds), the video was started
+    after the neural data, which is typical except in one or two exceptional cases.
+- **Step 2:** Run `ntk_sync.map_video_to_neural_data` and set the parameter `manual_video_neural_offset_sec` to `119`. 
+  Any time the video starts *after* the neural data (which is typical) the value will be positive, in the odd case
+  when video started before neural data the parameter will be negative.
+
+#### Example command line usage of ntk_sync.map_video_to_neural_data
+
+Running save_map_video_to_neural_data from the command line produces an NPZ file (Numpy zip containing multiple data structures)
+
+Example using CAF42:
+
+```bash
+python neuraltoolkit/ntk_sync.py save_map_video_to_neural_data \
+    --output_filename "~/path/to/output/map_video_to_neural_data_CAF42.npz" \
+    --syncpulse_files "/path/to/CAF42/SyncPulse/DigitalPanel*.bin" \
+    --video_files "/path/to/CAF42/Video/e3*.mp4" \
+    --neural_files "s3://hengenlab/CAF42/Neural_Data/Headstages*.bin" \
+    --sleepstate_files "/path/to/CAF42/SleepState/*.npy" \
+    --dlclabel_files "/path/to/CAF42/DeepLabCut/*.h5" \
+    --neural_bin_files_per_sleepstate_file 288 \
+    --manual_video_neural_offset_sec 119
+```
+Note that sleep only video, neural files, and digital files are required, other properties are optional. 
+Run `python save_map_video_to_neural_data --help` for command line documentation. 
+
+The NPZ file that is produces contains the following data:
+- `output_matrix` - the main output of the function `ntk_sync.map_video_to_neural_data`, see the function documentation
+  for a detailed explanation of the data structure.
+- `video_files` - a list of the video filenames, the video files are listed by index number in `output_matrix`.
+- `neural_files` - a list of the neural filenames, the neural files are listed by index number in `output_matrix`.
+- `sleepstate_files` - a list of the sleep state files (if any were provided).
+- `syncpulse_files` - a list of the digital channel files used to find the sync pulse.
+- `dlclabel_files` - a list of the deep lab cut files used (if any were provided)
+- `camera_pulse_output_matrix` - Not normally used, this is the output of `map_videoframes_to_syncpulse` and is more
+  commonly used for debugging.
+- `pulse_ix` - the index into `camera_pulse_output_matrix` where the Sync Pulse can be found 
+  (this is the change in duty cycle that signifies the beginning of camera recording)
+
+Example accessing the data above in Python:
+
+```python
+import numpy as np
+
+z = np.load("~/path/to/output/map_video_to_neural_data_CAF42.npz")
+print(z.files)
+# ['output_matrix', 'video_files', 'neural_files', 'sleepstate_files', 'syncpulse_files', 'dlclabel_files', 'camera_pulse_output_matrix', 'pulse_ix']
+
+output_matrix = z['output_matrix']
+print(output_matrix[0:5])
+# [(181591149000, 0, 0, 0, 0, 3475000, 1, [-1., -1., -1., -1., -1., -1.])
+#  (181657789000, 1, 0, 1, 0, 3476666, 1, [-1., -1., -1., -1., -1., -1.])
+#  (181724469000, 2, 0, 2, 0, 3478333, 1, [-1., -1., -1., -1., -1., -1.])
+#  (181791149000, 3, 0, 3, 0, 3480000, 1, [-1., -1., -1., -1., -1., -1.])
+#  (181857789000, 4, 0, 4, 0, 3481666, 1, [-1., -1., -1., -1., -1., -1.])]
+```
 
 #### Command line functionality
+Note these functions are less commonly used, typically reserved for experienced users.
 * `python ntk_sync.py --help` 
   Get command line help output.
+* `python ntk_sync.py save_map_video_to_neural_data --syncpulse_files FILENAME_GLOBS --video_files FILENAME_GLOBS --neural_files FILENAME_GLOBS [--sleepstate_files FILENAME_GLOBS] [--dlclabel_files FILENAME_GLOBS] [--output_filename map_video_to_neural_data.npz] [--fs 25000] [--n_channels 256] [--manual_video_frame_offset 0] [--recording_config EAB40.cfg]`
+  Calls save_map_video_to_neural_data(...) which saves the results of map_video_to_neural_data(...) to a NPZ file.
 * `python ntk_sync.py save_neural_files_bom [--output_filename FILENAME.csv] [[--neural_files NEURAL_FILENAMES_GLOB] --neural_files ...]` 
-  Produces a CSV containing the eCube timestamps of a set of neural files which can be used instead of passing the neural files to the functions below (useful when the neural files are large and possibly difficult to access on demand).
-* `python ntk_sync.py save_output_matrix --syncpulse_files FILENAME_GLOBS --video_files FILENAME_GLOBS --neural_files FILENAME_GLOBS [--sleepstate_files FILENAME_GLOBS] [--dlclabel_files FILENAME_GLOBS] [--output_filename map_video_to_neural_data.npz] [--fs 25000] [--n_channels 256] [--manual_video_frame_offset 0] [--recording_config EAB40.cfg]`
-Calls save_output_matrix(...) which saves the results of map_video_to_neural_data(...) to a NPZ file.
+  Advanced usage: produces a CSV containing the eCube timestamps of a set of neural files which can be used instead of passing the neural files to the functions below (useful when the neural files are large and possibly difficult to access on demand).
 
 ```
 import neuraltoolkit as ntk

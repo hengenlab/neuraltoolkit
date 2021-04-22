@@ -209,7 +209,7 @@ def map_video_to_neural_data(syncpulse_files: (list, tuple, str),
                              dlclabel_files: (list, tuple, str) = (),
                              fs: int = 25000, n_channels: int = None,
                              neural_bin_files_per_sleepstate_file: int = 12,
-                             manual_video_frame_offset: int = 0,
+                             manual_video_neural_offset_sec: float = 0.0,
                              ignore_dlc_label_mismatch: bool = False,
                              initial_neural_file_for_sleepstate_mapping: int = 0,
                              ignore_ecube_deviation_sec: float = 0.00012):
@@ -317,10 +317,11 @@ def map_video_to_neural_data(syncpulse_files: (list, tuple, str),
            numpy file. For example in EAB40 there are 12 neural files per sleep state file, therefore the
            parameter is 12; in SCF05 there is only one sleep state file for ALL neural data files, in this case the
            parameter is -1 for ALL. The default is 12, which is 1hr of sleep state data per numpy file.
-    :param manual_video_frame_offset: in case the video started before neural recordings the only way
-           to align them is to manually compute the number of video frames that occur before the neural recording
-           started, this is the number of such frames that exist and will be added to the pulse_ix value computed.
-           Note that if this is used the video mapping will not be precise.
+    :param manual_video_neural_offset_sec: in some cases the sync pulse doesn't properly identify the start of
+           video recording. You can manually sync video to the neural data using file timestamps (see ntk documentation
+           page for a guide on doing this). This value overrides the SyncPulse time relative to the start of neural
+           data. Enter the video offset from neural data in seconds. In most cases video is started after neural
+           data so this value will be positive, if video started before neural this value will be negative.
     :param ignore_dlc_label_mismatch: ignore cases when the DLC label count doesn't match the video frame count,
            this issue has been observed in some cases with DLC labels that are split. Using this option will
            leave remainder frames unlabeled and will constitute a small mismatch between DLC labels and frames.
@@ -414,9 +415,23 @@ def map_video_to_neural_data(syncpulse_files: (list, tuple, str),
     # Compute a precise eCube time per video frame, or 0 where no SyncPulse data exists
     cumsum_frame_counts = np.insert(np.cumsum(frame_counts), 0, 0)[:-1]
     camera_pulse_output_matrix, pulse_ix, _ = map_videoframes_to_syncpulse(syncpulse_files, fs)
+
+    if manual_video_neural_offset_sec != 0.0:
+        # Manually change ecube times computed by map_videoframes_to_syncpulse if user specified the offset manually
+        neural_ecube_start = neural_ecube_timestamps[0]
+        video_ecube_syncpulse = camera_pulse_output_matrix[pulse_ix]['ecube_time']
+        neural_video_diff = video_ecube_syncpulse - neural_ecube_start
+        expected_neural_video_diff = manual_video_neural_offset_sec * 1e9
+        increment_video_diff = expected_neural_video_diff - neural_video_diff
+        new_ecube_time = camera_pulse_output_matrix['ecube_time'].astype(np.int64) + int(increment_video_diff)
+        new_ecube_time[new_ecube_time < 0] = 0
+        camera_pulse_output_matrix['ecube_time'] = new_ecube_time.astype(np.uint64)
+
     valid_frames = (camera_pulse_output_matrix['frame_ids'] >= 0) & (camera_pulse_output_matrix['frame_ids'] < cumsum_frame_counts[-1])
-    frames_from = manual_video_frame_offset
-    frames_to = manual_video_frame_offset + np.sum(valid_frames)
+    # frames_from = manual_video_frame_offset
+    # frames_to = manual_video_frame_offset + np.sum(valid_frames)
+    frames_from = 0
+    frames_to = np.sum(valid_frames)
     output_matrix['ecube_time'] = 0  # frames we don't have data for have 0 ecube_time
     output_matrix['ecube_time'][frames_from:frames_to] = camera_pulse_output_matrix['ecube_time'][valid_frames]
 
@@ -632,26 +647,26 @@ def save_neural_files_bom(output_filename: str = None, neural_files: (list, str)
             csv_writer.writerow(row)
 
 
-def save_output_matrix(output_filename: str = None,
-                       syncpulse_files: (str, list) = None,
-                       video_files: (str, list) = None,
-                       neural_files: (str, list) = None,
-                       sleepstate_files: (str, list) = None,
-                       dlclabel_files: (str, list) = None,
-                       fs: int = 25000,
-                       n_channels: int = None,
-                       neural_bin_files_per_sleepstate_file: int = None,
-                       manual_video_frame_offset: int = 0,
-                       ignore_dlc_mismatch: bool = False,
-                       dataset_config: str = None,
-                       initial_neural_file_for_sleepstate_mapping: int = None):
+def save_map_video_to_neural_data(output_filename: str = None,
+                                  syncpulse_files: (str, list) = None,
+                                  video_files: (str, list) = None,
+                                  neural_files: (str, list) = None,
+                                  sleepstate_files: (str, list) = None,
+                                  dlclabel_files: (str, list) = None,
+                                  fs: int = 25000,
+                                  n_channels: int = None,
+                                  neural_bin_files_per_sleepstate_file: int = None,
+                                  manual_video_neural_offset_sec: int = 0,
+                                  ignore_dlc_mismatch: bool = False,
+                                  dataset_config: str = None,
+                                  initial_neural_file_for_sleepstate_mapping: int = None):
     if dataset_config is not None:
         config_parser = configparser.ConfigParser()
         config_parser.read(dataset_config)
         config = config_parser['CONFIG']
         fs = int(config.get('fs', fs))
         n_channels = int(config.get('n_channels', n_channels))
-        manual_video_frame_offset = int(config.get('manual_video_frame_offset', manual_video_frame_offset))
+        manual_video_neural_offset_sec = int(config.get('manual_video_frame_offset', manual_video_neural_offset_sec))
         ignore_dlc_mismatch = bool(distutils.util.strtobool((config.get('ignore_dlc_mismatch', ignore_dlc_mismatch))))
         neural_bin_files_per_sleepstate_file = int(config.get('neural_bin_files_per_sleepstate_file', 12))
         initial_neural_file_for_sleepstate_mapping = int(config.get('initial_neural_file_for_sleepstate_mapping'), 0)
@@ -660,7 +675,7 @@ def save_output_matrix(output_filename: str = None,
         and video_files is not None \
         and neural_files is not None \
         and fs is not None \
-        and manual_video_frame_offset is not None \
+        and manual_video_neural_offset_sec is not None \
         and ignore_dlc_mismatch is not None \
         and neural_bin_files_per_sleepstate_file is not None, \
         'None value not valid.'
@@ -671,7 +686,7 @@ def save_output_matrix(output_filename: str = None,
             syncpulse_files=syncpulse_files, video_files=video_files, neural_files=neural_files,
             sleepstate_files=sleepstate_files, dlclabel_files=dlclabel_files, fs=fs, n_channels=n_channels,
             neural_bin_files_per_sleepstate_file=neural_bin_files_per_sleepstate_file,
-            manual_video_frame_offset=manual_video_frame_offset, ignore_dlc_label_mismatch=ignore_dlc_mismatch,
+            manual_video_neural_offset_sec=manual_video_neural_offset_sec, ignore_dlc_label_mismatch=ignore_dlc_mismatch,
             initial_neural_file_for_sleepstate_mapping=initial_neural_file_for_sleepstate_mapping
         )
 
@@ -704,56 +719,60 @@ def parse_args():
     )
 
     # save_output_matrix
-    parser_save_output_matrix = subparsers.add_parser(
-        'save_output_matrix',
+    parser_save_map_video_to_neural_data = subparsers.add_parser(
+        'save_map_video_to_neural_data',
         help='Calls save_output_matrix(...) which saves the results of map_video_to_neural_data(...) to a NPZ file.'
     )
-    parser_save_output_matrix.add_argument(
+    parser_save_map_video_to_neural_data.add_argument(
         '--output_filename', type=str, required=False, default='map_video_to_neural_data.npz',
-        help='Output NPZ filename to contain all outputs of map_video_to_neural_data(...) by name.'
+        help='Output NPZ to contain all outputs of map_video_to_neural_data(...) by name.'
     )
-    parser_save_output_matrix.add_argument(
+    parser_save_map_video_to_neural_data.add_argument(
         '--syncpulse_files', type=str, required=True, action='append',
         help='sync pulse filenames, may be a list or single string of filenames or globs.'
     )
-    parser_save_output_matrix.add_argument(
+    parser_save_map_video_to_neural_data.add_argument(
         '--video_files', type=str, required=True, action='append',
         help='video filenames, may be a list or single string of filenames or globs.'
     )
-    parser_save_output_matrix.add_argument(
+    parser_save_map_video_to_neural_data.add_argument(
         '--neural_files', type=str, required=True, action='append',
         help='raw neural files, may be a list or single string of filenames or globs, or a bill of materials '
              'CSV file that describes the set of neural datafiles'
     )
-    parser_save_output_matrix.add_argument(
+    parser_save_map_video_to_neural_data.add_argument(
         '--sleepstate_files', type=str, required=False, action='append',
         help='Optional sleep state numpy files, may be a list or single string of filenames or globs.'
     )
-    parser_save_output_matrix.add_argument(
+    parser_save_map_video_to_neural_data.add_argument(
         '--dlclabel_files', type=str, required=False, action='append',
         help='Optional DLC label numpy files, may be a list or single string of filenames or globs.'
     )
-    parser_save_output_matrix.add_argument(
+    parser_save_map_video_to_neural_data.add_argument(
         '--fs', type=int, required=False, default=25000,
         help='Pulse speed in ns, default=25000.'
     )
-    parser_save_output_matrix.add_argument(
+    parser_save_map_video_to_neural_data.add_argument(
         '--n_channels', type=int, required=False, default=None,
         help='Number of channels in neural data, if unspecified the value will be inferred from the neural file names.'
     )
-    parser_save_output_matrix.add_argument(
-        '--manual_video_frame_offset', type=int, required=False, default=0,
-        help='See function documentation in function map_videoframes_to_syncpulse for details. Used when video '
-             'started before the neural recording.'
+    parser_save_map_video_to_neural_data.add_argument(
+        '--manual_video_neural_offset_sec', type=float, required=False, default=0.0,
+        help='See function documentation in function map_videoframes_to_syncpulse for details. in some cases the '
+             'sync pulse doesn\'t properly identify the start of video recording. You can manually sync video to '
+             'the neural data using file timestamps (see ntk documentation page for a guide on doing this). '
+             'This value overrides the SyncPulse time relative to the start of neural data. Enter the video '
+             'offset from neural data in seconds. In most cases video is started after neural data so this value '
+             'will be positive, if video started before neural this value will be negative.'
     )
-    parser_save_output_matrix.add_argument(
+    parser_save_map_video_to_neural_data.add_argument(
         '--neural_bin_files_per_sleepstate_file', type=int, default=12,
         help='Number of neural binary files that are covered by each sleep state '
              'numpy file. For example in EAB40 there are 12 neural files per sleep state file, therefore the '
              'parameter is 12; in SCF05 there is only one sleep state file for ALL neural data files, in this case the '
              'parameter is -1 for ALL.'
     )
-    parser_save_output_matrix.add_argument(
+    parser_save_map_video_to_neural_data.add_argument(
         '--initial_neural_file_for_sleepstate_mapping', type=int, default=0,
         help='If sleep state data doesn''t map to the first neural file present in the dataset, set this '
              'parameter to the number of neural files to skip before mapping to the sleep state data. '
