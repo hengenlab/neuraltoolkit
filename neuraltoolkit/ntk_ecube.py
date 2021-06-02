@@ -406,6 +406,33 @@ def load_digital_binary(name, t_only=0, lcheckdigi64=1):
     return tr, np.int8(dr)
 
 
+def load_digital_binary_allchannels(name, t_only=0, channel=-1):
+
+    '''
+    load ecube digital data all channel
+    load_digital_binary(name, t_only=0, channel=-1)
+    returns first timestamp and data
+    t_only  : if t_only=1, just return tr, timestamp
+              (Default 0, returns timestamp and data)
+    channel : -1, return all 64 channel, else enter channel number to return
+    tdig, ddig =load_digital_binary(digitalrawfile, t_only=0, channel=-1)
+    '''
+    with open(name, 'rb') as f:
+        tr = np.fromfile(f, dtype=np.uint64, count=1)
+        if t_only:
+            return tr
+        # dr = np.fromfile(f, dtype=np.uint64,  count=-1)
+        dr_bytes = np.fromfile(f, dtype='<u1')
+        dr_bits = np.unpackbits(dr_bytes, bitorder='little')
+        dr = dr_bits.reshape((-1, 64))
+        dr = dr.T
+
+        if channel == -1:
+            return tr, dr
+        elif channel > -1:
+            return tr, dr[channel, :]
+
+
 def light_dark_transition(datadir, l7ampm=0, lplot=0):
     '''
     light_dark_transition
