@@ -100,6 +100,27 @@ tdig, ddig = ntk.load_digital_binary(digitalrawfile, t_only=0, lcheckdigi64=1)
 # Load time only from digital data for cameras, etc
 tdig = ntk.load_digital_binary(digitalrawfile, t_only=1)
 
+
+# Load all digital channels new api digital files outputs
+import neuraltoolkit as ntk
+import matplotlib.pyplot as plt
+name = 'DigitalPanel_2_Channels_bool_masked_uint64_2021-04-30_08-46-15.bin'
+t, d = ntk.load_digital_binary_allchannels(name, t_only=0, channel=-1)
+# d contains all 64 channels
+print("sh d ", d.shape)
+# plot second channel
+plt.plot(d[1, 0:10000])
+plt.show()
+# Load just one channel
+import neuraltoolkit as ntk
+import matplotlib.pyplot as plt
+name = 'DigitalPanel_2_Channels_bool_masked_uint64_2021-04-30_08-46-15.bin'
+t, d = ntk.load_digital_binary_allchannels(name, t_only=0, channel=1)
+# d contains only second digital channel
+print("sh d ", d.shape)
+plt.plot(d[0:10000])
+plt.show()
+
 # Light dark transition
 datadir = '/media/data/D1/d1_c1/'
 l7ampm = 0 # if 1 just check files around 7:00 am and 7:00 pm
