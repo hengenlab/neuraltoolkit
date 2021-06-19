@@ -16,15 +16,17 @@ import functools
 import multiprocessing
 
 
-# optional import for S3 file support, for S3 file support: pip install awswrangler
+# optional import for S3 file support, for S3 file support: pip install smart_open awswrangler
 try:
     import awswrangler as wr
     import smart_open
-    prp_s3_endpoint = 'https://s3.nautilus.optiputer.net'
-    wr.config.s3_endpoint_url = os.environ.get('ENDPOINT_URL', prp_s3_endpoint)
-    smart_open.open = functools.partial(smart_open.open, transport_params={
-        'resource_kwargs': {'endpoint_url': os.environ.get('ENDPOINT_URL', prp_s3_endpoint)}
-    })
+    import boto3
+
+    assert int(smart_open.__version__[0]) >= 5, "Smart open 5.1.0+ is required."
+    endpoint_url = os.environ.get('ENDPOINT_URL', 'https://s3.nautilus.optiputer.net')
+    wr.config.s3_endpoint_url = endpoint_url
+    transport_params = {'client': boto3.Session().client('s3', endpoint_url=endpoint_url)}
+    smart_open.open = functools.partial(smart_open.open, transport_params=transport_params)
 except ImportError as ie:
     pass
 
