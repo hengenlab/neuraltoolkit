@@ -15,6 +15,7 @@ git clone https://github.com/hengenlab/neuraltoolkit.git
 ### Using pip
 ```
 cd locationofneuraltoolkit/neuraltoolkit/
+For example /home/kbn/git/neuraltoolkit  
 pip install .
 ```
 <!--
