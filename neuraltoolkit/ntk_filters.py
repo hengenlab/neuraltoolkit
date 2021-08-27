@@ -150,27 +150,41 @@ def notch_filter(data, fs, Q, ftofilter):
     return datan
 
 
-def ntk_spectrogram(lfp, fs, nperseg_fact=4, f_low=1, f_high=64):
+def ntk_spectrogram(lfp, fs, nperseg_fact=4, f_low=1, f_high=64,
+                    lsavefile=None):
 
     import matplotlib.pyplot as plt
     import scipy.signal as signal
     import numpy as np
+    import os
 
     '''
     plot spectrogram
 
-    ntk_spectrogram(lfp, fs, nperseg_fact=4, f_low=1, f_high=64)
+    ntk_spectrogram(lfp, fs, nperseg_fact=4, f_low=1, f_high=64,
+                    lsavefile=None)
 
     lfp : lfp one channel
     fs : sampling frequency
     nperseg_fact : multiple of fs to get length of each segment
     f_low : filter frequencies below f_low
     f_high : filter frequencies above f_high
+    lsaveloc : default None (show plot), if path is give save fig
+               to path. for example
+               lsavefile='/home/kbn/spec_1.jpg'
 
     Example:
-    ntk.ntk_spectrogram(lfp_all[0, :], 250, 4, 1, 64)
+    ntk.ntk_spectrogram(lfp_all[0, :], 250, 4, 1, 64,
+                        lsavefile='/home/kbn/spec_1.jpg')
 
     '''
+
+    if lsavefile is not None:
+        # Check directory exists
+        if not (os.path.exists(os.path.split(lsavefile)[0]) and
+                os.path.isdir(os.path.split(lsavefile)[0])):
+            raise NotADirectoryError("Directory {} does not exists".
+                                     format(os.path.split(lsavefile)[0]))
 
     nperseg = fs * nperseg_fact
     noverlap = fs * nperseg_fact * 0.5
@@ -192,5 +206,7 @@ def ntk_spectrogram(lfp, fs, nperseg_fact=4, f_low=1, f_high=64):
     # plt.xlabel('Time in minutes')
     # plt.ylabel('Frequency (log)')
     # plt.tight_layout()
-    plt.show()
-    # plt.savefig('spec_1.jpg')
+    if lsavefile is None:
+        plt.show()
+    else:
+        plt.savefig(lsavefile)
