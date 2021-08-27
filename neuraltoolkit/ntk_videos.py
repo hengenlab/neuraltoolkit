@@ -23,6 +23,10 @@ try:
     import cv2
 except ImportError:
     raise ImportError('\tpip install opencv-python\n')
+try:
+    import numpy as np
+except ImportError:
+    raise ImportError('\tpip install numpy\n')
 import os
 
 
@@ -485,6 +489,83 @@ def get_video_length_list(videodir, lstream=0):
             video_length_list.append(v.length)
 
     return video_length_list
+
+
+def play_numpy_movie(npmoviefile, wait=None, start=None, end=None,
+                     movietitle=None, verbose=1):
+
+    '''
+    Load numpy file (frames, width, height) and show movie from start to end
+
+    play_numpy_movie(npmoviefile, wait=None, start=None, end=None,
+                     movietitle=None, verbose=1)
+
+    Parameters
+    ----------
+    npmoviefile : Numpy file with movie location
+    wait : wait time (default None sets to 10)
+    start : start frame (default None start from first frame)
+    end : end frame (default None play to last frame)
+    movietitle : title name (default None shows name movie)
+    verbose : Default on (1), 0 for no verbose
+
+    Returns
+    -------
+
+    Raises
+    ------
+    FileExistsError if saveloc not found
+    ValueError if start or end is out of bounds
+
+    See Also
+    --------
+
+    Notes
+    -----
+
+    Examples
+    --------
+    npmoviefile = 'ns_118images.set00.12400ms.1000fps.10ips.normalized.npy'
+    play_numpy_movie(npmoviefile, wait=10, start=500, end=1000,
+                     movietitle="naturalimages", verbose=1)
+    '''
+
+    # Check file exists
+    if os.path.exists(npmoviefile) and os.path.isfile(npmoviefile):
+        if verbose:
+            print("npmoviefile ", npmoviefile)
+    else:
+        raise FileNotFoundError("Probe file {} does not exists".
+                                format(npmoviefile))
+
+    # Load numpy file and show movie from start to finish
+    movie = np.load(npmoviefile)
+    # print(movie.shape)
+
+    if movietitle is None:
+        movietitle = str("movie")
+    if start is None:
+        start = 0
+    if end is None:
+        end = movie.shape[0]
+    if wait is None:
+        wait = 10
+    # Check start and end are within movie length
+    if start > movie.shape[0]:
+        raise ValueError("start {} is greater than movie length {}".
+                         format(start, movie.shape[0]))
+    if end > movie.shape[0]:
+        raise ValueError("end {} is greater than movie length {}".
+                         format(end, movie.shape[0]))
+
+    if verbose:
+        print("Press key 'q' to exit")
+    for i in np.arange(start, end, 1):
+        frame = movie[i, :, :]
+        cv2.imshow(movietitle, frame)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+    cv2.destroyAllWindows()
 
 
 if __name__ == '__main__':
