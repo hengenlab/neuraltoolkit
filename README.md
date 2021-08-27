@@ -354,6 +354,12 @@ videofilename = video1.avi
 ntk.make_video_from_images(imgpath, videopath, videofilename,
                            imgext='.jpg', codec='XVID', v_fps=30)
 
+# Play numpy movie file
+import neuraltoolkit as ntk
+npmoviefile = '/home/kbn/ns_118images1000fpsnormalized.npy'
+ntk.play_numpy_movie(npmoviefile, wait=10, start=500, end=1000,
+                     movietitle="naturalimages", verbose=1)
+
 ```
 
 # dlc
