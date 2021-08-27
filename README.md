@@ -408,21 +408,22 @@ lowpass = 250
 lfp = ntk.butter_lowpass(rawdata, lowpass, fs, order=3)
 
 # spectrogram
-ntk_spectrogram(lfp, fs, nperseg_fact=4, f_low=1, f_high=64,
+ntk_spectrogram(lfp, fs, nperseg, noverlap, f_low=1, f_high=64,
                 lsavefile=None)
 
 lfp : lfp one channel
 fs : sampling frequency
-nperseg_fact : multiple of fs to get length of each segment
+nperseg : length of each segment
+noverlap : number of points to overlap between segments
 f_low : filter frequencies below f_low
 f_high : filter frequencies above f_high
-lsaveloc : default None (show plot), if path is give save fig
+lsavefile : default None (show plot), if path is give save fig
            to path. for example
            lsavefile='/home/kbn/spec_1.jpg'
 
 Example
-ntk.ntk_spectrogram(lfp_all[0, :], 250, 4, 1, 64,
-                     lsavefile=None)
+ntk.ntk_spectrogram(lfp_all[0, :], fs, nperseg, noverlap, 1, 64,
+                    lsavefile=None)
 
 ```
 ---
