@@ -148,3 +148,49 @@ def notch_filter(data, fs, Q, ftofilter):
     datan = filtfilt(b, a, data)
 
     return datan
+
+
+def ntk_spectrogram(lfp, fs, nperseg_fact=4, f_low=1, f_high=64):
+
+    import matplotlib.pyplot as plt
+    import scipy.signal as signal
+    import numpy as np
+
+    '''
+    plot spectrogram
+
+    ntk_spectrogram(lfp, fs, nperseg_fact=4, f_low=1, f_high=64)
+
+    lfp : lfp one channel
+    fs : sampling frequency
+    nperseg_fact : multiple of fs to get length of each segment
+    f_low : filter frequencies below f_low
+    f_high : filter frequencies above f_high
+
+    Example:
+    ntk.ntk_spectrogram(lfp_all[0, :], 250, 4, 1, 64)
+
+    '''
+
+    nperseg = fs * nperseg_fact
+    noverlap = fs * nperseg_fact * 0.5
+    # nperseg length of each segment : (1sec = fs)
+    # nfft  same as nperseg
+    # noverlap = 0.5 sec  = 1/2fs
+    f, t_spec, x_spec = signal.spectrogram(lfp, fs=fs, window='hanning',
+                                           nperseg=nperseg,
+                                           noverlap=noverlap,
+                                           detrend=False,  mode='psd')
+    # Remove noise
+    x_mesh, y_mesh = np.meshgrid(t_spec, f[(f < f_high) & (f > f_low)])
+    plt.figure(figsize=(16, 2))
+    plt.pcolormesh(x_mesh, y_mesh,
+                   np.log10(x_spec[(f < f_high) & (f > f_low)]),
+                   cmap='jet')
+    plt.yscale('log')
+    # Add this if Sleep Wake scoring GUI has space
+    # plt.xlabel('Time in minutes')
+    # plt.ylabel('Frequency (log)')
+    # plt.tight_layout()
+    plt.show()
+    # plt.savefig('spec_1.jpg')
