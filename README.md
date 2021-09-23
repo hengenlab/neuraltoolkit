@@ -112,7 +112,7 @@ print("sh d ", d.shape)
 # plot second channel
 plt.plot(d[1, 0:10000])
 plt.show()
-# Load just one channel
+# Load just one channel. Please remember channel number here starts from 0.
 import neuraltoolkit as ntk
 import matplotlib.pyplot as plt
 name = 'DigitalPanel_2_Channels_bool_masked_uint64_2021-04-30_08-46-15.bin'
