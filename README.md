@@ -122,6 +122,24 @@ print("sh d ", d.shape)
 plt.plot(d[0:10000])
 plt.show()
 
+
+# Get licker sample times from recording block/session
+import neuraltoolkit as ntk
+fn_dir : path recording session containing DigitalPanel_*.bin files
+channel_number : channel number used to record licker data,
+                 (starts from zero)
+verbose: to print logs, default (off)
+licker_sample_times : sample number when licker data was 0
+t_estart : Ecube time for first digital file
+nsamples : total number of samples in all DigitalPanel_*.bin files
+           in that recording block/session
+For example:
+fn_dir = '/home/kbn/ABC1234/ABC1234_2021/'
+channel_number = 2
+verbose = 0
+licker_sample_times, t_estart, nsamples = \
+    ntk.get_licker_sample_times(fn_dir, channel_number, verbose=verbose)
+
 # Light dark transition
 datadir = '/media/data/D1/d1_c1/'
 l7ampm = 0 # if 1 just check files around 7:00 am and 7:00 pm
