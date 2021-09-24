@@ -27,6 +27,8 @@ try:
 except ImportError:
     raise ImportError('Run command : conda install numpy')
 import os
+import glob
+import time
 
 
 # Load Ecube HS data
@@ -838,3 +840,69 @@ def delete_probe(name, number_of_channels, hstype, nprobes=1,
     # print("dtype tr[0] ", tr[0].dtype)
     make_binaryfiles_ecubeformat(tr[0], drr,
                                  filename, ltype=1)
+
+
+def get_licker_sample_times(fn_dir, channel_number, verbose=0):
+
+    '''
+    Get licker sample times from recording block/session
+
+    get_licker_sample_times(fn_dir, channel_number, verbose=0)
+    fn_dir : path recording session containing DigitalPanel_*.bin files
+    channel_number : channel number used to record licker data,
+                     (starts from zero)
+    verbose: to print logs, default (off)
+
+    returns:
+    licker_sample_times : sample number when licker data was 0
+    t_estart : Ecube time for first digital file
+    nsamples : total number of samples in all DigitalPanel_*.bin files
+               in that recording block/session
+
+    For example:
+    fn_dir = '/home/kbn/ABC1234/ABC1234_2021/'
+    channel_number = 2
+    verbose = 0
+
+    licker_sample_times, t_estart, nsamples = \
+    ntk.get_licker_sample_times(fn_dir, channel_number, verbose=verbose)
+    '''
+
+    fl_list = np.sort(glob.glob(fn_dir + 'DigitalPanel_*.bin'))
+    print("Channel number starts from zero")
+    if verbose:
+        print("Total number of files is ", len(fl_list))
+
+    # array to store all licker data
+    licker_sample_times = np.array([], dtype=np.int64)
+    if verbose:
+        tic = time.time()
+    nsamples = np.int64(0)
+    # loop and load all files in recording session
+    for indx, fl in enumerate(fl_list):
+        t, d = \
+            load_digital_binary_allchannels(fl, t_only=0,
+                                            channel=channel_number)
+        if indx == 0:
+            t_estart = t[0]
+        if verbose:
+            print(indx, " ", fl, " samples ", d.shape)
+
+        nsamples = nsamples + d.shape[0]
+        licker_data_a_tmp = np.int64(np.where(d == 0)[0])
+        if not licker_data_a_tmp.size == 0:
+            licker_data_a_tmp = licker_data_a_tmp + nsamples
+            licker_sample_times = \
+                np.concatenate((licker_sample_times, licker_data_a_tmp),
+                               axis=0)
+            licker_data_a_tmp = None
+            print(licker_sample_times)
+
+    if verbose:
+        toc = time.time()
+        print("Time taken {:4f} seconds".format(toc-tic))
+
+    print("licker_sample_times ",  licker_sample_times,
+          " t_estart ",   t_estart,
+          "  nsamples ", nsamples)
+    return licker_sample_times, t_estart, nsamples
