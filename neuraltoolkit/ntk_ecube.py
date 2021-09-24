@@ -27,7 +27,6 @@ try:
 except ImportError:
     raise ImportError('Run command : conda install numpy')
 import os
-import glob
 import time
 
 
@@ -842,15 +841,17 @@ def delete_probe(name, number_of_channels, hstype, nprobes=1,
                                  filename, ltype=1)
 
 
-def get_licker_sample_times(fn_dir, channel_number, verbose=0):
+def get_licker_sample_times(fl_list=None, channel_number=None,
+                            val=0, verbose=0):
 
     '''
     Get licker sample times from recording block/session
 
-    get_licker_sample_times(fn_dir, channel_number, verbose=0)
-    fn_dir : path recording session containing DigitalPanel_*.bin files
+    get_licker_sample_times(fl_list, channel_number, val=0, verbose=0)
+    fl_list : file list of DigitalPanel_*.bin, ideally same as sorting block
     channel_number : channel number used to record licker data,
                      (starts from zero)
+    val : value to check, in case of licker it is 0 (default)
     verbose: to print logs, default (off)
 
     returns:
@@ -860,18 +861,32 @@ def get_licker_sample_times(fn_dir, channel_number, verbose=0):
                in that recording block/session
 
     For example:
+    import glob
+    import numpy as np
+    import neuraltoolkit as ntk
+
     fn_dir = '/home/kbn/ABC1234/ABC1234_2021/'
+    fl_list = np.sort(glob.glob(fn_dir + 'DigitalPanel_*.bin'))
+    # for second block of sorting (12 hour blocks, each)
+    fl_list = fl_list[144:288]
     channel_number = 2
+    value = 0
     verbose = 0
 
     licker_sample_times, t_estart, nsamples = \
-    ntk.get_licker_sample_times(fn_dir, channel_number, verbose=verbose)
+    ntk.get_licker_sample_times(fl_list, channel_number,
+                                val=value, verbose=verbose)
     '''
 
-    fl_list = np.sort(glob.glob(fn_dir + 'DigitalPanel_*.bin'))
+    # Do checks before proceeding
+    if (len(fl_list) == 0):
+        raise ValueError('cont_thresh_list list is empty')
+    if channel_number is None:
+        raise ValueError('channel_number not specified')
+
+    # fl_list = np.sort(glob.glob(fn_dir + 'DigitalPanel_*.bin'))
     print("Channel number starts from zero")
-    if verbose:
-        print("Total number of files is ", len(fl_list))
+    print("Total number of files is ", len(fl_list))
 
     # array to store all licker data
     licker_sample_times = np.array([], dtype=np.int64)
@@ -889,7 +904,7 @@ def get_licker_sample_times(fn_dir, channel_number, verbose=0):
             print(indx, " ", fl, " samples ", d.shape)
 
         nsamples = nsamples + d.shape[0]
-        licker_data_a_tmp = np.int64(np.where(d == 0)[0])
+        licker_data_a_tmp = np.int64(np.where(d == val)[0])
         if not licker_data_a_tmp.size == 0:
             licker_data_a_tmp = licker_data_a_tmp + nsamples
             licker_sample_times = \
