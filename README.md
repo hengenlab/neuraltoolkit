@@ -124,21 +124,35 @@ plt.show()
 
 
 # Get licker sample times from recording block/session
-import neuraltoolkit as ntk
-fn_dir : path recording session containing DigitalPanel_*.bin files
+Get licker sample times from recording block/session
+can be also used to analyze other digital data too,
+except watchtower
+get_licker_sample_times(fl_list, channel_number, val=0, verbose=0)
+fl_list : file list of DigitalPanel_*.bin, same as sorting block
+          This works only for new digital binary files
 channel_number : channel number used to record licker data,
                  (starts from zero)
+val : value to check, in case of licker it is 0 (default)
 verbose: to print logs, default (off)
+returns:
 licker_sample_times : sample number when licker data was 0
 t_estart : Ecube time for first digital file
 nsamples : total number of samples in all DigitalPanel_*.bin files
-           in that recording block/session
+           in fl_list
 For example:
+import glob
+import numpy as np
+import neuraltoolkit as ntk
 fn_dir = '/home/kbn/ABC1234/ABC1234_2021/'
+fl_list = np.sort(glob.glob(fn_dir + 'DigitalPanel_*.bin'))
+# for second block of sorting (12 hour blocks, each)
+fl_list = fl_list[144:288]
 channel_number = 2
+value = 0
 verbose = 0
 licker_sample_times, t_estart, nsamples = \
-    ntk.get_licker_sample_times(fn_dir, channel_number, verbose=verbose)
+ntk.get_licker_sample_times(fl_list, channel_number,
+                            val=value, verbose=verbose)
 
 # Light dark transition
 datadir = '/media/data/D1/d1_c1/'
