@@ -846,9 +846,12 @@ def get_licker_sample_times(fl_list=None, channel_number=None,
 
     '''
     Get licker sample times from recording block/session
+    can be also used to analyze other digital data too,
+    except watchtower
 
     get_licker_sample_times(fl_list, channel_number, val=0, verbose=0)
-    fl_list : file list of DigitalPanel_*.bin, ideally same as sorting block
+    fl_list : file list of DigitalPanel_*.bin, same as sorting block
+              This works only for new digital binary files
     channel_number : channel number used to record licker data,
                      (starts from zero)
     val : value to check, in case of licker it is 0 (default)
@@ -858,7 +861,7 @@ def get_licker_sample_times(fl_list=None, channel_number=None,
     licker_sample_times : sample number when licker data was 0
     t_estart : Ecube time for first digital file
     nsamples : total number of samples in all DigitalPanel_*.bin files
-               in that recording block/session
+               in fl_list
 
     For example:
     import glob
