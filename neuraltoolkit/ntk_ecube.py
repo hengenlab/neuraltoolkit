@@ -841,24 +841,24 @@ def delete_probe(name, number_of_channels, hstype, nprobes=1,
                                  filename, ltype=1)
 
 
-def get_licker_sample_times(fl_list=None, channel_number=None,
-                            val=0, verbose=0):
+def get_digital_event_sample_times(fl_list=None, channel_number=None,
+                                   val=0, verbose=0):
 
     '''
-    Get licker sample times from recording block/session
+    Get digital event sample times from recording block/session
     can be also used to analyze other digital data too,
     except watchtower
 
-    get_licker_sample_times(fl_list, channel_number, val=0, verbose=0)
+    get_digital_event_sample_times(fl_list, channel_number, val=0, verbose=0)
     fl_list : file list of DigitalPanel_*.bin, same as sorting block
               This works only for new digital binary files
-    channel_number : channel number used to record licker data,
+    channel_number : channel number used to record digital event data,
                      (starts from zero)
-    val : value to check, in case of licker it is 0 (default)
+    val : value to check, in case if digital event is 0 (default)
     verbose: to print logs, default (off)
 
     returns:
-    licker_sample_times : sample number when licker data was 0
+    digital_event_sample_times : sample number when digital event data was 0
     t_estart : Ecube time for first digital file
     nsamples : total number of samples in all DigitalPanel_*.bin files
                in fl_list
@@ -876,9 +876,9 @@ def get_licker_sample_times(fl_list=None, channel_number=None,
     value = 0
     verbose = 0
 
-    licker_sample_times, t_estart, nsamples = \
-    ntk.get_licker_sample_times(fl_list, channel_number,
-                                val=value, verbose=verbose)
+    digital_event_sample_times, t_estart, nsamples = \
+    ntk.get_digital_event_sample_times(fl_list, channel_number,
+                                       val=value, verbose=verbose)
     '''
 
     # Do checks before proceeding
@@ -891,8 +891,8 @@ def get_licker_sample_times(fl_list=None, channel_number=None,
     print("Channel number starts from zero")
     print("Total number of files is ", len(fl_list))
 
-    # array to store all licker data
-    licker_sample_times = np.array([], dtype=np.int64)
+    # array to store all digital_event data
+    digital_event_sample_times = np.array([], dtype=np.int64)
     if verbose:
         tic = time.time()
     nsamples = np.int64(0)
@@ -907,20 +907,21 @@ def get_licker_sample_times(fl_list=None, channel_number=None,
             print(indx, " ", fl, " samples ", d.shape)
 
         nsamples = nsamples + d.shape[0]
-        licker_data_a_tmp = np.int64(np.where(d == val)[0])
-        if not licker_data_a_tmp.size == 0:
-            licker_data_a_tmp = licker_data_a_tmp + nsamples
-            licker_sample_times = \
-                np.concatenate((licker_sample_times, licker_data_a_tmp),
+        digital_event_data_a_tmp = np.int64(np.where(d == val)[0])
+        if not digital_event_data_a_tmp.size == 0:
+            digital_event_data_a_tmp = digital_event_data_a_tmp + nsamples
+            digital_event_sample_times = \
+                np.concatenate((digital_event_sample_times,
+                               digital_event_data_a_tmp),
                                axis=0)
-            licker_data_a_tmp = None
-            print(licker_sample_times)
+            digital_event_data_a_tmp = None
+            # print(digital_event_sample_times)
 
     if verbose:
         toc = time.time()
         print("Time taken {:4f} seconds".format(toc-tic))
 
-    print("licker_sample_times ",  licker_sample_times,
+    print("digital_event_sample_times ",  digital_event_sample_times,
           " t_estart ",   t_estart,
           "  nsamples ", nsamples)
-    return licker_sample_times, t_estart, nsamples
+    return digital_event_sample_times, t_estart, nsamples
