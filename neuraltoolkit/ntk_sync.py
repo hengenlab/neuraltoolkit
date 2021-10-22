@@ -193,7 +193,7 @@ def map_videoframes_to_syncpulse(syncpulse_files: (str, list), fs: int = 25000):
     # The cumulative sums across files and signal widths allows us to compare offsets between files and signal widths
     cumsum_signal_widths = np.cumsum(output_matrix['sequence_length'])
     cumsum_signal_widths = np.insert(cumsum_signal_widths, 0, 0)[:-1]
-    cumsum_files = np.cumsum([np.sum(x) for x in all_file_lengths])
+    cumsum_files = np.cumsum(all_file_lengths)
     cumsum_files = np.insert(cumsum_files, 0, 0)[:-1]
 
     output_matrix['binfile_ix'] = np.searchsorted(cumsum_files, cumsum_signal_widths, side='right') - 1
@@ -243,7 +243,7 @@ def map_video_to_neural_data(syncpulse_files: (list, tuple, str),
      (             0,   555119,  10, 15128,  -1,      -1, -1, [ -1.  ,  -1.  ,  -1.  ,  -1.  ,  -1.  ,  -1.  ]),
      (  430271801375,   555120,  10, 15129,   0,  427068,  2, [ -1.  ,  -1.  ,  -1.  ,  -1.  ,  -1.  ,  -1.  ]),  ( ii)
      (  430338481375,   555121,  10, 15130,   0,  428735,  2, [ -1.  ,  -1.  ,  -1.  ,  -1.  ,  -1.  ,  -1.  ]),
-     ...
+     ...`
      (  530508401375,   556624,  10, 16633,   0, 2932983,  2, [ -1.  ,  -1.  ,  -1.  ,  -1.  ,  -1.  ,  -1.  ]),
      (  530575041375,   556625,  10, 16634,   0, 2934649,  2, [ -1.  ,  -1.  ,  -1.  ,  -1.  ,  -1.  ,  -1.  ]),
      (  530641721375,   556626,  11,     0,   0, 2936316,  2, [242.85,  79.17,   0.95, 239.24,  77.09,   0.  ]),  (iii)
@@ -357,11 +357,12 @@ def map_video_to_neural_data(syncpulse_files: (list, tuple, str),
 
     # Validation
     assert len(syncpulse_files) > 0, 'Found no syncpulse_files.'
-    assert len(video_files) > 0, 'Found no video_files.'
     assert len(neural_files) > 0, 'Found no neural_files.'
     assert neural_bin_files_per_sleepstate_file == -1 or neural_bin_files_per_sleepstate_file >= 1, \
         'neural_bin_files_per_sleepstate_file must be -1 or a value of 1 or more, value found: {}'\
         .format(neural_bin_files_per_sleepstate_file)
+    if len(video_files) == 0:
+        print(f'***\n*** Found no video_files {video_files}, using Digital Channel data to choose video frames for syncing.\n***')
 
     # output_matrix data types definition
     structured_array_dtypes = [
@@ -375,10 +376,6 @@ def map_video_to_neural_data(syncpulse_files: (list, tuple, str),
         ('dlc_label', (np.float32, 6)),
     ]
     ecube_interval = 1000000000 // fs
-
-    # Count frames in all video files
-    frame_counts = np.array([round(ntk.NTKVideos(vfile, 0).length) for vfile in video_files])
-    total_frames = np.sum(frame_counts)
 
     # Extract just the eCube timestamp from each raw neural recording file
     neural_ecube_timestamps = [int(row[0]) for row in neural_files_bom]
@@ -412,11 +409,17 @@ def map_video_to_neural_data(syncpulse_files: (list, tuple, str),
         raise AssertionError('Invalid eCube timestamp detected, this will cause errors in indexing, '
                              'see previous warning messages for details.')
 
-    output_matrix = np.empty((total_frames,), dtype=structured_array_dtypes)
-
     # Compute a precise eCube time per video frame, or 0 where no SyncPulse data exists
-    cumsum_frame_counts = np.insert(np.cumsum(frame_counts), 0, 0)[:-1]
     camera_pulse_output_matrix, pulse_ix, _ = map_videoframes_to_syncpulse(syncpulse_files, fs)
+
+    # Count frames in all video files
+    frame_counts = np.array([round(ntk.NTKVideos(vfile, 0).length) for vfile in video_files]) \
+        if len(video_files) > 0 else np.expand_dims(np.max(camera_pulse_output_matrix['frame_ids']), axis=0)
+    cumsum_frame_counts = np.insert(np.cumsum(frame_counts), 0, 0)[:-1]
+
+    # total_frames taken from video files if they exist, if not it's taken from digital file
+    total_frames = np.sum(frame_counts)  # if len(frame_counts) > 0 else np.max(camera_pulse_output_matrix['frame_ids'])  # todo remove
+    output_matrix = np.empty((total_frames,), dtype=structured_array_dtypes)
 
     if manual_video_neural_offset_sec != 0.0:
         # Manually change ecube times computed by map_videoframes_to_syncpulse if user specified the offset manually
@@ -549,6 +552,18 @@ def map_video_to_neural_data(syncpulse_files: (list, tuple, str),
 
         output_matrix['dlc_label'][video_frames_mask] = v
 
+    #
+    # Verify all neural_files are represented in output_matrix, issue strong warning when they aren't.
+    #
+    missing_neural_files = np.setdiff1d(np.arange(len(neural_files)), output_matrix['neural_filename_ix'])
+    for missing_neural_file_ix in missing_neural_files:
+        print(
+            f'***\n'
+            f'*** Neural data file {neural_files[missing_neural_file_ix]} is not represented in output_matrix\n'
+            f'***\n',
+            end=None,
+        )
+
     return output_matrix, video_files, neural_files, sleepstate_files, syncpulse_files, dlclabel_files, \
         camera_pulse_output_matrix, pulse_ix
 
@@ -601,12 +616,9 @@ def _resolve_neural_files_bom(neural_files_or_bom: list = None):
             csv_reader = csv.reader(csv_file)
             result = [tuple(row) for row in csv_reader]
     else:
-        result = []
-        # for nfile in neural_files_or_bom:  TODO delete
         # This process can take a long time when the files are on S3, parallelize
         with multiprocessing.Pool(20) as pool:
             result = pool.map(_read_ecube_time_and_file_size, neural_files_or_bom)
-            # result.append((ecube_time, file_size, filename))  TODO delete
 
     return result
 
