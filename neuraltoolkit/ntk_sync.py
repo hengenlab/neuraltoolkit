@@ -147,8 +147,8 @@ def map_videoframes_to_syncpulse(syncpulse_files: (str, list), fs: int = 25000):
     # Read the Sync Pulse files iteratively so memory isn't overloaded, compute and save points at which values
     # change between 000/111/000, compute the width of those signals, and compute the length of each file.
     for i, df in enumerate(syncpulse_files):
-        t, dr = ntk.load_digital_binary(df)
-
+        t, dr = ntk.load_digital_binary_allchannels(df)
+        dr = check_format_digital(dr)
         if i == 0:
             assert dr[0] == 0, 'This algorithm expects the first value of the first digital file to always be 0.'
             ecube_start_time = t
@@ -660,6 +660,13 @@ def save_neural_files_bom(output_filename: str = None, neural_files: (list, str)
         for row in bom:
             csv_writer.writerow(row)
 
+def check_format_digital(digital): 
+    if digital.shape[0] > 1:
+        differences = np.diff(digital, axis=1)
+        absolute = np.abs(differences)
+        sums = np.sum(absolute, axis=1)
+        index = np.argmax(sums)
+    return digital[index]
 
 def save_map_video_to_neural_data(output_filename: str = None,
                                   syncpulse_files: (str, list) = None,
