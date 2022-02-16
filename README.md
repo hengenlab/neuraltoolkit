@@ -365,6 +365,22 @@ v.grab_frame_num(frame_num, outpath)
 frame_num = 100
 v.grab_frame_num(frame_num)
 
+# Load all video files and return length
+import neuraltoolkit as ntk
+import glob
+import numpy as np
+videofile_list =  np.sort(glob.glob('/media/bs001r/watchtower2_tmp/PVCre_animals/KDR00035-*.mp4'))
+lstream = 0
+v_lengths = None
+v_lengths = []
+for indx, fl in enumerate(videofile_list):
+    print(indx, " ", fl)
+    v = ntk.NTKVideos(fl, lstream)
+    v_lengths.append([fl, v.length])
+for v in v_lengths:
+    print(v)
+
+
 # Read video files and return list of all video lengths
 v_lengths = ntk.get_video_length_list('/home/kbn/watchtower_current/data/')
 
