@@ -377,8 +377,8 @@ for indx, fl in enumerate(videofile_list):
     print(indx, " ", fl)
     v = ntk.NTKVideos(fl, lstream)
     v_lengths.append([fl, v.length])
-for v in v_lengths:
-    print(v)
+for vfl in v_lengths:
+    print(vfl)
 
 
 # Read video files and return list of all video lengths
