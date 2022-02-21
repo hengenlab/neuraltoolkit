@@ -932,7 +932,8 @@ def add_missing_files_with_random_noise(HS_file1, HS_file2,
                                         hstype,
                                         nprobes,
                                         fs=25000,
-                                        total_seconds=300):
+                                        total_seconds=300,
+                                        lraw=1):
     '''
     # Algo
     1. load bookends which are good get total_samples_between using ntk.samples_between_two_binfiles
@@ -950,41 +951,61 @@ def add_missing_files_with_random_noise(HS_file1, HS_file2,
     print("not implemented yet")
     return
 
-    data_low = -5
-    data_high = 5
-    data_type = 'int16'
-    total_samples_between = samples_between_two_binfiles(HS_file1, HS_file2,
-                                                         number_of_channels,
-                                                         hstype,
-                                                         nprobes=nprobes,
-                                                         lb1=1, lb2=1,
-                                                         fs=fs)
-    print("total_samples_between ", total_samples_between, flush=True)
+    if lraw:
+        data_low = -5
+        data_high = 5
+        data_type = 'int16'
+        total_samples_between = samples_between_two_binfiles(HS_file1, HS_file2,
+                                                             number_of_channels,
+                                                             hstype,
+                                                             nprobes=nprobes,
+                                                             lb1=1, lb2=1,
+                                                             fs=fs)
+        print("total_samples_between ", total_samples_between, flush=True)
 
-    HS_file1_samples = find_samples_per_chan(HS_file1, number_of_channels,
-                                             lraw=1)
-    print("HS_file1_samples ", HS_file1_samples, flush=True)
+        HS_file1_samples = find_samples_per_chan(HS_file1, number_of_channels,
+                                                 lraw=1)
+        print("HS_file1_samples ", HS_file1_samples, flush=True)
 
-    HS_file1_ts = load_raw_binary_gain_chmap(HS_file1,
-                                             number_of_channels,
-                                             hstype, nprobes=nprobes,
-                                             t_only=1)
-    print("HS_file1_ts ", HS_file1_ts, flush=True)
+        HS_file1_ts = load_raw_binary_gain_chmap(HS_file1,
+                                                 number_of_channels,
+                                                 hstype, nprobes=nprobes,
+                                                 t_only=1)
+        print("HS_file1_ts ", HS_file1_ts, flush=True)
 
-    number_of_files_missing = \
-        np.round((total_samples_between - HS_file1_samples) /
-                 (fs * total_seconds))
-    print("number_of_files_missing ", number_of_files_missing, flush=True)
+        HS_file2_ts = load_raw_binary_gain_chmap(HS_file2,
+                                                 number_of_channels,
+                                                 hstype, nprobes=nprobes,
+                                                 t_only=1)
+        print("HS_file2_ts ", HS_file2_ts, flush=True)
 
-    for indx, i in enumerate(range(np.int(number_of_files_missing -1))):
-        tnext = np.int64(HS_file1_ts + (( fs * total_seconds * (indx + 1) * 1e6)/25))
-        print("tnext ", tnext, flush=True)
-        if indx == 0:
-            print(((tnext - HS_file1_ts)*25)/1e6)
-        else:
-            print(((tnext - ts_old)*25)/1e6)
-        ts_old = tnext
-        # d = np.random.randint(data_low, data_high, (number_of_channels, (fs * total_seconds)),
-        #               dtype=data_type)
-        # print("sh d ", d.shape, flush=True)
+        number_of_files_missing = \
+            np.round((total_samples_between - HS_file1_samples) /
+                     (fs * total_seconds))
+        print("number_of_files_missing ", number_of_files_missing, flush=True)
+
+        for indx, i in enumerate(range(np.int(number_of_files_missing -1))):
+            if indx == 0:
+                tnext = np.int64(HS_file1_ts + ((HS_file1_samples * 1e6)/25))
+            else:
+                tnext = np.int64(ts_old + ((fs * total_seconds *  1e6)/25))
+            print("tnext ", tnext, flush=True)
+            if indx == 0:
+                print(((tnext - HS_file1_ts)*25)/1e6)
+            else:
+                print(((tnext - ts_old)*25)/1e6)
+            ts_old = tnext
+            # d = np.random.randint(data_low, data_high, (number_of_channels, (fs * total_seconds)),
+            #               dtype=data_type)
+            # print("sh d ", d.shape, flush=True)
+            # ntk.make_binaryfiles_ecubeformat(tnext, d, filename, ltype=2)
+
+        last_file_samples = np.round((total_samples_between - HS_file1_samples - ((np.int(number_of_files_missing -1)) * fs * total_seconds)))
+        print("last_file_samples ", last_file_samples, flush=True)
+        # ts_last = np.int64(ts_old +  (last_file_samples * 1e6)/25)
+        ts_last = np.int64(ts_old +  ((fs * total_seconds * 1e6)/25))
+        print("ts_last ", ts_last, flush=True)
+
+        #  d = np.random.randint(data_low, data_high, (number_of_channels, last_file_samples), dtype=data_type)
+        # ntk.make_binaryfiles_ecubeformat(ts_last, d, filename, ltype=2)
 
