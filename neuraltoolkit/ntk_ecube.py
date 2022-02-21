@@ -936,18 +936,7 @@ def add_missing_files_with_random_noise(HS_file1, HS_file2,
                                         total_seconds=300,
                                         lraw=1):
     '''
-    # Algo
-    1. load bookends which are good get total_samples_between using ntk.samples_between_two_binfiles
-    2. Now from first file in the bookend use ntk.find_samples_per_chan and substract from total_samples_between or
-    load first file get data.shape and substract from total_samples_between
-    2.1  get first files timestamp
-    3. calculate (total_samples_between - samples_from 2. or data.shape of first file) /( 25000 * 60 * 5). This should give estimate on number_of_files_missing.
-    4. Create number_of_files_missing -1 files with 25000 * 60 * 5 using make_binaryfiles_ecubeformat
-    5. Create last file with number of samples = (total_samples_between - samples_from 2. or data.shape of first file - number_of_files_missing*(25000 * 60 * 5))
-    6. Make sure file names from 4 and 5 form continous list when we do np.sort(glob.glob)
-    #
-    /media/bs006r/CAF00075/CAF00075_2021-01-25_16-36-32/Headstages_256_Channels_int16_2021-01-27_16-31-33.bin
-    /media/bs006r/CAF00075/CAF00075_2021-01-25_16-36-32/Headstages_256_Channels_int16_2021-01-27_17-36-33.bin
+    add_missing_files_with_random_noise
     '''
 
     from datetime import datetime
@@ -955,33 +944,40 @@ def add_missing_files_with_random_noise(HS_file1, HS_file2,
     print("not implemented yet")
     return
 
-
     if lraw:
         data_low = -5
         data_high = 5
+        file_length = 5  # minutes
         data_type = 'int16'
+        msfile = open(os.path.join(outdir, "missing_files.txt"), 'a')
+
 
         if os.path.samefile(outdir, os.path.split(HS_file1)[0]):
-            raise ValueError('HS_file1 location {} and outdir {} must be different'.
-                             format(HS_file1, outdir))
+            raise \
+                ValueError('HS_file1 paths {} and outdir {} must be different'.
+                           format(HS_file1, outdir))
         if os.path.samefile(outdir, os.path.split(HS_file2)[0]):
-            raise ValueError('HS_file2 location {} and outdir {} must be different'.
-                             format(HS_file1, outdir))
-
+            raise \
+                ValueError('HS_file2 paths {} and outdir {} must be different'.
+                           format(HS_file1, outdir))
 
         print("HS_file1 ", HS_file1, flush=True)
-        e_time_string0 = HS_file1.split('int16_')[0]
-        e_time_string1 = HS_file1.split('int16_')[1].replace('.bin','')
+        e_time_string0 = os.path.split(HS_file1)[1].split('int16_')[0]
+        print("e_time_string0 ",e_time_string0)
+        print("outdir ", outdir)
+        e_time_string1 = HS_file1.split('int16_')[1].replace('.bin', '')
         print(e_time_string1)
         HS_file1_date = datetime.strptime(e_time_string1.replace("_", " "),
                                           "%Y-%m-%d %H-%M-%S")
 
-        total_samples_between = samples_between_two_binfiles(HS_file1, HS_file2,
-                                                             number_of_channels,
-                                                             hstype,
-                                                             nprobes=nprobes,
-                                                             lb1=1, lb2=1,
-                                                             fs=fs)
+        total_samples_between =\
+            samples_between_two_binfiles(HS_file1,
+                                         HS_file2,
+                                         number_of_channels,
+                                         hstype,
+                                         nprobes=nprobes,
+                                         lb1=1, lb2=1,
+                                         fs=fs)
         print("total_samples_between ", total_samples_between, flush=True)
 
         HS_file1_samples = find_samples_per_chan(HS_file1, number_of_channels,
@@ -1005,44 +1001,61 @@ def add_missing_files_with_random_noise(HS_file1, HS_file2,
                      (fs * total_seconds))
         print("number_of_files_missing ", number_of_files_missing, flush=True)
 
-        for indx, i in enumerate(range(np.int(number_of_files_missing -1))):
+        ts_old = 0
+        for indx, i in enumerate(range(np.int(number_of_files_missing - 1))):
             if indx == 0:
-                tnext = np.int64(HS_file1_ts + ((HS_file1_samples * 1e6)/25))
+                tnext = np.uint64(HS_file1_ts + ((HS_file1_samples * 1e6)/25))
             else:
-                tnext = np.int64(ts_old + ((fs * total_seconds *  1e6)/25))
+                tnext = np.uint64(ts_old + ((fs * total_seconds * 1e6)/25))
             print("tnext ", tnext, flush=True)
-            if indx == 0:
-                print(((tnext - HS_file1_ts)*25)/1e6)
-            else:
-                print(((tnext - ts_old)*25)/1e6)
             ts_old = tnext
-            # d = np.random.randint(data_low, data_high, (number_of_channels, (fs * total_seconds)),
-            #               dtype=data_type)
-            # print("sh d ", d.shape, flush=True)
+
+            d = np.random.randint(data_low, data_high,
+                                  (number_of_channels,
+                                   (fs * total_seconds)),
+                                  dtype=data_type)
+            print("sh d ", d.shape, flush=True)
 
             next_time = HS_file1_date + timedelta(minutes=int(5 * (indx + 1)))
             fs_next_time = next_time.strftime('%Y-%m-%d_%H-%M-%S')
             filename = e_time_string0 + fs_next_time + '.bin'
+            print("filename ", filename, flush=True)
             filename = os.path.join(outdir, filename)
 
-            print("filename ", filename)
-            # ntk.make_binaryfiles_ecubeformat(tnext, d, filename, ltype=2)
+            print("filename ", filename, flush=True)
+            # print("ty tnext ", type(tnext), flush=True)
+            # print("sh tnext ", tnext.shape, flush=True)
+            # print("ty d ", type(d), flush=True)
+            # print("sh d ", d.shape, flush=True)
+            # print("ty tnext[0] ", type(tnext[0]), flush=True)
+            make_binaryfiles_ecubeformat(tnext[0], d, filename, ltype=1)
+            msfile.write(filename + "\t" + str(tnext[0]) + "\n")
 
-
-        last_file_samples = np.round((total_samples_between - HS_file1_samples - ((np.int(number_of_files_missing -1)) * fs * total_seconds)))
+        last_file_samples = np.round((total_samples_between -
+                                      HS_file1_samples -
+                                      ((np.int(number_of_files_missing - 1)) *
+                                       fs * total_seconds)))
         print("last_file_samples ", last_file_samples, flush=True)
-        # ts_last = np.int64(ts_old +  (last_file_samples * 1e6)/25)
-        ts_last = np.int64(ts_old +  ((fs * total_seconds * 1e6)/25))
-        print("ts_last ", ts_last, flush=True)
+        # ts_last = np.uint64(ts_old +  (last_file_samples * 1e6)/25)
+        ts_last = np.uint64(ts_old + ((fs * total_seconds * 1e6)/25))
+        print("ts_last ", ts_last[0], flush=True)
 
-        #  d = np.random.randint(data_low, data_high, (number_of_channels, last_file_samples), dtype=data_type)
+        d = np.random.randint(data_low, data_high, (number_of_channels,
+                                                    last_file_samples),
+                              dtype=data_type)
 
-
-        next_time = HS_file1_date + timedelta(minutes=int((5 * (indx + 1)) + np.round(last_file_samples/(fs * (total_seconds/5.0)))))
+        next_time = HS_file1_date + timedelta(minutes=int((file_length *
+                                                           (indx + 1)) +
+                                              np.round(last_file_samples /
+                                                       (fs * (total_seconds /
+                                                              file_length)))))
         fs_next_time = next_time.strftime('%Y-%m-%d_%H-%M-%S')
         filename = e_time_string0 + fs_next_time + '.bin'
         filename = os.path.join(outdir, filename)
         print("filename ", filename)
-        # ntk.make_binaryfiles_ecubeformat(ts_last, d, filename, ltype=2)
+        make_binaryfiles_ecubeformat(ts_last[0], d, filename, ltype=1)
+        msfile.write(filename + "\t" + str(ts_last[0]) + "\n")
 
         print("HS_file2 ", HS_file2, flush=True)
+
+        msfile.close()
