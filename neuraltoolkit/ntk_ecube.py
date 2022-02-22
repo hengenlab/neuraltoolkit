@@ -530,14 +530,28 @@ def make_binaryfiles_ecubeformat(t, d, filename, ltype=2):
         assert len(np.unique(d)) <= 2, 'Supports only 1 and 0'
 
     # Open file to write
+    # print("dt t ", t.dtype, flush=True)
+    # print("dd d ", d.dtype, flush=True)
+    # print("sh d ", d.shape, flush=True)
+    # print("ltype ", ltype, flush=True)
+    if ltype == 1:
+        d = d.transpose()
+        # print("dd d ", d.dtype, flush=True)
+        # print("sh d ", d.shape, flush=True)
+        d = d.flatten()
+    # print("dd d ", d.dtype, flush=True)
+    # print("sh d ", d.shape, flush=True)
     with open(filename, "wb") as binary_file:
         # Write time
         binary_file.write(struct.pack('Q', t))
 
         # Write data rawdata/digital
         if ltype == 1:
-            binary_file.write(struct.pack('h'*d.size,
-                              *d.transpose().flatten()))
+            # binary_file.write(struct.pack('h'*d.size,
+            #                   *d.transpose().flatten()))
+            for ds in d:
+                binary_file.write(struct.pack('h',
+                                  ds))
         elif ltype == 2:
             binary_file.write(struct.pack('q'*d.size,  *d.flatten()))
         else:
@@ -941,8 +955,8 @@ def add_missing_files_with_random_noise(HS_file1, HS_file2,
 
     from datetime import datetime
     from datetime import timedelta
-    print("not implemented yet")
-    return
+    # print("not implemented yet")
+    # return
 
     if lraw:
         data_low = -5
@@ -950,7 +964,6 @@ def add_missing_files_with_random_noise(HS_file1, HS_file2,
         file_length = 5  # minutes
         data_type = 'int16'
         msfile = open(os.path.join(outdir, "missing_files.txt"), 'a')
-
 
         if os.path.samefile(outdir, os.path.split(HS_file1)[0]):
             raise \
@@ -963,7 +976,7 @@ def add_missing_files_with_random_noise(HS_file1, HS_file2,
 
         print("HS_file1 ", HS_file1, flush=True)
         e_time_string0 = os.path.split(HS_file1)[1].split('int16_')[0]
-        print("e_time_string0 ",e_time_string0)
+        print("e_time_string0 ", e_time_string0)
         print("outdir ", outdir)
         e_time_string1 = HS_file1.split('int16_')[1].replace('.bin', '')
         print(e_time_string1)
@@ -1010,11 +1023,13 @@ def add_missing_files_with_random_noise(HS_file1, HS_file2,
             print("tnext ", tnext, flush=True)
             ts_old = tnext
 
+            d = None
             d = np.random.randint(data_low, data_high,
                                   (number_of_channels,
                                    (fs * total_seconds)),
                                   dtype=data_type)
             print("sh d ", d.shape, flush=True)
+            print("dt d ", d.dtype, flush=True)
 
             next_time = HS_file1_date + timedelta(minutes=int(5 * (indx + 1)))
             fs_next_time = next_time.strftime('%Y-%m-%d_%H-%M-%S')
@@ -1030,6 +1045,7 @@ def add_missing_files_with_random_noise(HS_file1, HS_file2,
             # print("ty tnext[0] ", type(tnext[0]), flush=True)
             make_binaryfiles_ecubeformat(tnext[0], d, filename, ltype=1)
             msfile.write(filename + "\t" + str(tnext[0]) + "\n")
+            # sys.exit()
 
         last_file_samples = np.round((total_samples_between -
                                       HS_file1_samples -
