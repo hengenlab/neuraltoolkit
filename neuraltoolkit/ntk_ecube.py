@@ -1057,7 +1057,7 @@ def add_missing_files_with_random_noise(HS_file1, HS_file2,
         print("ts_last ", ts_last[0], flush=True)
 
         d = np.random.randint(data_low, data_high, (number_of_channels,
-                                                    last_file_samples),
+                                                    np.int(last_file_samples)),
                               dtype=data_type)
 
         next_time = HS_file1_date + timedelta(minutes=int((file_length *
