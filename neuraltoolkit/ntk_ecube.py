@@ -959,8 +959,9 @@ def add_missing_files_with_random_noise(HS_file1, HS_file2,
     # return
 
     if lraw:
-        data_low = -5
-        data_high = 5
+        gain = np.float64(0.19073486328125)
+        data_low = np.round(-5 / gain)
+        data_high = np.round(5 / gain)
         file_length = 5  # minutes
         data_type = 'int16'
         msfile = open(os.path.join(outdir, "missing_files.txt"), 'a')
