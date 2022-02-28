@@ -1108,7 +1108,7 @@ def check_missing_files(file_list=None, total_seconds=300):
 
     # add 1 for last file
     nfiles = np.round((HS_file_end_date -
-                       HS_file_start_date).seconds/total_seconds).astype(int)
+                       HS_file_start_date).seconds/total_seconds).astype(int) + 1
     print("nfiles ", nfiles, " len(file_list) ", len(file_list))
     if nfiles != len(file_list):
         #  raise ValueError("Check whether these is any missing files")
