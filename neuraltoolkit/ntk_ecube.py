@@ -1076,3 +1076,43 @@ def add_missing_files_with_random_noise(HS_file1, HS_file2,
         print("HS_file2 ", HS_file2, flush=True)
 
         msfile.close()
+
+
+def check_missing_files(file_list=None, total_seconds=300):
+    '''
+    check there is missing files in the file list
+    '''
+    # import os
+    import sys
+    # import glob
+    from datetime import datetime
+    # from datetime import timedelta
+
+    # max_delta = 30
+    # max_min = 5
+    HS_file_start = file_list[0]
+    HS_file_end = file_list[-1]
+
+    e_time_string_start = HS_file_start.split('int16_')[1].replace('.bin', '')
+    print(e_time_string_start)
+    HS_file_start_date = \
+        datetime.strptime(e_time_string_start.replace("_", " "),
+                          "%Y-%m-%d %H-%M-%S")
+
+    e_time_string_end = HS_file_end.split('int16_')[1].replace('.bin', '')
+    print(e_time_string_end)
+    HS_file_end_date = datetime.strptime(e_time_string_end.replace("_", " "),
+                                         "%Y-%m-%d %H-%M-%S")
+    print("HS_file_start_date ", HS_file_start_date,
+          " HS_file_end_date ", HS_file_end_date)
+
+    # add 1 for last file
+    nfiles = np.round((HS_file_end_date -
+                       HS_file_start_date).seconds/total_seconds).astype(int)
+    print("nfiles ", nfiles, " len(file_list) ", len(file_list))
+    if nfiles != len(file_list):
+        #  raise ValueError("Check whether these is any missing files")
+        print("Check whether these is any missing files", nfiles,
+              " ", len(file_list))
+        print("Check whether these is any missing files", nfiles, " ",
+              len(file_list), file=sys.stderr)
