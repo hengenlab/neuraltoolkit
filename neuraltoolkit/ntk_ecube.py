@@ -1116,5 +1116,5 @@ def check_missing_files(file_list=None, total_seconds=300):
               " ", len(file_list))
         print("Check whether these is any missing files", nfiles, " ",
               len(file_list), file=sys.stderr)
-        sys.stderr.write("Check whether these is any missing files", nfiles, " ",
-              len(file_list), file=sys.stderr)
+        sys.stderr.write("Check whether these is any missing files" + str(nfiles) + " " +
+              str(len(file_list)))
