@@ -150,8 +150,8 @@ def notch_filter(data, fs, Q, ftofilter):
     return datan
 
 
-def ntk_spectrogram(lfp, fs, nperseg, noverlap, f_low=1, f_high=64,
-                    lsavefile=None):
+def ntk_spectrogram(lfp, fs, nperseg=None, noverlap=None, f_low=1, f_high=64,
+                    lsavedir=None, hour=0, reclen=3600, lsavedeltathetha=0):
 
     import matplotlib.pyplot as plt
     import scipy.signal as signal
@@ -159,38 +159,45 @@ def ntk_spectrogram(lfp, fs, nperseg, noverlap, f_low=1, f_high=64,
     import os
 
     '''
-    plot spectrogram
+    plot spectrogram and save delta and thetha
 
     ntk_spectrogram(lfp, fs, nperseg, noverlap, f_low=1, f_high=64,
-                    lsavefile=None)
+                    lsavedir=None)
 
     lfp : lfp one channel
     fs : sampling frequency
-    nperseg : length of each segment
-    noverlap : number of points to overlap between segments
+    nperseg : length of each segment (default fs *4)
+    noverlap : number of points to overlap between segments (default fs*2)
     f_low : filter frequencies below f_low
     f_high : filter frequencies above f_high
     lsaveloc : default None (show plot), if path is give save fig
                to path. for example
-               lsavefile='/home/kbn/spec_1.jpg'
+               lsavedir='/home/kbn/'
+    hour: by default 0
+    reclen: one hour in seconds (default 3600)
 
     Example:
     ntk.ntk_spectrogram(lfp_all[0, :], fs, nperseg, noverlap, 1, 64,
-                        lsavefile='/home/kbn/spec_1.jpg')
+                        lsavedir='/home/kbn/')
 
     '''
 
-    if lsavefile is not None:
+    if lsavedir is not None:
         # Check directory exists
-        if not (os.path.exists(os.path.split(lsavefile)[0]) and
-                os.path.isdir(os.path.split(lsavefile)[0])):
+        if not (os.path.exists(lsavedir) and
+                os.path.isdir(lsavedir)):
             raise NotADirectoryError("Directory {} does not exists".
-                                     format(os.path.split(lsavefile)[0]))
+                                     format(lsavedir))
+    if nperseg is None:
+        nperseg = fs * 4
+    if noverlap is None:
+        noverlap = fs * 2
 
     f, t_spec, x_spec = signal.spectrogram(lfp, fs=fs, window='hanning',
                                            nperseg=nperseg,
                                            noverlap=noverlap,
                                            detrend=False,  mode='psd')
+    print("sh x_spec ", x_spec.shape)
     # Remove noise
     x_mesh, y_mesh = np.meshgrid(t_spec, f[(f < f_high) & (f > f_low)])
     plt.figure(figsize=(16, 2))
@@ -202,7 +209,32 @@ def ntk_spectrogram(lfp, fs, nperseg, noverlap, f_low=1, f_high=64,
     # plt.xlabel('Time in minutes')
     # plt.ylabel('Frequency (log)')
     # plt.tight_layout()
-    if lsavefile is None:
+    if lsavedir is None:
         plt.show()
     else:
-        plt.savefig(lsavefile)
+        plt.savefig(os.path.join(lsavedir, 'specthr' + str(hour) + '.jpg'))
+
+    if lsavedeltathetha:
+        # Extract delta, thetha
+        delt = sum(x_spec[np.where(np.logical_and(f >= 1, f <= 4))])
+        thetw = sum(x_spec[np.where(np.logical_and(f >= 2, f <= 16))])
+        thetn = sum(x_spec[np.where(np.logical_and(f >= 5, f <= 10))])
+        thet = thetn/thetw
+
+        # Normalize delta and thetha
+        delt = (delt-np.average(delt))/np.std(delt)
+        thet = (thet-np.average(thet))/np.std(thet)
+
+        # Add padding to make it an hour
+        dispt = 4*reclen - np.size(thet)
+        dispd = 4*reclen - np.size(thet)
+        print("dispt ", dispt, " dispd ", dispd)
+        if dispt > 0:
+            print("Added padding")
+            thet = np.pad(thet, (0, dispt), 'constant')
+        if dispd > 0:
+            print("Added padding")
+            delt = np.pad(delt, (0, dispd), 'constant')
+
+        np.save(os.path.join(lsavedir, 'delt' + str(hour) + '.npy'), delt)
+        np.save(os.path.join(lsavedir, 'thet' + str(hour) + '.npy'), thet)
