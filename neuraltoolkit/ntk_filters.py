@@ -231,10 +231,12 @@ def ntk_spectrogram(lfp, fs, nperseg=None, noverlap=None, f_low=1, f_high=64,
         dispd = reclen//2 - np.size(thet)
         print("dispt ", dispt, " dispd ", dispd)
         if dispt > 0:
-            print("Added padding")
+            if dispt > 1:
+                print("Added padding")
             thet = np.pad(thet, (0, dispt), 'constant')
         if dispd > 0:
-            print("Added padding")
+            if dispd > 1:
+                print("Added padding")
             delt = np.pad(delt, (0, dispd), 'constant')
 
         np.save(os.path.join(lsavedir, 'delt' + str(hour) + '.npy'), delt)
