@@ -224,10 +224,11 @@ def ntk_spectrogram(lfp, fs, nperseg=None, noverlap=None, f_low=1, f_high=64,
         # Normalize delta and thetha
         delt = (delt-np.average(delt))/np.std(delt)
         thet = (thet-np.average(thet))/np.std(thet)
+        print("sh delt ", delt.shape, " sh thet ", thet.shape)
 
         # Add padding to make it an hour
-        dispt = 4*reclen - np.size(thet)
-        dispd = 4*reclen - np.size(thet)
+        dispt = reclen//2 - np.size(thet)
+        dispd = reclen//2 - np.size(thet)
         print("dispt ", dispt, " dispd ", dispd)
         if dispt > 0:
             print("Added padding")
