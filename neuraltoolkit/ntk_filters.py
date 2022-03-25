@@ -16,6 +16,9 @@ butter_highpass(data, highpass, fs, order=3)
 welch_power(data, fs, lengthseg, noverlappoints, axis_n=-1, lplot=0)
 notch_filter(data, fs, Q, ftofilter)
 '''
+import numpy as np
+import os
+import glob
 
 
 # Butterworth filters
@@ -151,7 +154,9 @@ def notch_filter(data, fs, Q, ftofilter):
 
 
 def ntk_spectrogram(lfp, fs, nperseg=None, noverlap=None, f_low=1, f_high=64,
-                    lsavedir=None, hour=0, reclen=3600, lsavedeltathetha=0):
+                    lsavedir=None, hour=0, chan=0, reclen=3600,
+                    lsavedeltathetha=0,
+                    probenum=None):
 
     import matplotlib.pyplot as plt
     import scipy.signal as signal
@@ -162,7 +167,9 @@ def ntk_spectrogram(lfp, fs, nperseg=None, noverlap=None, f_low=1, f_high=64,
     plot spectrogram and save delta and thetha
 
     ntk_spectrogram(lfp, fs, nperseg, noverlap, f_low=1, f_high=64,
-                    lsavedir=None, hour=0, reclen=3600, lsavedeltathetha=0)
+                    lsavedir=None, hour=0, chan=0, reclen=3600,
+                    lsavedeltathetha=0,
+                    probenum=None)
 
     lfp : lfp one channel
     fs : sampling frequency
@@ -174,13 +181,16 @@ def ntk_spectrogram(lfp, fs, nperseg=None, noverlap=None, f_low=1, f_high=64,
                to path. for example
                lsavedir='/home/kbn/'
     hour: by default 0
+    chan: by default 0
     reclen: one hour in seconds (default 3600)
     lsavedeltathetha : whether to save delta and thetha too
+    probenum : which probe to return (starts from zero)
 
     Example:
     ntk.ntk_spectrogram(lfp_all[0, :], fs, nperseg, noverlap, 1, 64,
                         lsavedir='/home/kbn/',
-                        hour=0, reclen=3600, lsavedeltathetha=0)
+                        hour=0, chan=0, reclen=3600, lsavedeltathetha=0,
+                        probenum=None)
 
     '''
 
@@ -199,7 +209,7 @@ def ntk_spectrogram(lfp, fs, nperseg=None, noverlap=None, f_low=1, f_high=64,
                                            nperseg=nperseg,
                                            noverlap=noverlap,
                                            detrend=False,  mode='psd')
-    print("sh x_spec ", x_spec.shape)
+    # print("sh x_spec ", x_spec.shape)
     # Remove noise
     x_mesh, y_mesh = np.meshgrid(t_spec, f[(f < f_high) & (f > f_low)])
     plt.figure(figsize=(16, 2))
@@ -214,7 +224,22 @@ def ntk_spectrogram(lfp, fs, nperseg=None, noverlap=None, f_low=1, f_high=64,
     if lsavedir is None:
         plt.show()
     else:
-        plt.savefig(os.path.join(lsavedir, 'specthr' + str(hour) + '.jpg'))
+        if probenum is None:
+            if chan is None:
+                plt.savefig(os.path.join(lsavedir, 'specthr' +
+                                         str(hour) + '.jpg'))
+            else:
+                plt.savefig(os.path.join(lsavedir, 'specthr' +
+                                         '_ch' + str(chan) +
+                                         str(hour) + '.jpg'))
+        else:
+            if chan is None:
+                plt.savefig(os.path.join(lsavedir, 'specthr' + str(hour) +
+                                         '_probe' + str(probenum) + '.jpg'))
+            else:
+                plt.savefig(os.path.join(lsavedir, 'specthr' + str(hour) +
+                                         '_ch' + str(chan) +
+                                         '_probe' + str(probenum) + '.jpg'))
 
     if lsavedeltathetha:
         # Extract delta, thetha
@@ -226,12 +251,12 @@ def ntk_spectrogram(lfp, fs, nperseg=None, noverlap=None, f_low=1, f_high=64,
         # Normalize delta and thetha
         delt = (delt-np.average(delt))/np.std(delt)
         thet = (thet-np.average(thet))/np.std(thet)
-        print("sh delt ", delt.shape, " sh thet ", thet.shape)
+        # print("sh delt ", delt.shape, " sh thet ", thet.shape)
 
         # Add padding to make it an hour
         dispt = reclen//2 - np.size(thet)
         dispd = reclen//2 - np.size(thet)
-        print("dispt ", dispt, " dispd ", dispd)
+        # print("dispt ", dispt, " dispd ", dispd)
         if dispt > 0:
             if dispt > 1:
                 print("Added padding")
@@ -241,5 +266,12 @@ def ntk_spectrogram(lfp, fs, nperseg=None, noverlap=None, f_low=1, f_high=64,
                 print("Added padding")
             delt = np.pad(delt, (0, dispd), 'constant')
 
-        np.save(os.path.join(lsavedir, 'delt' + str(hour) + '.npy'), delt)
-        np.save(os.path.join(lsavedir, 'thet' + str(hour) + '.npy'), thet)
+        if probenum is None:
+            np.save(os.path.join(lsavedir, 'delt' + str(hour) + '.npy'), delt)
+            np.save(os.path.join(lsavedir, 'thet' + str(hour) + '.npy'), thet)
+        else:
+            np.save(os.path.join(lsavedir, 'delt' + str(hour) +
+                                 '_probe' + str(probenum) + '.npy'), delt)
+            np.save(os.path.join(lsavedir, 'thet' + str(hour) +
+                                 '_probe' + str(probenum) + '.npy'), thet)
+    plt.close('all')
