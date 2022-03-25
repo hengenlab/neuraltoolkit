@@ -461,7 +461,9 @@ lfp = ntk.butter_lowpass(rawdata, lowpass, fs, order=3)
 
 # spectrogram
 ntk_spectrogram(lfp, fs, nperseg, noverlap, f_low=1, f_high=64,
-                lsavedir=None, hour=0, reclen=3600, lsavedeltathetha=0)
+                lsavedir=None, hour=0, chan=0, reclen=3600,
+                lsavedeltathetha=0,
+                probenum=None)
 
 lfp : lfp one channel
 fs : sampling frequency
@@ -469,17 +471,21 @@ nperseg : length of each segment if None, default fs *4
 noverlap : number of points to overlap between segments if None, default fs *2
 f_low : filter frequencies below f_low
 f_high : filter frequencies above f_high
-lsavefile : default None (show plot), if path is give save fig
+lsavedir : default None (show plot), if path is give save fig
            to path. for example
-           lsavefile='/home/kbn/spec_1.jpg'
+           lsavefile='/home/kbn/'
 hour: by default 0
+chan: by default 0
 reclen: one hour in seconds (default 3600)
 lsavedeltathetha : whether to save delta and thetha too
+probenum : which probe to return (starts from zero)
 
 
 Example
 ntk.ntk_spectrogram(lfp_all[0, :], fs, nperseg, noverlap, 1, 64,
-                    lsavefile=None, hour=0, reclen=3600, lsavedeltathetha=0)
+                    lsavefile=None, hour=0, chan=0,
+                    reclen=3600, lsavedeltathetha=0,
+                    probenum=1)
 
 ```
 ---
