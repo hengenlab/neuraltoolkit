@@ -162,7 +162,7 @@ def ntk_spectrogram(lfp, fs, nperseg=None, noverlap=None, f_low=1, f_high=64,
     plot spectrogram and save delta and thetha
 
     ntk_spectrogram(lfp, fs, nperseg, noverlap, f_low=1, f_high=64,
-                    lsavedir=None)
+                    lsavedir=None, hour=0, reclen=3600, lsavedeltathetha=0)
 
     lfp : lfp one channel
     fs : sampling frequency
@@ -175,10 +175,12 @@ def ntk_spectrogram(lfp, fs, nperseg=None, noverlap=None, f_low=1, f_high=64,
                lsavedir='/home/kbn/'
     hour: by default 0
     reclen: one hour in seconds (default 3600)
+    lsavedeltathetha : whether to save delta and thetha too
 
     Example:
     ntk.ntk_spectrogram(lfp_all[0, :], fs, nperseg, noverlap, 1, 64,
-                        lsavedir='/home/kbn/')
+                        lsavedir='/home/kbn/',
+                        hour=0, reclen=3600, lsavedeltathetha=0)
 
     '''
 
