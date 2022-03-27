@@ -487,6 +487,32 @@ ntk.ntk_spectrogram(lfp_all[0, :], fs, nperseg, noverlap, 1, 64,
                     reclen=3600, lsavedeltathetha=0,
                     probenum=1)
 
+
+# Select channels for lfp extraction
+import neuraltoolkit as ntk
+
+# Select LFP channels for second probe
+rawdat_dir='/media/KDR00032/KDR00032_L1_W2_2022-01-24_09-08-46/'
+# Standard /media/HlabShare/Sleep_Scoring/ABC00001/LFP_chancheck/'
+outdir='/media/HlabShare/Sleep_Scoring/ABC00001/LFP_chancheck/'
+hstype = ['APT_PCB', 'APT_PCB']
+# hour: hour to generate spectrograms
+hour = 0
+# fs: sampling frequency (default 25000)
+#    nprobes : Number of probes (default 1)
+#    number_of_channels : total number of channels
+#    probenum : which probe to return (starts from zero)
+#    probechans : number of channels per probe (symmetric)
+#    lfp_lowpass : default 250
+
+
+ntk.selectlfpchans(rawdat_dir, outdir, hstype, hour,
+                   fs=25000, nprobes=2, number_of_channels=128,
+                   probenum=0, probechans=64, lfp_lowpass=250)
+ntk.selectlfpchans(rawdat_dir, outdir, hstype, hour,
+                   fs=25000, nprobes=2, number_of_channels=128,
+                   probenum=1, probechans=64, lfp_lowpass=250)
+
 ```
 ---
 ## high dimensional data
