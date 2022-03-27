@@ -19,6 +19,11 @@ notch_filter(data, fs, Q, ftofilter)
 import numpy as np
 import os
 import glob
+import scipy.signal as signal
+from scipy.signal import butter, filtfilt
+from scipy.signal import cheby1
+import matplotlib.pyplot as plt
+from neuraltoolkit import ntk_ecube
 
 
 # Butterworth filters
@@ -29,8 +34,6 @@ def butter_bandpass(data, highpass, lowpass, fs, order=3):
     butter_bandpass(data, highpass, lowpass, fs, order=3)
     result = butter_bandpass(data, 500, 4000, 25000, 3)
     '''
-
-    from scipy.signal import butter, filtfilt
 
     nyq = 0.5 * fs
     high_pass = highpass / nyq
@@ -48,8 +51,6 @@ def butter_lowpass(data, lowpass, fs, order=3):
     result = butter_lowpass(data, 500,  25000, 3)
     '''
 
-    from scipy.signal import butter, filtfilt
-
     nyq = 0.5 * fs
     low_pass = lowpass / nyq
     b, a = butter(order, [low_pass], btype='lowpass')
@@ -65,7 +66,6 @@ def cheby1_lowpass(data, lowpass, fs, order=3, ripple=0.8):
     result = cheby1_lowpass(data, 500,  25000, order=3, ripple=0.8)
     '''
 
-    from scipy.signal import cheby1, filtfilt
     nyq = 0.5 * fs
     low_pass = lowpass / nyq
     b, a = cheby1(order, ripple, low_pass, 'low')
@@ -80,8 +80,6 @@ def butter_highpass(data, highpass, fs, order=3):
     butter_bandpass(data, lowpass, fs, order=3)
     result = butter_highpass(data, 500,  25000, 3)
     '''
-
-    from scipy.signal import butter, filtfilt
 
     nyq = 0.5 * fs
     high_pass = highpass / nyq
@@ -110,7 +108,6 @@ def welch_power(data, fs, lengthseg, noverlappoints, axis_n=-1, lplot=0):
     '''
 
     from scipy.signal import welch
-    import matplotlib.pyplot as plt
 
     sf, px = welch(data, fs, window='hann', nperseg=lengthseg,
                    noverlap=noverlappoints, axis=axis_n)
@@ -157,11 +154,6 @@ def ntk_spectrogram(lfp, fs, nperseg=None, noverlap=None, f_low=1, f_high=64,
                     lsavedir=None, hour=0, chan=0, reclen=3600,
                     lsavedeltathetha=0,
                     probenum=None):
-
-    import matplotlib.pyplot as plt
-    import scipy.signal as signal
-    import numpy as np
-    import os
 
     '''
     plot spectrogram and save delta and thetha
@@ -275,3 +267,92 @@ def ntk_spectrogram(lfp, fs, nperseg=None, noverlap=None, f_low=1, f_high=64,
             np.save(os.path.join(lsavedir, 'thet' + str(hour) +
                                  '_probe' + str(probenum) + '.npy'), thet)
     plt.close('all')
+
+
+def selectlfpchans(rawdat_dir, outdir, hstype, hour,
+                   fs=25000, nprobes=1, number_of_channels=64,
+                   probenum=0, probechans=64, lfp_lowpass=250):
+    '''
+    selectlfpchans(rawdat_dir, outdir, hstype, hour,
+                   fs=25000, nprobes=1, number_of_channels=64,
+                   probenum=0, probechans=64, lfp_lowpass=250)
+    rawdat_dir : raw data directory
+    outdir : output dir.
+       Standard /media/HlabShare/Sleep_Scoring/ABC00001/LFP_chancheck/'
+           : Change ABC00001 to animal name
+    hstype : Headstage type,
+            ['EAB50chmap_00', 'EAB50chmap_00', 'EAB50chmap_00',
+             'EAB50chmap_00', 'EAB50chmap_00', 'EAB50chmap_00',
+             'EAB50chmap_00', 'EAB50chmap_00']
+    hour: hour to generate spectrograms
+    fs : sampling frequency (default 25000)
+    nprobes : Number of probes (default 1)
+    number_of_channels : total number of channels
+    probenum : which probe to return (starts from zero)
+    probechans : number of channels per probe (symmetric)
+    lfp_lowpass : default 250
+
+
+    selectlfpchans(rawdat_dir, outdir, hstype, hour,
+                   fs=25000, nprobes=1, number_of_channels=128,
+                   probenum=1, probechans=64, lfp_lowpass=250)
+    '''
+    # from neuraltoolkit import ntk_ecube
+
+    # Check directory exists
+    if not (os.path.exists(rawdat_dir) and
+            os.path.isdir(rawdat_dir)):
+        raise NotADirectoryError("Directory {} does not exists".
+                                 format(rawdat_dir))
+    if not (os.path.exists(outdir) and
+            os.path.isdir(outdir)):
+        raise NotADirectoryError("Directory {} does not exists".
+                                 format(outdir))
+
+    os.chdir(rawdat_dir)
+    files = np.sort(glob.glob('H*.bin'))
+
+    # Select files by hour
+    fil = hour*12
+    load_files = files[fil:fil+12]
+
+    dat_full = None
+    for indx in range(len(load_files)):
+        t, dat = ntk_ecube.load_raw_gain_chmap_1probe(load_files[indx],
+                                                      number_of_channels,
+                                                      hstype,
+                                                      nprobes=nprobes,
+                                                      lraw=1, te=-1,
+                                                      probenum=probenum,
+                                                      probechans=probechans)
+        if indx == 0:
+            dat_full = dat * 1
+        else:
+            dat_full = np.concatenate((dat_full, dat), axis=1)
+    dat = None
+    del dat
+    print("Finished loading all files")
+
+    # if lswscoring:
+    #     lfp_data = butter_lowpass(dat_full[0:5, :], lfp_lowpass, fs, 3)
+    #     print("sh lfp_data ", lfp_data.shape)
+    #     lfp_data = np.mean(lfp_data, axis=0)
+    #     print("sh2 lfp_data ", lfp_data.shape)
+    #     ds_rate = int(fs/(2*lfp_lowpass))
+    #     lfp_data = np.int16(lfp_data[0::ds_rate])
+    #     ntk_spectrogram(lfp_data, int(lfp_lowpass*2), nperseg=None,
+    #                     noverlap=None, f_low=1, f_high=64,
+    #                     lsavedir=outdir, hour=hour, chan=None, reclen=3600,
+    #                     lsavedeltathetha=0,
+    #                     probenum=None)
+    for chan in np.arange(0, probechans, 1):
+        lfp_data = butter_lowpass(dat_full[chan, :], lfp_lowpass, fs, 3)
+        ds_rate = int(fs/(2*lfp_lowpass))
+        lfp_data = np.int16(lfp_data[0::ds_rate])
+        ntk_spectrogram(lfp_data, int(lfp_lowpass*2), nperseg=None,
+                        noverlap=None, f_low=1, f_high=64,
+                        lsavedir=outdir, hour=hour, chan=chan, reclen=3600,
+                        lsavedeltathetha=0,
+                        probenum=probenum)
+
+    print("Finished saving spectrogram for all channels")
