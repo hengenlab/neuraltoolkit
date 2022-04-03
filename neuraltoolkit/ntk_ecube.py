@@ -394,11 +394,14 @@ def load_digital_binary(name, t_only=0, lcheckdigi64=1):
         dr = np.fromfile(f, dtype=np.int64,  count=-1)
 
     if lcheckdigi64:
-        # convert and -9 to 1 and other values to 0, occurs in Digital_64 files.
+        # convert and -9 to 1 and other values to 0,
+        # occurs in Digital_64 files.
         unique = np.unique(dr)
         if -9 in unique:
-            print("File {} contains {} values, converting -9 to 1 and other values to 0: {}"
-                  .format(name, len(unique), unique))
+            print("File {} contains {} values"
+                  .format(name, len(unique)))
+            print("Converting -9 to 1 and other values to 0: {}"
+                  .format(unique))
             dr_corrected = np.zeros_like(dr)
             dr_corrected[np.where(dr == -9)] = 1
             dr = dr_corrected
@@ -1115,8 +1118,9 @@ def check_missing_files(file_list=None, total_seconds=300):
         #  raise ValueError("Check whether these is any missing files")
         print("Check whether there is any missing files, should be ", nfiles,
               " got ", len(file_list))
-        print("Check whether there is any missing files, should be ", nfiles, " got ",
+        print("Check whether there is any missing files, should be ",
+              nfiles, " got ",
               len(file_list), file=sys.stderr)
-        sys.stderr.write("Check whether there is any missing files, should be " +
-                         str(nfiles) + " got " +
+        sys.stderr.write("Check whether there is any missing files, should be "
+                         + str(nfiles) + " got " +
                          str(len(file_list)))
