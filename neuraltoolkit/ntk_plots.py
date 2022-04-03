@@ -48,7 +48,7 @@ def plot_data_chlist(data, data_beg, data_end, ch_list):
     for i in range(len(ch_list)):
         print(i, " ", ch_list[i])
 
-        ax = plt.subplot(len(ch_list), 1, i+1)
+        plt.subplot(len(ch_list), 1, i+1)
         plt.plot(data[ch_list[i], data_beg:data_end])
 
         plt.xticks([])
