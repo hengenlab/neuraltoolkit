@@ -62,11 +62,12 @@ def check_ping_status(ip_system):
     elif system_name().lower() == 'darwin':
         command = str('ping -c 3 ') + str(ip_system)
     try:
-        output = subprocess.check_output(command, shell=True)
+        _ = subprocess.check_output(command, shell=True)
         # print(output)
         return 1
     except subprocess.CalledProcessError as e:
-        # print(e)
+        if 0:   # debug
+            print(e)
         return 0
 
 
