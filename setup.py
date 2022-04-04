@@ -1,13 +1,14 @@
 from setuptools import setup
+import subprocess
 
 with open("README.md", 'r') as f:
     long_description = f.read()
 
-import subprocess
 try:
     process = subprocess.check_output(['git', 'describe'], shell=False)
     __git_version__ = process.strip().decode('ascii')
 except Exception as e:
+    print(e)
     __git_version__ = 'unknown'
 print("__git_version__ ", __git_version__)
 try:

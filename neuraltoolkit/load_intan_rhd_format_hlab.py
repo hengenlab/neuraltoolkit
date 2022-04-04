@@ -1,3 +1,4 @@
+# flake8: noqa
 #! /bin/env python
 #
 # Modified for use in Hlab

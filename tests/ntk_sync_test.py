@@ -1,3 +1,4 @@
+# flake8: noqa
 """ Test cases can be run with pytest ntk_sync_test.py """
 import unittest
 import tempfile

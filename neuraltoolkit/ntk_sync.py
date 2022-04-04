@@ -1,3 +1,4 @@
+# flake8: noqa
 """ Tools for syncing between video, neural, and sleep states. """
 import glob
 import itertools
