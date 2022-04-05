@@ -68,17 +68,23 @@ def channel_map_data(data, number_of_channels, hstype, nprobes=1):
     return dc
 
 
-def find_channel_map(hstype, number_of_channels):
+def find_channel_map(hstype, number_of_channels=None):
 
     '''
     Get channel map data
-    find_channel_map(hstype, number_of_channels)
+    find_channel_map(hstype, number_of_channels=None)
     hstype : 'hs64', 'eibless-hs64_port32', 'eibless-hs64_port64',
-             'intan', 'Si_64_KS_chmap',
-             'Si_64_KT_T1_K2_chmap' and linear
+             'intan32', 'intan16test2', 'Si_64_KS_chmap',
+             'Si_64_KT_T1_K2_chmap'
+             Si_64_KS_chmap includes  8-K2., 5-KS., 1A-K2. probe
+             Si_64_KT_T1_K2_chmap includes 5-KT. and  5-K2. probe
+             'PCB_tetrode', 'EAB50chmap_00',
 
-              Si_64_KS_chmap includes  8-K2., 5-KS., 1A-K2. probe
-              Si_64_KT_T1_K2_chmap includes 5-KT. and  5-K2. probe
+             'APT_PCB'
+             and 'linear'
+
+    number_of_channels default(None). For hstype 'linear' provide
+             number_of_channels, usually 64 and 32
     '''
 
     # Ecube HS-64
@@ -167,6 +173,10 @@ def find_channel_map(hstype, number_of_channels):
 
     # Linear probe
     elif hstype == 'linear':
+        # checks
+        if number_of_channels is None:
+            raise \
+                ValueError('For hstype linear provide number_of_channels')
         chan_map = np.arange(0, number_of_channels, 1)
 
     else:
