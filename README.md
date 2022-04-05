@@ -5,6 +5,8 @@ working with data formats, and basic utilities for electrophysiology and
 behavioral data.
 
 ---
+![Tests](https://github.com/hengenlab/neuraltoolkit/actions/workflows/pytests.yml/badge.svg)
+
 ## Installation
 
 ### Download neuraltoolkit
