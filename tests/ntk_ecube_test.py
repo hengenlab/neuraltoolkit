@@ -1,5 +1,6 @@
 import unittest
 import os
+import os.path as op
 import numpy as np
 import neuraltoolkit as ntk
 
@@ -24,6 +25,7 @@ import neuraltoolkit as ntk
 
 class Testload_raw_gain_chmap_1probe(unittest.TestCase):
     # os.chdir('/hlabhome/kiranbn/git/neuraltoolkit/tests')
+    bdir = os.path.join(os.path.dirname(__file__), 'data')
     print(os.getcwd())
     hs = np.asarray([2, 5, 1, 22, 9, 14, 18, 47, 23, 26, 31, 3, 35, 4,
                      7, 16, 34, 21, 12, 10, 29, 17, 8, 13, 11, 6, 38,
@@ -32,15 +34,19 @@ class Testload_raw_gain_chmap_1probe(unittest.TestCase):
                      42, 40, 50, 64, 48, 59, 49, 44, 45, 62, 56, 53,
                      39]) - 1
     gain = np.float64(0.19073486328125)
-    expected_output_t = [np.uint64(np.loadtxt('tests/data/ttt.csv', delimiter=','))]
-    expected_output = np.loadtxt('tests/data/ddd.csv', delimiter=',')
+    expected_output_t = [np.uint64(np.loadtxt(op.join(bdir, 'ttt.csv'),
+                                              delimiter=','))]
+    expected_output = np.loadtxt(op.join(bdir, 'ddd.csv'), delimiter=',')
     expected_output = np.asarray(np.int16(expected_output[0:64, :] * gain))
     expected_output = expected_output[hs, :]
-    expected_output_l = np.asarray(np.loadtxt('tests/data/ddd.csv', delimiter=','))
+    # expected_output_l = np.asarray(np.loadtxt('tests/data/ddd.csv',
+    expected_output_l = np.asarray(np.loadtxt(op.join(bdir, 'ddd.csv'),
+                                              delimiter=','))
     print("sh expected_output_l ", expected_output_l.shape)
     expected_output_l = np.asarray(np.int16(expected_output_l[-64:, :] * gain))
     # expected_output_l = expected_output[hs, :]
-    rawfile = 'data/Headstages_512_Channels_int16_2021-06-08_11-08-03.bin'
+    rawfile = op.join(bdir,
+                      'Headstages_512_Channels_int16_2021-06-08_11-08-03.bin')
     number_of_channels = 512
     hstype = ['APT_PCB', 'APT_PCB', 'APT_PCB', 'APT_PCB',
               'APT_PCB', 'APT_PCB', 'APT_PCB', 'APT_PCB']
