@@ -32,11 +32,11 @@ class Testload_raw_gain_chmap_1probe(unittest.TestCase):
                      42, 40, 50, 64, 48, 59, 49, 44, 45, 62, 56, 53,
                      39]) - 1
     gain = np.float64(0.19073486328125)
-    expected_output_t = [np.uint64(np.loadtxt('data/ttt.csv', delimiter=','))]
-    expected_output = np.loadtxt('data/ddd.csv', delimiter=',')
+    expected_output_t = [np.uint64(np.loadtxt('tests/data/ttt.csv', delimiter=','))]
+    expected_output = np.loadtxt('tests/data/ddd.csv', delimiter=',')
     expected_output = np.asarray(np.int16(expected_output[0:64, :] * gain))
     expected_output = expected_output[hs, :]
-    expected_output_l = np.asarray(np.loadtxt('data/ddd.csv', delimiter=','))
+    expected_output_l = np.asarray(np.loadtxt('tests/data/ddd.csv', delimiter=','))
     print("sh expected_output_l ", expected_output_l.shape)
     expected_output_l = np.asarray(np.int16(expected_output_l[-64:, :] * gain))
     # expected_output_l = expected_output[hs, :]
