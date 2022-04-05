@@ -48,7 +48,7 @@ Temporary Items
 
 # Possible raw files
 *.abf
-*.bin
+# *.bin
 *.rhd
 *.h5
 *.mp4
