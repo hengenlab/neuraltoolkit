@@ -517,7 +517,7 @@ ntk.ntk_spectrogram(lfp_all[0, :], fs, nperseg, noverlap, 1, 64,
 # Select channels for lfp extraction
 import neuraltoolkit as ntk
 
-# Select LFP channels for second probe
+# Select LFP channels
 rawdat_dir='/media/KDR00032/KDR00032_L1_W2_2022-01-24_09-08-46/'
 # Standard /media/HlabShare/Sleep_Scoring/ABC00001/LFP_chancheck/'
 outdir='/media/HlabShare/Sleep_Scoring/ABC00001/LFP_chancheck/'
