@@ -954,6 +954,21 @@ def add_missing_files_with_random_noise(HS_file1, HS_file2,
                                         lraw=1):
     '''
     add_missing_files_with_random_noise
+    import numpy as np
+    import neuraltoolkit as ntk
+
+    HS_file1 = '6r/CAF75/Headstages_256_Channels_int16_2021-01-27_19-31-33.bin'
+    HS_file2 = '6r/CAF75/Headstages_256_Channels_int16_2021-01-27_20-36-33.bin'
+    # outdir = '6s/ckbn/ms/'
+    outdir = '6r/CAF00075/CAF00075_2021-01-25_16-36-32/missing_files/'
+    number_of_channels = 256
+    hstype = ['APT_PCB', 'APT_PCB', 'APT_PCB', 'APT_PCB']
+    nprobes = 4
+    ntk.add_missing_files_with_random_noise(HS_file1, HS_file2,
+                                            outdir, number_of_channels,
+                                            hstype=hstype, nprobes=nprobes,
+                                            fs=25000, total_seconds=300,
+                                            lraw=1)
     '''
 
     from datetime import datetime
