@@ -95,7 +95,7 @@ def dlc_get_position(videoh5file, cutoff=0.6):
 
 
 def find_video_start_index(datadir, ch, nfiles=10,
-                           fs=25000, fps=30,
+                           fs=25000, fps=15,
                            fig_indx=None):
     '''
     find_video_start_index(datadir, ch, nfiles=10,
@@ -108,7 +108,7 @@ def find_video_start_index(datadir, ch, nfiles=10,
     nfiles: First how many files to check for pulse change
         (default first 10 files)
     fs: Sampling rate of digital file (default 25000)
-    fps: Frames per second of video file (default 30)
+    fps: Frames per second of video file (default 15)
     fig_indx: Default None, if index is given it plot figure
     '''
 
@@ -129,8 +129,13 @@ def find_video_start_index(datadir, ch, nfiles=10,
             data_group_list.append(len(list(data_group)))
 
         try:
+            # video_start_group_index = \
+            #     np.where(np.asarray(data_group_list) ==
+            #              int(fs/(fps*2)))[0][0]
             video_start_group_index = \
-                np.where(np.asarray(data_group_list) == int(fs/fps))[0][0]
+                np.where((np.asarray(data_group_list) == int(fs/(fps*2))) |
+                         (np.asarray(data_group_list) == (int(fs/(fps*2))+1))
+                         )[0][0]
             video_start_index = \
                 np.sum(data_group_list[0:video_start_group_index])
             if fig_indx is not None:
