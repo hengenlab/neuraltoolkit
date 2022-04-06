@@ -22,6 +22,11 @@ try:
     import pandas as pd
 except ImportError:
     raise ImportError('Run command : conda install pandas')
+import glob
+import os.path as op
+import matplotlib.pyplot as plt
+import itertools
+from neuraltoolkit import load_digital_binary_allchannels
 
 
 # Position
@@ -87,3 +92,71 @@ def dlc_get_position(videoh5file, cutoff=0.6):
     positions_h5 = np.delete(features_xylikelihood,
                              np.arange(2, nfeatures*3, 3), axis=1)
     return positions_h5, feature_names
+
+
+def find_video_start_index(datadir, ch, nfiles=10,
+                           fs=25000, fps=30,
+                           fig_indx=None):
+    '''
+    find_video_start_index(datadir, ch, nfiles=10,
+                           fs=25000, fps=30,
+                           fig_indx=None)
+
+    datadir: data directory where digital file is located
+    ch : channel where Watchtower signal is recorded,
+         remember number starts from 0
+    nfiles: First how many files to check for pulse change
+        (default first 10 files)
+    fs: Sampling rate of digital file (default 25000)
+    fps: Frames per second of video file (default 30)
+    fig_indx: Default None, if index is given it plot figure
+    '''
+
+    fl_list = np.sort(glob.glob(datadir + op.sep + 'Dig*.bin'))
+    if len(fl_list) == 0:
+        raise ValueError("No digital files found in ", datadir)
+    print("fig_indx ", fig_indx, " ", datadir)
+    if fig_indx is not None:
+        plt.figure(num=fig_indx, figsize=(20, 4))
+        plt.title(datadir)
+    cumulative_len = 0
+    for indx in range(nfiles):
+        t, data = load_digital_binary_allchannels(fl_list[indx],
+                                                  channel=ch)
+        data_group_list = None
+        data_group_list = []
+        for _, data_group in itertools.groupby(data):
+            data_group_list.append(len(list(data_group)))
+
+        try:
+            video_start_group_index = \
+                np.where(np.asarray(data_group_list) == int(fs/fps))[0][0]
+            video_start_index = \
+                np.sum(data_group_list[0:video_start_group_index])
+            if fig_indx is not None:
+                plt.plot(np.arange(video_start_index-10000,
+                         video_start_index+10000, 1),
+                         data[video_start_index - 10000:
+                              video_start_index + 10000],
+                         label=str(fl_list[indx]))
+                plt.plot([video_start_index]*5,
+                         [0, 0.25, 0.50, 0.75, 1.00],
+                         'g*',
+                         linewidth=20,
+                         markersize=20)
+                plt.legend()
+                plt.show()
+            print("found in ", fl_list[indx], flush=True)
+            return video_start_index
+            break
+        except Exception as e:
+            # ugly
+            if 0:
+                print("Error ", e)
+            cumulative_len = cumulative_len + data.shape[0]
+            # print(cumulative_len)
+            # print("not found in ", str(fl_list[indx]))
+            # print(indx)
+            if (indx + 1) == nfiles:
+                raise\
+                    RuntimeError("Try increasing nfile or check fps of video")
