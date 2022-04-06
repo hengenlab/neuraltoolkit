@@ -456,6 +456,7 @@ fig_indx = 1
 video_start_index =\
     ntk.find_video_start_index(datadir, ch, nfiles=nfiles,
                                    fs=fs, fps=fps, fig_indx=fig_indx)
+# Please remember video_start_index is continous.
 ```
 
 ---
