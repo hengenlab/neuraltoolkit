@@ -438,14 +438,17 @@ fnames
 
 find_video_start_index(datadir, ch, nfiles=10,
                        fs=25000, fps=15,
+                       lnew=1,
                        fig_indx=None)
 # datadir: data directory where digital file is located
 # ch : channel where Watchtower signal is recorded,
 #      remember number starts from 0
 # nfiles: First how many files to check for pulse change
-#     (default first 10 files)
+#      (default first 10 files)
 # fs: Sampling rate of digital file (default 25000)
 # fps: Frames per second of video file (default 15)
+# lnew: default 1, new digital files.
+#      0 for old digital files with only one channel
 # fig_indx: Default None, if index is given it plot figure
 datadir = '/home/kbn/ABC12345/ABC_L9_W2_/'
 ch = 1   #  _L9_W2_  zero indexing
@@ -455,7 +458,8 @@ fps = 15
 fig_indx = 1
 video_start_index =\
     ntk.find_video_start_index(datadir, ch, nfiles=nfiles,
-                                   fs=fs, fps=fps, fig_indx=fig_indx)
+                                   fs=fs, fps=fps,
+                                   lnew=1, fig_indx=fig_indx)
 # Please remember video_start_index is continous.
 ```
 
