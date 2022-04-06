@@ -159,4 +159,4 @@ def find_video_start_index(datadir, ch, nfiles=10,
             # print(indx)
             if (indx + 1) == nfiles:
                 raise\
-                    RuntimeError("Try increasing nfile or check fps of video")
+                    RuntimeError("Try increasing nfile or check fps or ch")
