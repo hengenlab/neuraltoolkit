@@ -433,6 +433,29 @@ array([[357.29413831, 439.93870854, 482.14195955, ..., 159.27687836,
                  nan,          nan]])
 fnames
 ['cricket', 'snout', 'tailbase', 'leftear', 'rightear']
+
+
+
+find_video_start_index(datadir, ch, nfiles=10,
+                       fs=25000, fps=30,
+                       fig_indx=None)
+# datadir: data directory where digital file is located
+# ch : channel where Watchtower signal is recorded,
+#      remember number starts from 0
+# nfiles: First how many files to check for pulse change
+#     (default first 10 files)
+# fs: Sampling rate of digital file (default 25000)
+# fps: Frames per second of video file (default 30)
+# fig_indx: Default None, if index is given it plot figure
+datadir = '/home/kbn/ABC12345/ABC_L9_W2_/'
+ch = 1   #  _L9_W2_  zero indexing
+nfiles = 10
+fs = 25000
+fps = 30
+fig_indx = 1
+video_start_index =\
+    ntk.find_video_start_index(datadir, ch, nfiles=nfiles,
+                                   fs=fs, fps=fps, fig_indx=fig_indx)
 ```
 
 ---
