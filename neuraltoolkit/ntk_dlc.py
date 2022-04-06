@@ -27,6 +27,7 @@ import os.path as op
 import matplotlib.pyplot as plt
 import itertools
 from neuraltoolkit import load_digital_binary_allchannels
+from neuraltoolkit import load_digital_binary
 
 
 # Position
@@ -96,6 +97,7 @@ def dlc_get_position(videoh5file, cutoff=0.6):
 
 def find_video_start_index(datadir, ch, nfiles=10,
                            fs=25000, fps=15,
+                           lnew=1,
                            fig_indx=None):
     '''
     find_video_start_index(datadir, ch, nfiles=10,
@@ -109,6 +111,8 @@ def find_video_start_index(datadir, ch, nfiles=10,
         (default first 10 files)
     fs: Sampling rate of digital file (default 25000)
     fps: Frames per second of video file (default 15)
+    lnew: default 1, new digital files.
+          0 for old digital files with only one channel
     fig_indx: Default None, if index is given it plot figure
     '''
 
@@ -121,8 +125,12 @@ def find_video_start_index(datadir, ch, nfiles=10,
         plt.title(datadir)
     cumulative_len = 0
     for indx in range(nfiles):
-        t, data = load_digital_binary_allchannels(fl_list[indx],
-                                                  channel=ch)
+        if lnew == 1:
+            t, data = load_digital_binary_allchannels(fl_list[indx],
+                                                      channel=ch)
+        elif lnew == 0:
+            t, data = load_digital_binary(fl_list[indx], t_only=0,
+                                          lcheckdigi64=1)
         data_group_list = None
         data_group_list = []
         for _, data_group in itertools.groupby(data):
