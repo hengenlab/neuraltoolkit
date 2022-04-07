@@ -116,6 +116,11 @@ def find_video_start_index(datadir, ch, nfiles=10,
     fig_indx: Default None, if index is given it plot figure
     '''
 
+    # check datadir exists
+    if not (op.exists(datadir) and op.isdir(datadir)):
+        raise NotADirectoryError("Directory {} does not exists".
+                                 format(datadir))
+
     fl_list = np.sort(glob.glob(datadir + op.sep + 'Dig*.bin'))
     if len(fl_list) == 0:
         raise ValueError("No digital files found in ", datadir)
