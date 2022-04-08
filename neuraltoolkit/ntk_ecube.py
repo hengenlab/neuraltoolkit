@@ -277,7 +277,25 @@ def load_raw_gain_chmap_1probe(rawfile, number_of_channels,
     name - name of file
     number_of_channels - number of channels
     channel_number - channel data to return
-    hstype : Headstage type, 'hs64'
+    hstype : Headstage type list
+             for example ['APT_PCB', 'APT_PCB'] nprobes=2
+
+             Headstage types are
+             'hs64'
+             'eibless-hs64_port32', 'eibless-hs64_port64',
+             'intan32', 'intan16test2',
+
+             'Si_64_KS_chmap',
+             'Si_64_KT_T1_K2_chmap'
+             Si_64_KS_chmap includes  8-K2., 5-KS., 1A-K2. probe
+             Si_64_KT_T1_K2_chmap includes 5-KT. and  5-K2. probe
+
+             'UCLA_Si1'
+             'PCB_tetrode', 'EAB50chmap_00',
+
+             'APT_PCB'
+             and 'linear'
+
     nprobes : Number of probes (default 1)
     lraw - whether raw file or not  (default : raw lraw=1)
     ts : sample start (not seconds but samples),
