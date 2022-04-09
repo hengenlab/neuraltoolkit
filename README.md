@@ -433,6 +433,34 @@ array([[357.29413831, 439.93870854, 482.14195955, ..., 159.27687836,
                  nan,          nan]])
 fnames
 ['cricket', 'snout', 'tailbase', 'leftear', 'rightear']
+
+
+
+find_video_start_index(datadir, ch, nfiles=10,
+                       fs=25000, fps=15,
+                       lnew=1,
+                       fig_indx=None)
+# datadir: data directory where digital file is located
+# ch : channel where Watchtower signal is recorded,
+#      remember number starts from 0
+# nfiles: First how many files to check for pulse change
+#      (default first 10 files)
+# fs: Sampling rate of digital file (default 25000)
+# fps: Frames per second of video file (default 15)
+# lnew: default 1, new digital files.
+#      0 for old digital files with only one channel
+# fig_indx: Default None, if index is given it plot figure
+datadir = '/home/kbn/ABC12345/ABC_L9_W2_/'
+ch = 1   #  _L9_W2_  zero indexing
+nfiles = 10
+fs = 25000
+fps = 15
+fig_indx = 1
+video_start_index =\
+    ntk.find_video_start_index(datadir, ch, nfiles=nfiles,
+                                   fs=fs, fps=fps,
+                                   lnew=1, fig_indx=fig_indx)
+# Please remember video_start_index is continous.
 ```
 
 ---
@@ -493,7 +521,7 @@ ntk.ntk_spectrogram(lfp_all[0, :], fs, nperseg, noverlap, 1, 64,
 # Select channels for lfp extraction
 import neuraltoolkit as ntk
 
-# Select LFP channels for second probe
+# Select LFP channels
 rawdat_dir='/media/KDR00032/KDR00032_L1_W2_2022-01-24_09-08-46/'
 # Standard /media/HlabShare/Sleep_Scoring/ABC00001/LFP_chancheck/'
 outdir='/media/HlabShare/Sleep_Scoring/ABC00001/LFP_chancheck/'
@@ -620,6 +648,14 @@ plt.show(block=False)
          64, 40, 48, 51, 54, 42, 45, 52, 58, 43, 56,
          62, 63, 44, 49, 57, 60, 53, 55, 59, 61, 1,
          11, 18, 23, 30, 33, 41, 50]
+
+###### 'UCLA_Si1'
+        [47, 43, 35, 50, 37, 55, 40, 58, 41, 60, 44, 64,
+         46, 51, 49, 63, 27, 61, 30, 57, 33, 36, 52, 39,
+         59, 42, 45, 48, 53, 56, 62, 54, 15, 1, 5, 9, 4,
+         7, 10, 14, 13, 20, 16, 19, 11, 22, 6, 25, 2, 18,
+         3, 24, 8, 23, 12, 28, 17, 26, 21, 32, 29, 31, 34,
+         38]
 
 ###### 'APT_PCB'
         [2, 5, 1, 22, 9, 14, 18, 47, 23, 26, 31, 3, 35, 4,

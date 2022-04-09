@@ -277,7 +277,25 @@ def load_raw_gain_chmap_1probe(rawfile, number_of_channels,
     name - name of file
     number_of_channels - number of channels
     channel_number - channel data to return
-    hstype : Headstage type, 'hs64'
+    hstype : Headstage type list
+             for example ['APT_PCB', 'APT_PCB'] nprobes=2
+
+             Headstage types are
+             'hs64'
+             'eibless-hs64_port32', 'eibless-hs64_port64',
+             'intan32', 'intan16test2',
+
+             'Si_64_KS_chmap',
+             'Si_64_KT_T1_K2_chmap'
+             Si_64_KS_chmap includes  8-K2., 5-KS., 1A-K2. probe
+             Si_64_KT_T1_K2_chmap includes 5-KT. and  5-K2. probe
+
+             'UCLA_Si1'
+             'PCB_tetrode', 'EAB50chmap_00',
+
+             'APT_PCB'
+             and 'linear'
+
     nprobes : Number of probes (default 1)
     lraw - whether raw file or not  (default : raw lraw=1)
     ts : sample start (not seconds but samples),
@@ -954,6 +972,21 @@ def add_missing_files_with_random_noise(HS_file1, HS_file2,
                                         lraw=1):
     '''
     add_missing_files_with_random_noise
+    import numpy as np
+    import neuraltoolkit as ntk
+
+    HS_file1 = '6r/CAF75/Headstages_256_Channels_int16_2021-01-27_19-31-33.bin'
+    HS_file2 = '6r/CAF75/Headstages_256_Channels_int16_2021-01-27_20-36-33.bin'
+    # outdir = '6s/ckbn/ms/'
+    outdir = '6r/CAF00075/CAF00075_2021-01-25_16-36-32/missing_files/'
+    number_of_channels = 256
+    hstype = ['APT_PCB', 'APT_PCB', 'APT_PCB', 'APT_PCB']
+    nprobes = 4
+    ntk.add_missing_files_with_random_noise(HS_file1, HS_file2,
+                                            outdir, number_of_channels,
+                                            hstype=hstype, nprobes=nprobes,
+                                            fs=25000, total_seconds=300,
+                                            lraw=1)
     '''
 
     from datetime import datetime

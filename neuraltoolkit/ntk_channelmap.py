@@ -74,10 +74,14 @@ def find_channel_map(hstype, number_of_channels=None):
     Get channel map data
     find_channel_map(hstype, number_of_channels=None)
     hstype : 'hs64', 'eibless-hs64_port32', 'eibless-hs64_port64',
-             'intan32', 'intan16test2', 'Si_64_KS_chmap',
+             'intan32', 'intan16test2',
+
+             'Si_64_KS_chmap',
              'Si_64_KT_T1_K2_chmap'
              Si_64_KS_chmap includes  8-K2., 5-KS., 1A-K2. probe
              Si_64_KT_T1_K2_chmap includes 5-KT. and  5-K2. probe
+
+             'UCLA_Si1'
              'PCB_tetrode', 'EAB50chmap_00',
 
              'APT_PCB'
@@ -170,6 +174,14 @@ def find_channel_map(hstype, number_of_channels=None):
                              30, 61, 57, 54, 33, 55, 43, 63, 36, 58, 51, 60,
                              42, 40, 50, 64, 48, 59, 49, 44, 45, 62, 56, 53,
                              39]) - 1
+
+    elif hstype == 'UCLA_Si1':
+        chan_map = np.array([47, 43, 35, 50, 37, 55, 40, 58, 41, 60, 44, 64,
+                             46, 51, 49, 63, 27, 61, 30, 57, 33, 36, 52, 39,
+                             59, 42, 45, 48, 53, 56, 62, 54, 15, 1, 5, 9, 4,
+                             7, 10, 14, 13, 20, 16, 19, 11, 22, 6, 25, 2, 18,
+                             3, 24, 8, 23, 12, 28, 17, 26, 21, 32, 29, 31, 34,
+                             38]) - 1
 
     # Linear probe
     elif hstype == 'linear':
