@@ -414,6 +414,22 @@ npmoviefile = '/home/kbn/ns_118images1000fpsnormalized.npy'
 ntk.play_numpy_movie(npmoviefile, wait=10, start=500, end=1000,
                      movietitle="naturalimages", verbose=1)
 
+# Extract frames indices in list (framestograb) and write new video file
+videofilename = '/home/user/e3v810a-20190307T0740-0840.mp4'
+lstream = 0 # as video is already saved
+v  = NTKVideos(videofilename, lstream)
+# v contains length, width, height information from video
+# for example write after 100 frames grab 10 seconds to new video
+framestograb = list(range(100, 100 + int(v.fps*10), 1))
+fl_out = None
+# if fl_out is not None give full path and name to save video
+# fl_out = '/home/kbn/video/video_1.mp4'
+# else if fl_out is None new video is saved as
+# /home/user/e3v810a-20190307T0740-0840_subblocks.mp4
+
+v.grab_frames_to_video(framestograb=framestograb, fl_out=fl_out)
+
+
 ```
 
 # dlc
