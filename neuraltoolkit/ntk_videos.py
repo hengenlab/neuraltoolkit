@@ -155,6 +155,53 @@ class NTKVideos:
         self.cap.release()
         cv2.destroyAllWindows()
 
+    def grab_frames_to_video(self, framestograb=None, fl_out=None):
+        '''
+        extract frames indices in list (framestograb) and write new video file
+
+        videofilename = '/home/user/e3v810a-20190307T0740-0840.mp4'
+        lstream = 0 # as video is already saved
+        v  = NTKVideos(videofilename, lstream)
+        # v contains length, width, height information from video
+        # for example write after 100 frames grab 10 seconds to new video
+        framestograb = list(range(100, 100 + int(v.fps*10), 1))
+        fl_out = None
+        # if fl_out is not None give full path and name to save video
+        # fl_out = '/home/kbn/video/video_1.mp4'
+        # else if fl_out is None new video is saved as
+        # /home/user/e3v810a-20190307T0740-0840_subblocks.mp4
+
+        v.grab_frames_to_video(framestograb=framestograb, fl_out=fl_out)
+
+        '''
+
+        img_c = 0
+        if framestograb is None:
+            raise ValueError('Please provide list of frames to remove')
+        if fl_out is None:
+            fl_out = os.path.splitext(self.name)[0] + '_subblocks.mp4'
+        for indx in range(int(self.length)):
+            # Capture frame-by-frame
+            self.ret, self.frame = self.cap.read()
+            if indx in framestograb:
+                if self.ret is True:
+                    # cv2.imshow('video', self.frame)
+                    # if cv2.waitKey(10) & 0xFF == ord('q'):
+                    #     break
+                    if img_c == 0:
+                        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+                        video = cv2.VideoWriter(fl_out,
+                                                fourcc, float(self.fps),
+                                                (int(self.width),
+                                                 int(self.height)))
+
+                    video.write(self.frame)
+                    img_c += 1
+            # else:
+            #     print("skipped frame ", indx)
+        # self.cap.release()
+        cv2.destroyAllWindows()
+
     def extract_frames(self, pathout):
 
         '''
