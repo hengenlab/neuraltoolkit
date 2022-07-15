@@ -185,6 +185,16 @@ class NTKVideos:
         else:
             if not os.path.isdir(os.path.dirname(fl_out)):
                 raise FileNotFoundError('Check directory in fl_out', fl_out)
+
+        # Check values inside framestograb not outside v.length
+        tmp_array = np.asarray(framestograb)
+        if (np.where(np.logical_or(tmp_array < 0,
+                                   tmp_array > self.length))[0].size) != 0:
+            raise \
+                ValueError("framestograb has indices outside 0 or length")
+        tmp_array = None
+        del tmp_array
+
         for indx in range(int(self.length)):
             # Capture frame-by-frame
             self.ret, self.frame = self.cap.read()
