@@ -182,6 +182,9 @@ class NTKVideos:
             raise ValueError('Please provide list of frames to save video')
         if fl_out is None:
             fl_out = os.path.splitext(self.name)[0] + '_subblocks.mp4'
+        else:
+            if not os.path.isdir(os.path.dirname(fl_out)):
+                raise FileNotFoundError('Check directory in fl_out', fl_out)
         for indx in range(int(self.length)):
             # Capture frame-by-frame
             self.ret, self.frame = self.cap.read()
