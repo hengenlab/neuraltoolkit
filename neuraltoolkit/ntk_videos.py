@@ -177,7 +177,9 @@ class NTKVideos:
 
         img_c = 0
         if framestograb is None:
-            raise ValueError('Please provide list of frames to remove')
+            raise ValueError('Please provide list of frames to save video')
+        if not isinstance(framestograb, list):
+            raise ValueError('Please provide list of frames to save video')
         if fl_out is None:
             fl_out = os.path.splitext(self.name)[0] + '_subblocks.mp4'
         for indx in range(int(self.length)):
