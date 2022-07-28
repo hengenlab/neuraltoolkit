@@ -417,7 +417,7 @@ ntk.play_numpy_movie(npmoviefile, wait=10, start=500, end=1000,
 # Extract frames indices in list (framestograb) and write new video file
 videofilename = '/home/user/e3v810a-20190307T0740-0840.mp4'
 lstream = 0 # as video is already saved
-v  = NTKVideos(videofilename, lstream)
+v  = ntk.NTKVideos(videofilename, lstream)
 # v contains length, width, height information from video
 # for example write after 100 frames grab 10 seconds to new video
 framestograb = list(range(100, 100 + int(v.fps*10), 1))
