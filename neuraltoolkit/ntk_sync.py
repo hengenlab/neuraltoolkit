@@ -416,10 +416,10 @@ def map_video_to_neural_data(syncpulse_files: (list, tuple, str),
     # Count frames in all video files
     frame_counts = np.array([round(ntk.NTKVideos(vfile, 0).length) for vfile in video_files]) \
         if len(video_files) > 0 else np.expand_dims(np.max(camera_pulse_output_matrix['frame_ids']), axis=0)
-    cumsum_frame_counts = np.insert(np.cumsum(frame_counts), 0, 0)[:-1]
+    cumsum_frame_counts_partial = np.insert(np.cumsum(frame_counts), 0, 0)[:-1]
 
     # total_frames taken from video files if they exist, if not it's taken from digital file
-    total_frames = np.sum(frame_counts)  # if len(frame_counts) > 0 else np.max(camera_pulse_output_matrix['frame_ids'])  # todo remove
+    total_frames = np.sum(frame_counts)
     output_matrix = np.empty((total_frames,), dtype=structured_array_dtypes)
 
     if manual_video_neural_offset_sec != 0.0:
@@ -433,21 +433,20 @@ def map_video_to_neural_data(syncpulse_files: (list, tuple, str),
         new_ecube_time[new_ecube_time < 0] = 0
         camera_pulse_output_matrix['ecube_time'] = new_ecube_time.astype(np.uint64)
 
-    valid_frames = (camera_pulse_output_matrix['frame_ids'] >= 0) & (camera_pulse_output_matrix['frame_ids'] < cumsum_frame_counts[-1])
-    # frames_from = manual_video_frame_offset
-    # frames_to = manual_video_frame_offset + np.sum(valid_frames)
+    valid_frames = (camera_pulse_output_matrix['frame_ids'] >= 0) & (camera_pulse_output_matrix['frame_ids'] < total_frames)
+
     frames_from = 0
     frames_to = np.sum(valid_frames)
     output_matrix['ecube_time'] = 0  # frames we don't have data for have 0 ecube_time
     output_matrix['ecube_time'][frames_from:frames_to] = camera_pulse_output_matrix['ecube_time'][valid_frames]
 
     output_matrix['video_frame_global_ix'] = np.arange(0, total_frames)
-    assert np.all(np.diff(cumsum_frame_counts) >= 0), \
-        'cumsum_frame_counts are not sorted, this condition should not occur under normal conditions.'
+    assert np.all(np.diff(cumsum_frame_counts_partial) >= 0), \
+        'cumsum_frame_counts_partial are not sorted, this condition should not occur under normal conditions.'
     output_matrix['video_filename_ix'] = \
-        np.searchsorted(cumsum_frame_counts, output_matrix['video_frame_global_ix'], side='right') - 1
+        np.searchsorted(cumsum_frame_counts_partial, output_matrix['video_frame_global_ix'], side='right') - 1
     output_matrix['video_frame_offset'] = \
-        output_matrix['video_frame_global_ix'] - cumsum_frame_counts[output_matrix['video_filename_ix']]
+        output_matrix['video_frame_global_ix'] - cumsum_frame_counts_partial[output_matrix['video_filename_ix']]
 
     # Compute the neural file index and offset for that file, noting that some frames will be recorded before neural
     # data recording started, in those cases the neural_filename_ix and neural_offset will be -1
