@@ -82,7 +82,7 @@ probechans = 64  #  number of channels per probe (symmetric)
 t,dgc = ntk.load_raw_gain_chmap_1probe(rawfile, number_of_channels,
                                        hstype, nprobes=nprobes,
                                        lraw=1, ts=0, te=-1,
-                                       probenum=0, probechans=64)
+                                       probenum=probenum, probechans=64)
 
 # bandpass filter
 bdgc = ntk.butter_bandpass(dgc, 500, 7500, 25000, 3)
