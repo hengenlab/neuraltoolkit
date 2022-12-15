@@ -434,6 +434,44 @@ class NTKVideos:
         # video.release()
         # cv2.destroyAllWindows()
 
+    def play_video_from_framenum(self, framenum=0, waittime=10):
+
+        '''
+        videofilename = '/home/user/e3v810a-20190307T0740-0840.mp4'
+        lstream = 0
+        lstream is 1 is video is streaming or 0 if video is already saved
+        v  = NTKVideos(videofilename, lstream)
+        v contains length, width, height information from video
+        play_video_from_framenum,
+        please press q to exit
+               press spacebar to pause
+        v.play_video_from_framenum(framenum=0, waittime=10)
+        framenum to start from (default 0) starts from begining
+        waittime (default 10) higher slower video plays
+        '''
+
+        print("Please press q to exit")
+        counter = 0
+        while True:
+            # Capture frame-by-frame
+            self.ret, self.frame = self.cap.read()
+            # print("counter ", counter)
+
+            if counter >= framenum:
+                if self.ret is True:
+                    font = cv2.FONT_HERSHEY_SIMPLEX
+                    cv2.putText(self.frame, str(counter), (10, 450),
+                                font, 1, (0, 255, 0), 1, cv2.LINE_AA)
+                    cv2.imshow('video', self.frame)
+                    key = cv2.waitKey(1)
+                    if cv2.waitKey(waittime) & 0xFF == ord('q'):
+                        break
+                    elif key == ord(' '):
+                        cv2.waitKey(-1)
+            counter += 1
+        # self.cap.release()
+        cv2.destroyAllWindows()
+
 
 def make_video_from_images(imgpath, videopath, videofilename,
                            imgext='.jpg', codec='XVID', v_fps=30):
