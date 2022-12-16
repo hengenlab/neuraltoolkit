@@ -473,6 +473,8 @@ class NTKVideos:
         # check framenum > video length
         if framenum > self.length:
             raise ValueError('framenum > video length')
+        if framenum < 0:
+            raise ValueError('framenum < zero')
 
         print("Please press q to exit")
         lfirstframe = 0
