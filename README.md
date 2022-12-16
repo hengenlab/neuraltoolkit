@@ -367,6 +367,20 @@ v.grab_frame_num(frame_num, outpath)
 frame_num = 100
 v.grab_frame_num(frame_num)
 
+# Play video from framenum
+# please press q to exit
+# press spacebar to pause
+#
+# framenum to start from (default 0) starts from begining
+# timeinsec (default None), if timeinsec is not None, then
+# framenum is calculated based on timeinsec and v.fps
+# firstframewaittime (default 5000) first frames waittime
+# otherframewaittime (default 10) higher slower video plays
+#
+v.play_video_from_framenum(framenum=100, timeinsec=None, firstframewaittime=5000, otherframewaittime=10)
+#
+v.play_video_from_framenum(framenum=100, timeinsec=3.3, firstframewaittime=5000, otherframewaittime=10) 
+
 # Load all video files and return length
 import neuraltoolkit as ntk
 import glob
