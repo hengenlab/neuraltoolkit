@@ -435,7 +435,8 @@ class NTKVideos:
         # cv2.destroyAllWindows()
 
     def play_video_from_framenum(self, framenum=0,
-                                 firstframewaittime=100,
+                                 timeinsec=None,
+                                 firstframewaittime=5000,
                                  otherframewaittime=10):
 
         '''
@@ -449,9 +450,17 @@ class NTKVideos:
                press spacebar to pause
         v.play_video_from_framenum(framenum=0, waittime=10)
         framenum to start from (default 0) starts from begining
-        firstframewaittime (default 100) first frames waittime
+        timeinsec (default None), if timeinsec is not None, then
+        framenum is calculated based on timeinsec
+        firstframewaittime (default 5000) first frames waittime
         otherframewaittime (default 10) higher slower video plays
         '''
+
+        # based on time
+        if timeinsec is not None:
+            framenum = timeinsec * self.fps
+            print("timeinsec ", timeinsec,
+                  " framenum ", framenum)
 
         # check framenum > video length
         if framenum > self.length:
