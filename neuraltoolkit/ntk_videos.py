@@ -450,6 +450,10 @@ class NTKVideos:
         waittime (default 10) higher slower video plays
         '''
 
+        # check framenum > video length
+        if framenum > self.length:
+            raise ValueError('framenum > video length')
+
         print("Please press q to exit")
         counter = 0
         while True:
