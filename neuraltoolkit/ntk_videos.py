@@ -434,7 +434,9 @@ class NTKVideos:
         # video.release()
         # cv2.destroyAllWindows()
 
-    def play_video_from_framenum(self, framenum=0, waittime=10):
+    def play_video_from_framenum(self, framenum=0,
+                                 firstframewaittime=100,
+                                 otherframewaittime=10):
 
         '''
         videofilename = '/home/user/e3v810a-20190307T0740-0840.mp4'
@@ -447,7 +449,8 @@ class NTKVideos:
                press spacebar to pause
         v.play_video_from_framenum(framenum=0, waittime=10)
         framenum to start from (default 0) starts from begining
-        waittime (default 10) higher slower video plays
+        firstframewaittime (default 100) first frames waittime
+        otherframewaittime (default 10) higher slower video plays
         '''
 
         # check framenum > video length
@@ -455,6 +458,7 @@ class NTKVideos:
             raise ValueError('framenum > video length')
 
         print("Please press q to exit")
+        lfirstframe = 0
         counter = 0
         while True:
             # Capture frame-by-frame
@@ -464,14 +468,22 @@ class NTKVideos:
             if counter >= framenum:
                 if self.ret is True:
                     font = cv2.FONT_HERSHEY_SIMPLEX
-                    cv2.putText(self.frame, str(counter), (10, 450),
+                    cv2.putText(self.frame,
+                                str(counter) + str(' ') +
+                                str("{:.2f}".format(counter/self.fps)),
+                                (10, 450),
                                 font, 1, (0, 255, 0), 1, cv2.LINE_AA)
                     cv2.imshow('video', self.frame)
+                    if lfirstframe == 0:
+                        waittime = firstframewaittime
+                    else:
+                        waittime = otherframewaittime
                     key = cv2.waitKey(1)
                     if cv2.waitKey(waittime) & 0xFF == ord('q'):
                         break
                     elif key == ord(' '):
                         cv2.waitKey(-1)
+                    lfirstframe += 1
             counter += 1
         # self.cap.release()
         cv2.destroyAllWindows()
