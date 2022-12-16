@@ -445,13 +445,21 @@ class NTKVideos:
         lstream is 1 is video is streaming or 0 if video is already saved
         v  = NTKVideos(videofilename, lstream)
         v contains length, width, height information from video
-        play_video_from_framenum,
+
         please press q to exit
                press spacebar to pause
-        v.play_video_from_framenum(framenum=0, waittime=10)
+
+        v.play_video_from_framenum(framenum=100, timeinsec=None,
+                                   firstframewaittime=5000,
+                                   otherframewaittime=10)
+        or
+        v.play_video_from_framenum(framenum=100, timeinsec=3.3,
+                                   firstframewaittime=5000,
+                                   otherframewaittime=10)
+
         framenum to start from (default 0) starts from begining
         timeinsec (default None), if timeinsec is not None, then
-        framenum is calculated based on timeinsec
+            framenum is calculated based on timeinsec
         firstframewaittime (default 5000) first frames waittime
         otherframewaittime (default 10) higher slower video plays
         '''
