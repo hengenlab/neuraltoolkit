@@ -39,7 +39,6 @@ setup(
    install_requires=['ipython', 'numpy', 'matplotlib', 'seaborn', 'pandas',
                      'opencv-python', 'scipy', 'h5py', 'tables'],
    classifiers=[
-        'Development Status :: 1 - Pre-Alpha',
         'Natural Language :: English',
         'Programming Language :: Python :: 3',
     ],
