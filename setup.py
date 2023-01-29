@@ -24,7 +24,6 @@ setup(
                 processing, working with data formats, and basic utilities for\
                 electrophysiology and behavioral data.',
    license="",
-   long_description=long_description,
    keywords='neuraltoolkit, neuroscience, electrophysiology',
    package_dir={'neuraltoolkit': 'neuraltoolkit'},
    author='\
