@@ -494,6 +494,13 @@ video_start_index =\
 ```
 
 ---
+## Utils
+```
+# natural sort
+naturally_sorted_list = ntk.natural_sort(list_unsorted)
+```
+
+---
 ## filters
 
 ```
