@@ -14,6 +14,9 @@ List of functions/class in ntk_utils
 extract_email_fromtxtfile(filename)
 '''
 
+import json
+import os.path as op
+
 
 # Extract email from a txt file
 def extract_email_fromtxtfile(filename):
@@ -150,3 +153,26 @@ def send_sms(from_email, from_pass, to_email_list, msg):
     else:
         raise ValueError('Argument {} is not a string or list'
                          .format(to_email_list))
+
+
+def load_json_file(json_file, verbose=0):
+    '''
+    Load json file and return dictionary
+
+    json_data = load_json_file(json_file, verbose=1)
+
+    json_file : json file with path, /home/kbn/data.json
+    verbose : default(0), if 1 prints json_data
+
+
+    '''
+
+    # check file exists
+    if not (op.isfile(json_file) and op.exists(json_file)):
+        raise FileNotFoundError(f'File {json_file} not found')
+
+    with open(json_file, 'r') as f:
+        json_data = json.load(f)
+    if verbose:
+        print(json_data)
+    return json_data
