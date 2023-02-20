@@ -500,6 +500,15 @@ video_start_index =\
 naturally_sorted_list = ntk.natural_sort(list_unsorted)
 ```
 
+```
+# Load json file and return dictionary
+# json_file : json file with path, /home/kbn/data.json
+# verbose : default(0), if 1 prints json_data
+json_file = "/home/kbn/data.json"
+json_data = load_json_file(json_file, verbose=1)
+
+```
+
 ---
 ## filters
 
