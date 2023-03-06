@@ -197,10 +197,17 @@ def ntk_spectrogram(lfp, fs, nperseg=None, noverlap=None, f_low=1, f_high=64,
     if noverlap is None:
         noverlap = fs * 2
 
-    f, t_spec, x_spec = signal.spectrogram(lfp, fs=fs, window='hanning',
-                                           nperseg=nperseg,
-                                           noverlap=noverlap,
-                                           detrend=False,  mode='psd')
+    try:
+        f, t_spec, x_spec = signal.spectrogram(lfp, fs=fs, window='hann',
+                                               nperseg=nperseg,
+                                               noverlap=noverlap,
+                                               detrend=False,  mode='psd')
+    except Exception as e:
+        print("Error ", e, " changing window to hann")
+        f, t_spec, x_spec = signal.spectrogram(lfp, fs=fs, window='hanning',
+                                               nperseg=nperseg,
+                                               noverlap=noverlap,
+                                               detrend=False,  mode='psd')
     # print("sh x_spec ", x_spec.shape)
     # Remove noise
     x_mesh, y_mesh = np.meshgrid(t_spec, f[(f < f_high) & (f > f_low)])
