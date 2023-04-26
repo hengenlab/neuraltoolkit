@@ -188,7 +188,9 @@ Filename Digital_1_Channels_int64_3.bin
 index  [5573869 5774268 5974585 6175289 6375922 6576758 6777207 6977770 7177962
 7378361]  time  4983018546437
 
-
+```
+---
+```
 # Find number of samples per channel in a ecube file
 rawfile = '/home/kbn/Headstages_512_Channels_int16_2019-06-28_18-13-24.bin'
 number_of_channels = 512
@@ -205,6 +207,9 @@ lb2 : default 1, binfile2 is rawfile, 0 if digital file
 samples_between = ntk.samples_between_two_binfiles(binfile1, binfile2, number_of_channels,
                                                    hstype, nprobes=8, lb1=1, lb2=0)
 
+```
+---
+```
 # Create channel mapping file for Open Ephys
 import neuraltoolkit as ntk
 ntk.create_chanmap_file_for_oe()
