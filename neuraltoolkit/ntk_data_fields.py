@@ -122,5 +122,3 @@ def get_data_fields(animal=None, field=None, probenum=None, region=None):
                 raise ValueError(f'Check field {field}')
         else:
             raise RunTimeError('Error')
-
-
