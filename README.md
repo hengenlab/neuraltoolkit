@@ -228,7 +228,7 @@ ntk.get_data_fields(animal=None, field=None, probenum=None, region=None)
 # probenum : if field is not 'all' give either probenum or region
 # region :   if field is not 'all' give either probenum or region
 
-
+```
 ---
 ```
 # Create channel mapping file for Open Ephys
