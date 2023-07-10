@@ -208,6 +208,27 @@ samples_between = ntk.samples_between_two_binfiles(binfile1, binfile2, number_of
                                                    hstype, nprobes=8, lb1=1, lb2=0)
 
 ```
+
+---
+```
+ntk.get_data_fields(animal=None, field=None, probenum=None, region=None)
+# animal : animal name (5)
+# 
+# field : field to return
+    # field list :
+    #              'all' returns everything as json file
+    #
+    #              'animal_name', 'species', 'strain', 'genotype', 'sex', 'animal_dob',
+    #              'num_chan', 'num_regions', 'num_probes', 'implant_date', 'surgeon',
+    #              'electrode',  'headstage', 'daqsys', 'sac_date', 'probe_num', 'chanmap',
+    #              'region', 'chan_range', 'location' 
+    #
+    #                  location order is [AP, ML, DV]
+#
+# probenum : if field is not 'all' give either probenum or region
+# region :   if field is not 'all' give either probenum or region
+
+
 ---
 ```
 # Create channel mapping file for Open Ephys
