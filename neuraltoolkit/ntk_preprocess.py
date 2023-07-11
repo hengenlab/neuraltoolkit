@@ -16,7 +16,7 @@ def remove_large_noise(ddgc_filt, max_value_to_check=3000,
     max_value_to_check : max value to remove (default 2500)
     windowval : window to zero (default 500)
     checkchans : list of 4 channels (default None)
-    lplot : 1 to plot (default 0)
+    lplot : 1 to plot first channel from checkchans (default 0)
 
     data: cleaned up ddgc_filt
 
@@ -60,7 +60,8 @@ def remove_large_noise(ddgc_filt, max_value_to_check=3000,
 
     if lplot:
         fig, ax = plt.subplots(nrows=3, figsize=(40, 10), sharex=True)
-        for i in range(1):
+        fig.suptitle(f'Channel {checkchans[0]}')
+        for i in checkchans[0:1]:
             ax[3*i].plot(ddgc_filt[i, :])
             ax[(3*i) + 1].plot(ddgc[i, :])
             ax[(3*i) + 2].plot(edges, np.arange(len(edges)))
