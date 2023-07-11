@@ -231,6 +231,20 @@ ntk.get_data_fields(animal=None, field=None, probenum=None, region=None)
 ```
 ---
 ```
+ntk.remove_large_noise(ddgc_filt, max_value_to_check=3000, windowval=500, checkchans=None, lplot=0)
+    
+ddgc_filt: raw data matrix
+max_value_to_check : max value to remove (default 3000)
+windowval : window to zero (default 500)
+checkchans : list of 4 channels (default None)
+lplot : 1 to plot (default 0)
+
+returns   
+data: cleaned up ddgc_filt
+    
+```
+---
+```
 # Create channel mapping file for Open Ephys
 import neuraltoolkit as ntk
 ntk.create_chanmap_file_for_oe()
