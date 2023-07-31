@@ -48,6 +48,7 @@ def remove_large_noise(ddgc_filt, max_value_to_check=3000,
     edges4 = np.argwhere(np.abs(ddgc[checkchans[3], :]) >
                          max_value_to_check).flatten()
     edges = np.unique(np.concatenate((edges1, edges2, edges3, edges4)))
+    print(f'shape edges {edges.shape}', flush=True)
 
     for i in edges:
         # print("iii " ,i,  " ", min(i, (i - windowval)),  " ",
