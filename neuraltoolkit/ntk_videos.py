@@ -28,6 +28,7 @@ try:
 except ImportError:
     raise ImportError('\tpip install numpy\n')
 import os
+import os.path as op
 
 
 class NTKVideos:
@@ -61,6 +62,12 @@ class NTKVideos:
     '''
 
     def __init__(self, name, lstream):
+
+        # check file exist if lstream is zero
+        if lstream == 0:
+            if not (op.exists(name) and op.isfile(name)):
+                raise FileNotFoundError("File {} not found".format(name))
+
         self.cap = cv2.VideoCapture(name)
 
         # Check if camera opened successfully
