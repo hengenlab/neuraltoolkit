@@ -69,3 +69,18 @@ def remove_large_noise(ddgc_filt, max_value_to_check=3000,
         plt.show()
 
     return ddgc
+
+
+def get_tetrode_channels_from_channelnum(channel1, ch_grp_size=4):
+    '''
+    get_tetrode_channels_from_channelnum(channel1, ch_grp_size=4)
+
+    channel1 : channel number in tetrode
+    ch_grp_size : default 4
+
+    returns list of channels in that tetrode
+    '''
+
+    return np.arange(channel1 - (channel1 % ch_grp_size),
+                     channel1 + (ch_grp_size -
+                     (channel1 % ch_grp_size))).tolist()
