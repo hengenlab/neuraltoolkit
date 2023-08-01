@@ -302,6 +302,13 @@ ntk.ecube_raw_to_preprocessed(rawfile, outdir
                               tetrode_channels=[0,1,2,3])
 ```
 ---
+```
+# Get tetrode channels from a channel number
+import neuraltoolkit as ntk
+ch_list = ntk.get_tetrode_channels_from_channelnum(59, 4)
+# [56, 57, 58, 59]
+```
+---
 ## load intan data
 
 
