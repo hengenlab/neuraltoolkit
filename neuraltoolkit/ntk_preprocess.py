@@ -81,6 +81,9 @@ def get_tetrode_channels_from_channelnum(channel1, ch_grp_size=4):
     returns list of channels in that tetrode
     '''
 
-    return np.arange(channel1 - (channel1 % ch_grp_size),
-                     channel1 + (ch_grp_size -
-                     (channel1 % ch_grp_size))).tolist()
+    ch_list = np.arange(channel1 - (channel1 % ch_grp_size),
+                        channel1 + (ch_grp_size -
+                        (channel1 % ch_grp_size))).tolist()
+
+    ch_list = [int(i) for i in ch_list]
+    return ch_list
