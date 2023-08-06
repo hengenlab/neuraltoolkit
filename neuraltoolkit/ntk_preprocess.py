@@ -75,6 +75,8 @@ def remove_large_noise(ddgc_filt, max_value_to_check=3000,
         fig, ax = plt.subplots(nrows=3, figsize=(40, 10), sharex=True)
         fig.suptitle(f'Channel {checkchans[0]}')
         for i in checkchans[0:1]:
+            print(f'i {i}')
+            print(f'edges {edges}', flush=True)
             ax[3*i].plot(ddgc_filt[i, :])
             ax[(3*i) + 1].plot(ddgc[i, :])
             ax[(3*i) + 2].plot(edges, np.arange(len(edges)))
