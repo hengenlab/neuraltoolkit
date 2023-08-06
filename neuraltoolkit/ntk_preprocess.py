@@ -61,6 +61,10 @@ def remove_large_noise(ddgc_filt, max_value_to_check=3000,
     otoc = time.time()
     print(f'Artifact removal took {otoc - otic} seconds')
 
+    print(f'len edges {len(edges)}', flush=True)
+    if len(edges) < 1:
+        lplot = 0
+
     if lplot == 1:
         fig, ax = plt.subplots(nrows=3, figsize=(40, 10), sharex=True)
         fig.suptitle(f'Channel {checkchans[0]}')
@@ -71,19 +75,20 @@ def remove_large_noise(ddgc_filt, max_value_to_check=3000,
             ax[(3*indx) + 1].plot(ddgc[ch, :])
             ax[(3*indx) + 2].plot(edges, np.arange(len(edges)))
         plt.show()
-    elif op.exists(op.dirname(lplot)):
-        print(f'plotting raw data {lplot}', flush=True)
-        print(f'op.dirname(lplot) {op.dirname(lplot)}', flush=True)
-        fig, ax = plt.subplots(nrows=3, figsize=(40, 10), sharex=True)
-        fig.suptitle(f'Channel {checkchans[0]}')
-        for indx, ch in enumerate(checkchans[0:1]):
-            print(f'indx {indx} ch {ch}')
-            print(f'edges {edges}', flush=True)
-            ax[3*indx].plot(ddgc_filt[ch, :])
-            ax[(3*indx) + 1].plot(ddgc[ch, :])
-            ax[(3*indx) + 2].plot(edges, np.arange(len(edges)))
-        # plt.show()
-        plt.savefig(lplot)
+    elif lplot != 0:
+        if op.exists(op.dirname(lplot)):
+            print(f'plotting raw data {lplot}', flush=True)
+            print(f'op.dirname(lplot) {op.dirname(lplot)}', flush=True)
+            fig, ax = plt.subplots(nrows=3, figsize=(40, 10), sharex=True)
+            fig.suptitle(f'Channel {checkchans[0]}')
+            for indx, ch in enumerate(checkchans[0:1]):
+                print(f'indx {indx} ch {ch}')
+                print(f'edges {edges}', flush=True)
+                ax[3*indx].plot(ddgc_filt[ch, :])
+                ax[(3*indx) + 1].plot(ddgc[ch, :])
+                ax[(3*indx) + 2].plot(edges, np.arange(len(edges)))
+            # plt.show()
+            plt.savefig(lplot)
 
     return ddgc
 
