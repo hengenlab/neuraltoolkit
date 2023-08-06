@@ -26,6 +26,7 @@ def remove_large_noise(ddgc_filt, max_value_to_check=3000,
 
     if (len(checkchans) != 4):
         raise ValueError(f'Error: checkchans length not 4: {len(checkchans)}')
+    print(f'plotting raw data {lplot}', flush=True)
 
     ddgc = ddgc_filt * 1
 
@@ -68,7 +69,9 @@ def remove_large_noise(ddgc_filt, max_value_to_check=3000,
             ax[(3*i) + 1].plot(ddgc[i, :])
             ax[(3*i) + 2].plot(edges, np.arange(len(edges)))
         plt.show()
-    if op.exists(op.dirname(lplot)):
+    elif op.exists(op.dirname(lplot)):
+        print(f'plotting raw data {lplot}', flush=True)
+        print(f'op.dirname(lplot) {op.dirname(lplot)}', flush=True)
         fig, ax = plt.subplots(nrows=3, figsize=(40, 10), sharex=True)
         fig.suptitle(f'Channel {checkchans[0]}')
         for i in checkchans[0:1]:
