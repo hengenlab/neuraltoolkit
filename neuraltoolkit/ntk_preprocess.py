@@ -64,22 +64,24 @@ def remove_large_noise(ddgc_filt, max_value_to_check=3000,
     if lplot == 1:
         fig, ax = plt.subplots(nrows=3, figsize=(40, 10), sharex=True)
         fig.suptitle(f'Channel {checkchans[0]}')
-        for i in checkchans[0:1]:
-            ax[3*i].plot(ddgc_filt[i, :])
-            ax[(3*i) + 1].plot(ddgc[i, :])
-            ax[(3*i) + 2].plot(edges, np.arange(len(edges)))
+        for indx, ch in enumerate(checkchans[0:1]):
+            print(f'indx {indx} ch {ch}')
+            print(f'edges {edges}', flush=True)
+            ax[3*indx].plot(ddgc_filt[ch, :])
+            ax[(3*indx) + 1].plot(ddgc[ch, :])
+            ax[(3*indx) + 2].plot(edges, np.arange(len(edges)))
         plt.show()
     elif op.exists(op.dirname(lplot)):
         print(f'plotting raw data {lplot}', flush=True)
         print(f'op.dirname(lplot) {op.dirname(lplot)}', flush=True)
         fig, ax = plt.subplots(nrows=3, figsize=(40, 10), sharex=True)
         fig.suptitle(f'Channel {checkchans[0]}')
-        for i in checkchans[0:1]:
-            print(f'i {i}')
+        for indx, ch in enumerate(checkchans[0:1]):
+            print(f'indx {indx} ch {ch}')
             print(f'edges {edges}', flush=True)
-            ax[3*i].plot(ddgc_filt[i, :])
-            ax[(3*i) + 1].plot(ddgc[i, :])
-            ax[(3*i) + 2].plot(edges, np.arange(len(edges)))
+            ax[3*indx].plot(ddgc_filt[ch, :])
+            ax[(3*indx) + 1].plot(ddgc[ch, :])
+            ax[(3*indx) + 2].plot(edges, np.arange(len(edges)))
         # plt.show()
         plt.savefig(lplot)
 
