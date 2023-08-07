@@ -66,7 +66,7 @@ def remove_large_noise(ddgc_filt, max_value_to_check=3000,
         lplot = 0
 
     if lplot == 1:
-        fig, ax = plt.subplots(nrows=3, figsize=(40, 10), sharex=True)
+        fig, ax = plt.subplots(nrows=3, figsize=(40, 6), sharex=True)
         fig.suptitle(f'Channel {checkchans[0]}')
         for indx, ch in enumerate(checkchans[0:1]):
             print(f'indx {indx} ch {ch}')
@@ -75,12 +75,13 @@ def remove_large_noise(ddgc_filt, max_value_to_check=3000,
             ax[(3*indx) + 1].plot(ddgc[ch, :])
             ax[(3*indx) + 2].plot(edges, np.arange(len(edges)))
             ax[(3*indx) + 2].set_xlim([0, len(ddgc[ch, :])])
+        plt.tight_layout()
         plt.show()
     elif lplot != 0:
         if op.exists(op.dirname(lplot)):
             print(f'plotting raw data {lplot}', flush=True)
             print(f'op.dirname(lplot) {op.dirname(lplot)}', flush=True)
-            fig, ax = plt.subplots(nrows=3, figsize=(40, 10), sharex=True)
+            fig, ax = plt.subplots(nrows=3, figsize=(40, 6), sharex=True)
             fig.suptitle(f'Channel {checkchans[0]}')
             for indx, ch in enumerate(checkchans[0:1]):
                 print(f'indx {indx} ch {ch}')
@@ -89,6 +90,7 @@ def remove_large_noise(ddgc_filt, max_value_to_check=3000,
                 ax[(3*indx) + 1].plot(ddgc[ch, :])
                 ax[(3*indx) + 2].plot(edges, np.arange(len(edges)))
                 ax[(3*indx) + 2].set_xlim([0, len(ddgc[ch, :])])
+            plt.tight_layout()
             # plt.show()
             plt.savefig(lplot)
 
