@@ -74,6 +74,7 @@ def remove_large_noise(ddgc_filt, max_value_to_check=3000,
             ax[3*indx].plot(ddgc_filt[ch, :])
             ax[(3*indx) + 1].plot(ddgc[ch, :])
             ax[(3*indx) + 2].plot(edges, np.arange(len(edges)))
+            ax[(3*indx) + 2].set_xlim([0, len(ddgc[ch, :])])
         plt.show()
     elif lplot != 0:
         if op.exists(op.dirname(lplot)):
@@ -87,6 +88,7 @@ def remove_large_noise(ddgc_filt, max_value_to_check=3000,
                 ax[3*indx].plot(ddgc_filt[ch, :])
                 ax[(3*indx) + 1].plot(ddgc[ch, :])
                 ax[(3*indx) + 2].plot(edges, np.arange(len(edges)))
+                ax[(3*indx) + 2].set_xlim([0, len(ddgc[ch, :])])
             # plt.show()
             plt.savefig(lplot)
 
