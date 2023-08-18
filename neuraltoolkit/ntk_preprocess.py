@@ -94,6 +94,7 @@ def remove_large_noise(ddgc_filt, max_value_to_check=3000,
             # plt.show()
             plt.savefig(lplot)
 
+    plt.close('all')
     return ddgc
 
 
