@@ -19,7 +19,10 @@ def remove_large_noise(ddgc_filt, max_value_to_check=3000,
     checkchans : list of 4 channels (default None)
     lplot : 1 to plot first channel from checkchans (default 0)
 
+    returns
     data: cleaned up ddgc_filt
+    indices : where data is above max_value_to_check
+
 
     raise ValueError
     '''
@@ -95,7 +98,7 @@ def remove_large_noise(ddgc_filt, max_value_to_check=3000,
             plt.savefig(lplot)
 
     plt.close('all')
-    return ddgc
+    return ddgc, edges
 
 
 def get_tetrode_channels_from_channelnum(channel1, ch_grp_size=4):
