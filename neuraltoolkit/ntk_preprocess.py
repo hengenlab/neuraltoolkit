@@ -55,11 +55,18 @@ def remove_large_noise(ddgc_filt, max_value_to_check=3000,
     edges = np.unique(np.concatenate((edges1, edges2, edges3, edges4)))
     print(f'shape edges {edges.shape}', flush=True)
 
+    edges_all = None
+    edges_all = []
     for i in edges:
         # print("iii " ,i,  " ", min(i, (i - windowval)),  " ",
         #       min(ddgc.shape[1], (i + windowval)))
         ddgc[:,
              min(i, (i - windowval)): min(ddgc.shape[1], (i + windowval))] = 0
+        edges_all.extend(list(range(min(i, (i - windowval)),
+                         min(ddgc.shape[1],
+                         (i + windowval)), 1)))
+    edges_all = np.sort(np.unique(edges_all))
+    print(f'shape edges_all {edges_all.shape}', flush=True)
 
     otoc = time.time()
     print(f'Artifact removal took {otoc - otic} seconds')
@@ -76,7 +83,7 @@ def remove_large_noise(ddgc_filt, max_value_to_check=3000,
             print(f'edges {edges}', flush=True)
             ax[3*indx].plot(ddgc_filt[ch, :])
             ax[(3*indx) + 1].plot(ddgc[ch, :])
-            ax[(3*indx) + 2].plot(edges, np.arange(len(edges)))
+            ax[(3*indx) + 2].plot(edges_all, np.arange(len(edges_all)))
             ax[(3*indx) + 2].set_xlim([0, len(ddgc[ch, :])])
         plt.tight_layout()
         plt.show()
@@ -91,14 +98,14 @@ def remove_large_noise(ddgc_filt, max_value_to_check=3000,
                 print(f'edges {edges}', flush=True)
                 ax[3*indx].plot(ddgc_filt[ch, :])
                 ax[(3*indx) + 1].plot(ddgc[ch, :])
-                ax[(3*indx) + 2].plot(edges, np.arange(len(edges)))
+                ax[(3*indx) + 2].plot(edges_all, np.arange(len(edges_all)))
                 ax[(3*indx) + 2].set_xlim([0, len(ddgc[ch, :])])
             plt.tight_layout()
             # plt.show()
             plt.savefig(lplot)
 
     plt.close('all')
-    return ddgc, edges
+    return ddgc, edges_all
 
 
 def get_tetrode_channels_from_channelnum(channel1, ch_grp_size=4):
