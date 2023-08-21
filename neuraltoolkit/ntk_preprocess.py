@@ -53,7 +53,7 @@ def remove_large_noise(ddgc_filt, max_value_to_check=3000,
     edges4 = np.argwhere(np.abs(ddgc[checkchans[3], :]) >
                          max_value_to_check).flatten()
     edges = np.unique(np.concatenate((edges1, edges2, edges3, edges4)))
-    print(f'shape edges {edges.shape}', flush=True)
+    # print(f'shape edges {edges.shape}', flush=True)
 
     edges_all = None
     edges_all = []
@@ -71,7 +71,8 @@ def remove_large_noise(ddgc_filt, max_value_to_check=3000,
     otoc = time.time()
     print(f'Artifact removal took {otoc - otic} seconds')
 
-    print(f'len edges {len(edges)}', flush=True)
+    # print(f'len edges {len(edges)}', flush=True)
+    print(f'len edges_all {len(edges_all)}', flush=True)
     if len(edges) < 1:
         lplot = 0
 
