@@ -16,6 +16,7 @@ extract_email_fromtxtfile(filename)
 
 import json
 import os.path as op
+import numpy as np
 
 
 # Extract email from a txt file
@@ -176,3 +177,29 @@ def load_json_file(json_file, verbose=0):
     if verbose:
         print(json_data)
     return json_data
+
+
+def find_edges_from_consecutive(data, step=1, lverbose=0):
+
+    '''
+    find_edges_from_consecutive(data, step=1, lverbose=0)
+    data : data of set of consecutive data
+    step :  Spacing between values (default 1)
+    lverbose : verbosity (default 0), 1 to be verbose
+
+    return edges of consecutive data
+    '''
+    # important to sort array for this to work correctly
+    data = np.sort(data)
+    data_split = np.split(data, np.where(np.diff(data) != step)[0]+1)
+    data_split = np.asarray(data_split, dtype='object')
+    edges = None
+    edges = []
+    if lverbose:
+        print(f'data_split sh {data_split.shape}')
+    for indx, data_split_i in enumerate(data_split):
+        if lverbose:
+            print(f'data_split_i {data_split_i[0]} {data_split_i[-1]}')
+        edges.append([data_split_i[0], data_split_i[-1]])
+
+    return edges
