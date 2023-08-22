@@ -560,6 +560,12 @@ json_data = load_json_file(json_file, verbose=1)
 
 ```
 
+```
+import neuraltoolkit as ntk
+data = np.array([0, 47, 48, 49, 50, 97, 98, 99])
+ntk.find_edges_from_consecutive(data, step=1, lverbose=0)
+# Out: [[0, 0], [47, 50], [97, 99]]
+```
 ---
 ## filters
 
