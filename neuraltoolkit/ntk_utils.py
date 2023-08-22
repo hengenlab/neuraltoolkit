@@ -190,7 +190,7 @@ def find_edges_from_consecutive(data, step=1, lverbose=0):
     return edges of consecutive data
     '''
 
-    if step !=1:
+    if step != 1:
         raise ValueError('Only tested for step=1')
 
     # important to sort array for this to work correctly
