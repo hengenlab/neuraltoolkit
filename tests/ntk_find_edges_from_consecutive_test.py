@@ -14,7 +14,7 @@ class Test_ntk_find_edges_from_consecutive(unittest.TestCase):
         for indx in range(len(self.inputs)):
             test_output = \
                     ntk.find_edges_from_consecutive(self.inputs[indx],
-                                               step=1, lverbose=0)
+                                                    step=1, lverbose=0)
             msg = \
                 f'edges {self.expected_output[indx]} {test_output}'
             self.assertEqual(self.expected_output[indx],
