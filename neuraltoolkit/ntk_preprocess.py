@@ -27,8 +27,10 @@ def remove_large_noise(ddgc_filt, max_value_to_check=3000,
     raise ValueError
     '''
 
-    if (len(checkchans) != 4):
-        raise ValueError(f'Error: checkchans length not 4: {len(checkchans)}')
+    if (len(checkchans) < 1):
+        raise ValueError(f'Error: checkchans length < 1: {len(checkchans)}')
+    if (len(checkchans) > 4):
+        raise ValueError(f'Error: checkchans length > 4: {len(checkchans)}')
     print(f'plotting raw data {lplot}', flush=True)
 
     ddgc = ddgc_filt * 1
