@@ -165,7 +165,7 @@ def find_video_start_index(datadir, ch, nfiles=10,
                 plt.legend()
                 plt.show()
             print("found in ", fl_list[indx], flush=True)
-            return video_start_index
+            return video_start_index + cumulative_len
             break
         except Exception as e:
             # ugly
