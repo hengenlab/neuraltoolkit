@@ -184,6 +184,7 @@ def find_channel_map(hstype, number_of_channels=None):
                              38]) - 1
 
     elif hstype == 'IMU':
+        # y, x, z order
         chan_map = np.array([44, 45, 46, 41, 42, 43, 47, 48,
                              50,  1,  2,  3,  4,  5,  6,  7,  8,
                              9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
