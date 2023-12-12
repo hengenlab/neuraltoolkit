@@ -193,20 +193,13 @@ index  [5573869 5774268 5974585 6175289 6375922 6576758 6777207 6977770 7177962
 ---
 ```
 With IMU channel map (please see below for channel map),
+# y, x, z order for accelerometer, gyroscope.
 Channels 0, 1, 2 are 3-axis accelerometer.
 Channels 3, 4, 5 are 3-axis gyroscope.
 Channels 6, 7, 8 are 3-axis compass
 Please remember, channel number here starts with 0.
 ```
 
----
-```
-With IMU channel map (please see below for channel map),
-Channels 0, 1, 2 are 3-axis accelerometer.
-Channels 3, 4, 5 are 3-axis gyroscope.
-Channels 6, 7, 8 are 3-axis compass
-Please remember, channel number here starts with 0.
-```
 ---
 ```
 # Find number of samples per channel in a ecube file
