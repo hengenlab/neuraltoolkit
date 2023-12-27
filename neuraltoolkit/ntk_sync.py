@@ -23,8 +23,7 @@ try:
     import smart_open
     import boto3
 
-    assert int(smart_open.__version__[0]) >= 5, "Smart open 5.1.0+ is required."
-    endpoint_url = os.environ.get('ENDPOINT_URL', 'https://s3-west.nrp-nautilus.io')
+    endpoint_url = os.environ.get('ENDPOINT_URL', 'https://s3-central.nrp-nautilus.io')
     wr.config.s3_endpoint_url = endpoint_url
     transport_params = {'client': boto3.Session().client('s3', endpoint_url=endpoint_url)}
     smart_open.open = functools.partial(smart_open.open, transport_params=transport_params)
