@@ -1,3 +1,4 @@
+# flake8: noqa
 import neuraltoolkit as ntk
 import streamlit as st
 import matplotlib.pyplot as plt
