@@ -9,10 +9,17 @@ Author: Kiran Bhaskaran-Nair
 Email: kbn.git@gmail.com
 '''
 
-from rpy2.robjects.packages import importr
+try:
+    from rpy2.robjects.packages import importr
+except ImportError:
+    raise ImportError('Run command : pip install rpy2')
+
 # import rpy2.robjects as robjects
 # from rpy2.robjects.vectors import StrVector
-from rpy2.rinterface_lib.embedded import RRuntimeError
+try:
+    from rpy2.rinterface_lib.embedded import RRuntimeError
+except ImportError:
+    raise ImportError('Run command : pip install rpy2')
 import math
 
 
