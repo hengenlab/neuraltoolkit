@@ -99,13 +99,19 @@ def ntk_power_t_test(n=None, d=None, sig_level=0.05,
     #       it.
 
     if ((n is None) and (d is not None)):
-        result = pwr.pwr_t_test(d=d, sig_level=sig_level,
-                                power=power, type=type,
-                                alternative=alternative)
-        return result
+        try:
+            result = pwr.pwr_t_test(d=d, sig_level=sig_level,
+                                    power=power, type=type,
+                                    alternative=alternative)
+            return result
+        except RRuntimeError as e:
+            print("Error:", e)
 
     elif ((n is not None) and (d is None)):
-        result = pwr.pwr_t_test(n=n, sig_level=sig_level,
-                                power=power, type=type,
-                                alternative=alternative)
-        return result
+        try:
+            result = pwr.pwr_t_test(n=n, sig_level=sig_level,
+                                    power=power, type=type,
+                                    alternative=alternative)
+            return result
+        except RRuntimeError as e:
+            print("Error:", e)
