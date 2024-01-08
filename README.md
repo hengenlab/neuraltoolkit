@@ -711,6 +711,39 @@ plt.figure(2)
 plt.plot(tn,d_tn)
 plt.show(block=False)
 ```
+
+### Cohen’s d and pwr.t.test
+```
+import neuraltoolkit as ntk
+
+# ---------------------------------------------------------------------------------------------
+mean1 = 0.102
+mean2 = 0.173
+std1 = 0.028
+std2 = 0.038
+result_cohens_d = ntk.ntk_calculate_cohens_d(mean1, mean2, std1, std2)
+print("Cohen's d:", result_cohens_d)
+
+# ---------------------------------------------------------------------------------------------
+result_ntk_power_t_test = ntk.ntk_power_t_test(n=None, d=result_cohens_d, sig_level=0.05,
+                                               power=0.8,
+                                               type="two.sample",
+                                               alternative="two.sided")
+print(result_ntk_power_t_test)
+print(f"n: {result_ntk_power_t_test.rx2('n')[0]}")
+
+# ---------------------------------------------------------------------------------------------
+result_ntk_power_t_test = ntk.ntk_power_t_test(n=result_ntk_power_t_test.rx2('n')[0], d=None,
+                                               sig_level=0.05,
+                                               power=0.8,
+                                               type="two.sample",
+                                               alternative="two.sided")
+print(result_ntk_power_t_test)
+print(f"d: {result_ntk_power_t_test.rx2('d')[0]}")
+# ---------------------------------------------------------------------------------------------
+```
+
+
 ---
 ## Channel mappings
 ###### 'hs64'
