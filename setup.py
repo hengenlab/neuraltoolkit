@@ -37,7 +37,7 @@ setup(
    packages=['neuraltoolkit'],
    install_requires=['ipython', 'numpy', 'matplotlib', 'seaborn', 'pandas',
                      'opencv-python', 'scipy', 'h5py', 'tables',
-                     'requests'],
+                     'requests', 'rpy2'],
    classifiers=[
         'Natural Language :: English',
         'Programming Language :: Python :: 3',
