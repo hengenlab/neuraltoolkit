@@ -325,7 +325,7 @@ def load_raw_gain_chmap_1probe(rawfile, number_of_channels,
         raise ValueError("Please check probenum {}".format(probenum))
 
     # Print probe number of probenum is 0 to avoid confusion
-    print("Loading data from {} probe\n".format(probename[probenum]))
+    print("Loading data from {} probe".format(probename[probenum]))
 
     f = open(rawfile, 'rb')
     # toc = time.time()
