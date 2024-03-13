@@ -31,7 +31,7 @@ def channel_map_data(data, number_of_channels, hstype, nprobes=1):
     nprobes : Number of probes (default 1)
     '''
 
-    print(hstype)
+    # print(hstype)
     # Remove spaces, 'hs64 ' to 'hs64'
     hstype = list(map(str.strip, hstype))
     print(hstype)
