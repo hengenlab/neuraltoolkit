@@ -208,3 +208,43 @@ def find_edges_from_consecutive(data, step=1, lverbose=0):
         edges.append([data_split_i[0], data_split_i[-1]])
 
     return edges
+
+
+def check_similar_sizes(file_list=None, threshold=0.01,
+                        allow_empty=False):
+
+    '''
+    Check if all files in the list have almost similar sizes.
+    check_similar_sizes(file_list=None, threshold=0.1)
+
+    fle_list (list): List of file paths.
+    threshold (float): Maximum allowed percentage difference in file sizes.
+                      Default is 0.01 (1%).
+    allow_empty(bool): default(False)
+                       if allow empty True, for empty file_list to return True
+
+    raise Valueerror if file_list is empty
+
+    return bool: True if all files have almost similar sizes, False otherwise.
+    '''
+
+    # check file_list is not empty
+    if not allow_empty:
+        if (len(file_list) == 0):
+            raise ValueError('file list is empty')
+
+    # No comparison needed for single file
+    if len(file_list) < 2:
+        return True
+
+    # Get file sizes
+    file_sizes = [op.getsize(file_path) for file_path in file_list]
+
+    # Calculate average size
+    avg_size = sum(file_sizes) / len(file_list)
+
+    # Check if all file sizes are within the threshold of the average size
+    for size in file_sizes:
+        if abs(size - avg_size) > threshold * avg_size:
+            return False
+    return True
