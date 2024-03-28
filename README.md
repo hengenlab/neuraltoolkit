@@ -586,6 +586,18 @@ data = np.array([0, 47, 48, 49, 50, 97, 98, 99])
 ntk.find_edges_from_consecutive(data, step=1, lverbose=0)
 # Out: [[0, 0], [47, 50], [97, 99]]
 ```
+
+```
+Convert a NumPy array to a MATLAB .mat file.
+
+import neuraltoolkit as ntk
+# my_array (numpy.ndarray): The NumPy array to convert.
+my_array = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+# fl_name (str): The fl_name (including path) to save the MATLAB .mat file.
+fl_name = '/home/kbn/my_matlab_file.mat'
+ntk.numpy_array_to_matlab(my_array, fl_name)
+```
+
 ---
 ## filters
 
