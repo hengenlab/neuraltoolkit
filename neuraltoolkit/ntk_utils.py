@@ -251,7 +251,7 @@ def check_similar_sizes(file_list=None, threshold=0.01,
     return True
 
 
-def numpy_array_to_matlab(np_array, filename):
+def numpy_array_to_matlab(np_array, fl_name):
 
     """
     Convert a NumPy array to a MATLAB .mat file.
@@ -259,13 +259,20 @@ def numpy_array_to_matlab(np_array, filename):
     numpy_array_to_matlab(np_array, filename):
 
     np_array (numpy.ndarray): The NumPy array to convert.
-    filename (str): The filename (including path) to save the MATLAB .mat file.
+    fl_name (str): The fl_name (including path) to save the MATLAB .mat file.
 
     raises
         RuntimeError if saving mat file crashed
+        FileNotFoundError if filename path does not exist
 
     """
+
+    # check base folder is exists
+    if not op.isdir(op.split(fl_name)[0]):
+        raise \
+            FileNotFoundError(f'Folder {op.split(fl_name)[0]} not found')
+
     try:
-        scipy.io.savemat(filename, {'np_array': np_array})
+        scipy.io.savemat(fl_name, {'np_array': np_array})
     except Exception as e:
         raise RuntimeError(f'Error: saving mat file {e}')
