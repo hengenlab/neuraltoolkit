@@ -262,10 +262,15 @@ def numpy_array_to_matlab(np_array, fl_name):
     fl_name (str): The fl_name (including path) to save the MATLAB .mat file.
 
     raises
-        RuntimeError if saving mat file crashed
+        TypeError if np_array not a NumPy array
         FileNotFoundError if filename path does not exist
+        RuntimeError if saving mat file crashed
 
     """
+
+    # check np_array is numpy
+    if not isinstance(np_array, np.ndarray):
+        raise TypeError("np_array not a NumPy array")
 
     # check base folder is exists
     if not op.isdir(op.split(fl_name)[0]):
