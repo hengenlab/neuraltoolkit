@@ -17,6 +17,7 @@ extract_email_fromtxtfile(filename)
 import json
 import os.path as op
 import numpy as np
+import scipy.io
 
 
 # Extract email from a txt file
@@ -248,3 +249,23 @@ def check_similar_sizes(file_list=None, threshold=0.01,
         if abs(size - avg_size) > threshold * avg_size:
             return False
     return True
+
+
+def numpy_array_to_matlab(np_array, filename):
+
+    """
+    Convert a NumPy array to a MATLAB .mat file.
+
+    numpy_array_to_matlab(np_array, filename):
+
+    np_array (numpy.ndarray): The NumPy array to convert.
+    filename (str): The filename (including path) to save the MATLAB .mat file.
+
+    raises
+        RuntimeError if saving mat file crashed
+
+    """
+    try:
+        scipy.io.savemat(filename, {'np_array': np_array})
+    except Exception as e:
+        raise RuntimeError(f'Error: saving mat file {e}')
