@@ -47,19 +47,42 @@ def remove_large_noise(ddgc_filt, max_value_to_check=3000,
     edges2 = None
     edges3 = None
     edges4 = None
-    if len(checkchans) >= 1:
+
+    if len(checkchans) == 1:
         edges1 = np.argwhere(np.abs(ddgc[checkchans[0], :]) >
                              max_value_to_check).flatten()
         edges1 = np.array(edges1, dtype='int')
-    elif len(checkchans) >= 2:
+    elif len(checkchans) == 2:
+        edges1 = np.argwhere(np.abs(ddgc[checkchans[0], :]) >
+                             max_value_to_check).flatten()
+        edges1 = np.array(edges1, dtype='int')
         edges2 = np.argwhere(np.abs(ddgc[checkchans[1], :]) >
                              max_value_to_check).flatten()
-    elif len(checkchans) >= 3:
+        edges2 = np.array(edges2, dtype='int')
+    elif len(checkchans) == 3:
+        edges1 = np.argwhere(np.abs(ddgc[checkchans[0], :]) >
+                             max_value_to_check).flatten()
+        edges1 = np.array(edges1, dtype='int')
+        edges2 = np.argwhere(np.abs(ddgc[checkchans[1], :]) >
+                             max_value_to_check).flatten()
+        edges2 = np.array(edges2, dtype='int')
         edges3 = np.argwhere(np.abs(ddgc[checkchans[2], :]) >
                              max_value_to_check).flatten()
+        edges3 = np.array(edges3, dtype='int')
     elif len(checkchans) == 4:
+        edges1 = np.argwhere(np.abs(ddgc[checkchans[0], :]) >
+                             max_value_to_check).flatten()
+        edges1 = np.array(edges1, dtype='int')
+        edges2 = np.argwhere(np.abs(ddgc[checkchans[1], :]) >
+                             max_value_to_check).flatten()
+        edges2 = np.array(edges2, dtype='int')
+        edges3 = np.argwhere(np.abs(ddgc[checkchans[2], :]) >
+                             max_value_to_check).flatten()
+        edges3 = np.array(edges3, dtype='int')
         edges4 = np.argwhere(np.abs(ddgc[checkchans[3], :]) >
                              max_value_to_check).flatten()
+        edges4 = np.array(edges4, dtype='int')
+
     if len(checkchans) == 1:
         edges = np.unique(edges1)
     elif len(checkchans) == 2:
