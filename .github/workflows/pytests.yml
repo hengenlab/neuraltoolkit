@@ -28,5 +28,6 @@ jobs:
           wget --no-check-certificate https://biolinux2.wustl.edu/hlabdata/data/Headstages_512_Channels_int16_2021-06-08_11-08-03.bin -P tests/
           wget --no-check-certificate https://biolinux2.wustl.edu/hlabdata/data/timestamp.csv -P tests/
           wget --no-check-certificate https://biolinux2.wustl.edu/hlabdata/data/data.csv -P tests/
+          wget --no-check-certificate https://biolinux2.wustl.edu/hlabdata/data/remove_large_noise.csv -P tests/
       - name: Run tests with pytest
         run: pytest 
