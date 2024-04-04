@@ -60,6 +60,8 @@ class Testload_raw_gain_chmap_1probe(unittest.TestCase):
     probenum = 0
     probechans = 64
     probenum_l = 7
+    expected_noise_output = \
+        np.loadtxt('remove_large_noise.csv', delimiter=',')
 
     def test_channel_map_data(self):
         test_output_t = None
@@ -84,6 +86,23 @@ class Testload_raw_gain_chmap_1probe(unittest.TestCase):
         msg = "check data in load_raw_gain_chmap_1probe"
         self.assertEqual(self.expected_output.tolist(),
                          test_output.tolist(),
+                         msg)
+
+        # test remove_large_noise
+        checkchans = np.array([0, 1])
+        max_value_to_check = 135
+        _, test_noise_output = (
+            ntk.remove_large_noise(
+                test_output,
+                max_value_to_check=max_value_to_check,
+                windowval=25000,
+                checkchans=checkchans,
+                lplot=0
+            )
+        )
+        msg = "check ntk remove_large_noise"
+        self.assertEqual(self.expected_noise_output.tolist(),
+                         test_noise_output.tolist(),
                          msg)
 
     def test_channel_map_data_l(self):
