@@ -1052,7 +1052,8 @@ def add_missing_files_with_random_noise(HS_file1, HS_file2,
         print("number_of_files_missing ", number_of_files_missing, flush=True)
 
         ts_old = 0
-        for indx, i in enumerate(range(np.int(number_of_files_missing - 1))):
+        # for indx, i in enumerate(range(np.int(number_of_files_missing - 1))):
+        for indx, i in enumerate(range(int(number_of_files_missing - 1))):
             if indx == 0:
                 tnext = np.uint64(HS_file1_ts + ((HS_file1_samples * 1e6)/25))
             else:
@@ -1084,17 +1085,19 @@ def add_missing_files_with_random_noise(HS_file1, HS_file2,
             msfile.write(filename + "\t" + str(tnext[0]) + "\n")
             # sys.exit()
 
+        # ((np.int(number_of_files_missing - 1)) *
         last_file_samples = np.round((total_samples_between -
                                       HS_file1_samples -
-                                      ((np.int(number_of_files_missing - 1)) *
+                                      ((int(number_of_files_missing - 1)) *
                                        fs * total_seconds)))
         print("last_file_samples ", last_file_samples, flush=True)
         # ts_last = np.uint64(ts_old +  (last_file_samples * 1e6)/25)
         ts_last = np.uint64(ts_old + ((fs * total_seconds * 1e6)/25))
         print("ts_last ", ts_last[0], flush=True)
 
+        # np.int(last_file_samples)),
         d = np.random.randint(data_low, data_high, (number_of_channels,
-                                                    np.int(last_file_samples)),
+                                                    int(last_file_samples)),
                               dtype=data_type)
 
         next_time = HS_file1_date + timedelta(minutes=int((file_length *
