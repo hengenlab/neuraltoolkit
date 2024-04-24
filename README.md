@@ -734,6 +734,10 @@ plt.show(block=False)
 ```
 
 ### Cohen’s d and pwr.t.test
+To use this you need to install neuraltoolkit as
+```
+pip install .[full]
+```
 ```
 import neuraltoolkit as ntk
 
