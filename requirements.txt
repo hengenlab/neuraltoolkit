@@ -7,4 +7,4 @@ opencv-python
 scipy
 h5py
 tables
-rpy2
+# [full] rpy2
