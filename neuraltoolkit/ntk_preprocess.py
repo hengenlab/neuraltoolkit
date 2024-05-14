@@ -2,6 +2,7 @@ import numpy as np
 import time
 import matplotlib.pyplot as plt
 import os.path as op
+from datetime import datetime, timedelta
 
 
 def remove_large_noise(ddgc_filt, max_value_to_check=3000,
@@ -183,3 +184,43 @@ def get_tetrode_channels_from_channelnum(channel1, ch_grp_size=4):
 
     ch_list = [int(i) for i in ch_list]
     return ch_list
+
+
+def generate_filenames_in_ecubeformat(initial_filename, total_minutes=256,
+                                      interval_minutes=5):
+
+    '''
+    generate_filenames_in_ecubeformat(initial_filename, total_minutes=256,
+                                      interval_minutes=5)
+    This is used to split a large ecube files to 5 minutes files.
+
+    initial_filename : Initial headstage filename same as ecube format
+     'Headstages_64_Channels_int16_2023-12-19_13-28-09.bin'
+
+    total_minutes : total minutes we need to create file names for.
+
+    interval_minutes : In minutes, default 5 minutes
+
+    '''
+
+    # Extract the base part and the time part of the filename
+    base_part = '_'.join(initial_filename.split('_')[:-1])
+    time_part = initial_filename.split('_')[-1].split('.')[0]
+
+    # Create a datetime object from the time part
+    time_format = '%H-%M-%S'
+    current_time = datetime.strptime(time_part, time_format)
+
+    # List to hold all the filenames
+    ecube_filenames = None
+    ecube_filenames = []
+
+    for _ in range(int(total_minutes / interval_minutes)):
+        # Update the time for the next iteration
+        current_time += timedelta(minutes=interval_minutes)
+
+        # Generate the new filename
+        new_filename = f"{base_part}_{current_time.strftime(time_format)}.bin"
+        ecube_filenames.append(new_filename)
+
+    return ecube_filenames
