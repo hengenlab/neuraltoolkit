@@ -252,7 +252,25 @@ lplot : 1 to plot first channel from checkchans (default 0)
 
 returns   
 data: cleaned up ddgc_filt
-    
+```
+
+```
+generate_filenames_in_ecubeformat(initial_filename, total_minutes=256,
+                                  interval_minutes=5):
+
+generate_filenames_in_ecubeformat(initial_filename, total_minutes=256,
+                                  interval_minutes=5)
+This is used to split a large ecube files to 5 minutes files.
+
+initial_filename : Initial headstage filename same as ecube format
+ 'Headstages_64_Channels_int16_2023-12-19_13-28-09.bin'
+
+total_minutes : total minutes we need to create file names for.
+
+interval_minutes : In minutes, default 5 minutes
+
+return ecube_filenames
+
 ```
 ---
 ```
