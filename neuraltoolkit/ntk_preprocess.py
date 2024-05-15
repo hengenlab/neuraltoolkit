@@ -215,7 +215,7 @@ def generate_filenames_in_ecubeformat(initial_filename, total_minutes=256,
     ecube_filenames = None
     ecube_filenames = []
 
-    for _ in range(int(total_minutes / interval_minutes)):
+    for _ in range(int((total_minutes / interval_minutes) + 1)):
         # Update the time for the next iteration
         current_time += timedelta(minutes=interval_minutes)
 
