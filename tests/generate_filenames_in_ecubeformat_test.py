@@ -8,8 +8,10 @@ def test_generate_filenames_in_ecubeformat():
         'Headstages_64_Channels_int16_2023-12-19_13-38-09.bin',
         'Headstages_64_Channels_int16_2023-12-19_13-43-09.bin',
         'Headstages_64_Channels_int16_2023-12-19_13-48-09.bin',
-        'Headstages_64_Channels_int16_2023-12-19_13-53-09.bin'
+        'Headstages_64_Channels_int16_2023-12-19_13-53-09.bin',
+        'Headstages_64_Channels_int16_2023-12-19_13-58-09.bin'
     ]
+
     result = \
         generate_filenames_in_ecubeformat(initial_filename,
                                           total_minutes=25,
