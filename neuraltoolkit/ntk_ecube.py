@@ -41,6 +41,7 @@ except ImportError:
 from datetime import datetime
 from datetime import timedelta
 
+
 # Load Ecube HS data
 def load_raw_binary(name, number_of_channels):
 
