@@ -24,6 +24,7 @@ light_dark_transition(datadir, l7ampm=0, lplot=0)
 
 import os
 import sys
+import struct
 try:
     import numpy as np
 except ImportError:
@@ -37,7 +38,8 @@ try:
     from neuraltoolkit import ntk_channelmap as ntkc
 except ImportError:
     raise ImportError('please install neuraltoolkit')
-
+from datetime import datetime
+from datetime import timedelta
 
 # Load Ecube HS data
 def load_raw_binary(name, number_of_channels):
@@ -545,7 +547,7 @@ def make_binaryfiles_ecubeformat(t, d, filename, ltype=2):
     returns
 
     '''
-    import struct
+    # import struct
     # import os
 
     # check ltype is 1 or 2
@@ -666,7 +668,7 @@ def ecube_raw_to_preprocessed(rawfile, outdir, number_of_channels,
     '''
 
     # from neuraltoolkit import ntk_channelmap as ntkc
-    import struct
+    # import struct
 
     gain = np.float64(0.19073486328125)
     d_bgc = np.array([])
@@ -998,8 +1000,8 @@ def add_missing_files_with_random_noise(HS_file1, HS_file2,
                                             lraw=1)
     '''
 
-    from datetime import datetime
-    from datetime import timedelta
+    # from datetime import datetime
+    # from datetime import timedelta
     # print("not implemented yet")
     # return
 
@@ -1133,7 +1135,7 @@ def check_missing_files(file_list=None, total_seconds=300):
     # import os
     # import sys
     # import glob
-    from datetime import datetime
+    # from datetime import datetime
     # from datetime import timedelta
 
     # max_delta = 30
