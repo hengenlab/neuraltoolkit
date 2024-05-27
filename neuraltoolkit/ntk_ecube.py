@@ -22,11 +22,16 @@ load_digital_binary(name, t_only=0)
 light_dark_transition(datadir, l7ampm=0, lplot=0)
 '''
 
+import os
+import sys
 try:
     import numpy as np
 except ImportError:
     raise ImportError('Run command : conda install numpy')
-import os
+try:
+    import matplotlib.pyplot as plt
+except ImportError:
+    raise ImportError('Run command : pip install matplotlib')
 import time
 try:
     from neuraltoolkit import ntk_channelmap as ntkc
@@ -475,8 +480,8 @@ def light_dark_transition(datadir, l7ampm=0, lplot=0):
 
     '''
 
-    import matplotlib.pyplot as plt
-    import os
+    # import matplotlib.pyplot as plt
+    # import os
 
     # add flag to check just at time 07:30 and 19:30
     if l7ampm:
@@ -541,7 +546,7 @@ def make_binaryfiles_ecubeformat(t, d, filename, ltype=2):
 
     '''
     import struct
-    import os
+    # import os
 
     # check ltype is 1 or 2
     assert 0 < ltype < 3, 'Unknown ltype'
@@ -595,7 +600,7 @@ def visual_grating_transition(datadir):
 
     '''
 
-    import os
+    # import os
 
     # check only Digital files
     sub_string = ['Digital', 'Digital']
@@ -1126,7 +1131,7 @@ def check_missing_files(file_list=None, total_seconds=300):
     check there is missing files in the file list
     '''
     # import os
-    import sys
+    # import sys
     # import glob
     from datetime import datetime
     # from datetime import timedelta
