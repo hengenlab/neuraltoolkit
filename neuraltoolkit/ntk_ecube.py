@@ -28,6 +28,10 @@ except ImportError:
     raise ImportError('Run command : conda install numpy')
 import os
 import time
+try:
+    from neuraltoolkit import ntk_channelmap as ntkc
+except ImportError:
+    raise ImportError('please install neuraltoolkit')
 
 
 # Load Ecube HS data
@@ -82,7 +86,7 @@ def load_raw_binary_gain_chmap(name, number_of_channels, hstype, nprobes=1,
     returns first timestamp and data
     '''
 
-    from neuraltoolkit import ntk_channelmap as ntkc
+    # from neuraltoolkit import ntk_channelmap as ntkc
 
     if isinstance(hstype, str):
         hstype = [hstype]
@@ -127,7 +131,7 @@ def load_raw_binary_gain_chmap_nsec(name, number_of_channels, hstype,
                                                    'hs64', 25000, 2)
     '''
 
-    from neuraltoolkit import ntk_channelmap as ntkc
+    # from neuraltoolkit import ntk_channelmap as ntkc
 
     if isinstance(hstype, str):
         hstype = [hstype]
@@ -228,7 +232,7 @@ def load_raw_binary_gain_chmap_range(rawfile, number_of_channels,
     returns time, data
     '''
 
-    from neuraltoolkit import ntk_channelmap as ntkc
+    # from neuraltoolkit import ntk_channelmap as ntkc
 
     gain = np.float64(0.19073486328125)
     d_bgc = np.array([])
@@ -307,7 +311,7 @@ def load_raw_gain_chmap_1probe(rawfile, number_of_channels,
     returns time, data
     '''
 
-    from neuraltoolkit import ntk_channelmap as ntkc
+    # from neuraltoolkit import ntk_channelmap as ntkc
     # import time
 
     # tic = time.time()
@@ -656,7 +660,7 @@ def ecube_raw_to_preprocessed(rawfile, outdir, number_of_channels,
     returns
     '''
 
-    from neuraltoolkit import ntk_channelmap as ntkc
+    # from neuraltoolkit import ntk_channelmap as ntkc
     import struct
 
     gain = np.float64(0.19073486328125)
