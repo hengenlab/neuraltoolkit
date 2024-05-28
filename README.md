@@ -274,11 +274,11 @@ return ecube_filenames
 ```
 ---
 ```
-ntk.get_tetrode_channels(tetrode_num, group_size=4)
+ntk.get_tetrode_channels_from_tetnum(tetrode_num, ch_grp_size=4)
 Returns a list of channel numbers for the given tetrode number.
 
 # tetrode_num (int): The tetrode number (must be between 0 and 15 inclusive).
-# group_size (int, optional): The number of channels per tetrode.
+# ch_grp_size (int, optional): The number of channels per tetrode.
 #        Defaults to 4.
 #    Returns:
 #    list: A list of channel numbers corresponding to the tetrode number.
@@ -287,16 +287,16 @@ Returns a list of channel numbers for the given tetrode number.
 #    ValueError: If tetrode_num is not between 0 and 15 inclusive.
 
 # Examples:
-#    >>> get_tetrode_channels(0)
+#    >>> get_tetrode_channels_from_tetnum(0)
 #    [0, 1, 2, 3]
 #
-#    >>> get_tetrode_channels(1)
+#    >>> get_tetrode_channels_from_tetnum(1)
 #    [4, 5, 6, 7]
 #
-#    >>> get_tetrode_channels(15)
+#    >>> get_tetrode_channels_from_tetnum(15)
 #    [60, 61, 62, 63]
 #
-#    >>> get_tetrode_channels(0, group_size=5)
+#    >>> get_tetrode_channels_from_tetnum(0, group_size=5)
 #    [0, 1, 2, 3, 4]
 ```
 ---
