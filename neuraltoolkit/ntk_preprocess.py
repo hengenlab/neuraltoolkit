@@ -168,24 +168,6 @@ def remove_large_noise(ddgc_filt, max_value_to_check=3000,
     return ddgc, edges_all
 
 
-def get_tetrode_channels_from_channelnum(channel1, ch_grp_size=4):
-    '''
-    get_tetrode_channels_from_channelnum(channel1, ch_grp_size=4)
-
-    channel1 : channel number in tetrode
-    ch_grp_size : default 4
-
-    returns list of channels in that tetrode
-    '''
-
-    ch_list = np.arange(channel1 - (channel1 % ch_grp_size),
-                        channel1 + (ch_grp_size -
-                        (channel1 % ch_grp_size))).tolist()
-
-    ch_list = [int(i) for i in ch_list]
-    return ch_list
-
-
 def generate_filenames_in_ecubeformat(initial_filename, total_minutes=256,
                                       interval_minutes=5):
 
@@ -226,13 +208,38 @@ def generate_filenames_in_ecubeformat(initial_filename, total_minutes=256,
     return ecube_filenames
 
 
-def get_tetrode_channels(tetrode_num, group_size=4):
+def get_tetrode_channels_from_channelnum(channel1, ch_grp_size=4):
+    """
+    Returns a list of channels in the same tetrode as the given channel number.
+
+    get_tetrode_channels_from_channelnum(channel1, ch_grp_size=4)
+    channel1 (int): The channel number in the tetrode.
+    ch_grp_size (int, optional): The number of channels per tetrode.
+     Defaults to 4.
+
+    returns
+    list: A list of channel numbers in the same tetrode.
+
+    Raises:
+    ValueError: If channel1 is less than 0.
+    """
+    if channel1 < 0:
+        raise ValueError("channel1 must be a non-negative integer")
+
+    start_channel = channel1 - (channel1 % ch_grp_size)
+    end_channel = start_channel + ch_grp_size
+    ch_list = np.arange(start_channel, end_channel).tolist()
+    ch_list = [int(i) for i in ch_list]
+    return ch_list
+
+
+def get_tetrode_channels(tetrode_num, ch_grp_size=4):
     """
     Returns a list of channel numbers for the given tetrode number.
 
-    get_tetrode_channels(tetrode_num, group_size=4)
+    get_tetrode_channels(tetrode_num, ch_grp_size=4)
     tetrode_num (int): The tetrode number (must be between 0 and 15 inclusive).
-    group_size (int, optional): The number of channels per tetrode.
+    ch_grp_size (int, optional): The number of channels per tetrode.
        Defaults to 4.
 
     Returns:
@@ -251,12 +258,12 @@ def get_tetrode_channels(tetrode_num, group_size=4):
     >>> get_tetrode_channels(15)
     [60, 61, 62, 63]
 
-    >>> get_tetrode_channels(0, group_size=5)
+    >>> get_tetrode_channels(0, ch_grp_size=5)
     [0, 1, 2, 3, 4]
     """
     if tetrode_num < 0 or tetrode_num > 15:
         raise ValueError("tetrode_num must be between 0 and 15 inclusive")
 
-    start = tetrode_num * group_size
-    end = start + group_size
+    start = tetrode_num * ch_grp_size
+    end = start + ch_grp_size
     return list(range(start, end))
