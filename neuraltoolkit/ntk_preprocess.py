@@ -233,11 +233,11 @@ def get_tetrode_channels_from_channelnum(channel1, ch_grp_size=4):
     return ch_list
 
 
-def get_tetrode_channels(tetrode_num, ch_grp_size=4):
+def get_tetrode_channels_from_tetnum(tetrode_num, ch_grp_size=4):
     """
     Returns a list of channel numbers for the given tetrode number.
 
-    get_tetrode_channels(tetrode_num, ch_grp_size=4)
+    get_tetrode_channels_from_tetnum(tetrode_num, ch_grp_size=4)
     tetrode_num (int): The tetrode number (must be between 0 and 15 inclusive).
     ch_grp_size (int, optional): The number of channels per tetrode.
        Defaults to 4.
@@ -249,16 +249,16 @@ def get_tetrode_channels(tetrode_num, ch_grp_size=4):
     ValueError: If tetrode_num is not between 0 and 15 inclusive.
 
     Examples:
-    >>> get_tetrode_channels(0)
+    >>> get_tetrode_channels_from_tetnum(0)
     [0, 1, 2, 3]
 
-    >>> get_tetrode_channels(1)
+    >>> get_tetrode_channels_from_tetnum(1)
     [4, 5, 6, 7]
 
-    >>> get_tetrode_channels(15)
+    >>> get_tetrode_channels_from_tetnum(15)
     [60, 61, 62, 63]
 
-    >>> get_tetrode_channels(0, ch_grp_size=5)
+    >>> get_tetrode_channels_from_tetnum(0, ch_grp_size=5)
     [0, 1, 2, 3, 4]
     """
     if tetrode_num < 0 or tetrode_num > 15:
