@@ -401,6 +401,68 @@ ntk.get_tetrodechannelnum_from_channel(channel, ch_grp_size)
 #    0
 ```
 ---
+```
+# make_binaryfiles_ecubeformat
+
+
+import numpy as np
+import neuraltoolkit as ntk
+
+
+def arrays_almost_equal(dgc0, dgc1, tolerance=2):
+    # Check if the arrays have the same shape
+    if dgc0.shape != dgc1.shape:
+        return False
+    # Check if the absolute difference between elements is within the tolerance
+    return np.all(np.abs(dgc0 - dgc1) <= tolerance)
+
+
+rawfile = '/home/kiranbn/HH.bin'
+ltype = 1  # rawdata files
+t0 = np.uint64(101)
+if ltype == 1:
+    data_low = -320
+    data_high = 320
+    data_rows = 64
+    data_length = 25000*60*5
+    data_type = np.int16
+
+# Define the gain
+gain = np.float64(0.19073486328125)
+
+# Generate data apply gain
+dgc0 = np.random.randint(data_low, data_high, (data_rows, data_length),
+                         dtype=data_type)
+if ltype == 1:
+    dgc0_g = np.int16(dgc0 / gain)
+    print(dgc0_g.shape)
+
+# Write file
+ntk.make_binaryfiles_ecubeformat(t0, dgc0_g, rawfile, ltype=ltype)
+
+# Load only one probe from raw file
+number_of_channels = data_rows
+hstype = ['linear']
+# ts = 0, start from begining of file or can be any sample number
+# te = 2500, read 2500 sample points from ts ( te greater than ts)
+# if ts =0 and te = -1,  read from begining to end of file
+nprobes = 1
+probenum = 0  # which probe to return (starts from zero)
+# probechans = 64   # number of channels per probe (symmetric)
+probechans = data_rows   # number of channels per probe (symmetric)
+if ltype == 1:
+    t1, dgc1 = ntk.load_raw_gain_chmap_1probe(rawfile, number_of_channels,
+                                              hstype, nprobes=nprobes,
+                                              lraw=1, ts=0, te=-1,
+                                              probenum=probenum,
+                                              probechans=probechans)
+    tolerance = 1
+if arrays_almost_equal(dgc0, dgc1, tolerance=tolerance):
+    print("Arrays are equal")
+else:
+    print("Arrays are not equal")
+```
+---
 
 ```
 # Create channel mapping file for Open Ephys
@@ -414,29 +476,6 @@ Enter probe type :
 hs64
 Enter filename to save data:
 channelmap_hs64.txt
-
-
-# make_binaryfiles_ecubeformat
-import numpy as np
-import neuraltoolkit as ntk
-filename = '/home/kbn/HH.bin'
-ltype = 2 # digital files
-t = np.uint64(101)
-if ltype == 1:
-    data_low = -32000
-    data_high = 32000
-    data_rows = 64
-    data_length = 25000*60*5
-    data_type = 'int16'
-elif ltype == 2:
-    data_low = 0
-    data_high = 2
-    data_rows = 1
-    data_length = 25000*60*5
-    data_type = 'int64'
-d = np.random.randint(data_low, data_high, (data_rows, data_length),
-                      dtype=data_type)
-ntk.make_binaryfiles_ecubeformat(t, d, filename, ltype)
 
 
 # convert ecube_raw_to_preprocessed all channels or just a tetrode
