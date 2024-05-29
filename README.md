@@ -373,31 +373,31 @@ ntk.get_tetrodechannelnum_from_channel(channel, ch_grp_size)
 #        int: The tetrodechannelnum
 #
 # Examples:
-#    >>> get_tetrodechannelnum_from_channel(0, ch_grp_size=4)
+#    ntk.get_tetrodechannelnum_from_channel(0, ch_grp_size=4)
 #    0
 #
-#    >>> get_tetrodechannelnum_from_channel(1, ch_grp_size=4)
+#    ntk.get_tetrodechannelnum_from_channel(1, ch_grp_size=4)
 #    1
 #
-#    >>> get_tetrodechannelnum_from_channel(2, ch_grp_size=4)
+#    ntk.get_tetrodechannelnum_from_channel(2, ch_grp_size=4)
 #    2
 #
-#    >>> get_tetrodechannelnum_from_channel(3, ch_grp_size=4)
+#    ntk.get_tetrodechannelnum_from_channel(3, ch_grp_size=4)
 #    3
 #
-#    >>> get_tetrodechannelnum_from_channel(4, ch_grp_size=4)
+#    ntk.get_tetrodechannelnum_from_channel(4, ch_grp_size=4)
 #    0
 #
-#    >>> get_tetrodechannelnum_from_channel(8, ch_grp_size=4)
+#    ntk.get_tetrodechannelnum_from_channel(8, ch_grp_size=4)
 #    0
 #
-#    >>> get_tetrodechannelnum_from_channel(60, ch_grp_size=4)
+#    ntk.get_tetrodechannelnum_from_channel(60, ch_grp_size=4)
 #    0
 #
-#    >>> get_tetrodechannelnum_from_channel(63, ch_grp_size=4)
+#    ntk.get_tetrodechannelnum_from_channel(63, ch_grp_size=4)
 #    3
 #
-#    >>> get_tetrodechannelnum_from_channel(15, ch_grp_size=5)
+#    ntk.get_tetrodechannelnum_from_channel(15, ch_grp_size=5)
 #    0
 ```
 ---
