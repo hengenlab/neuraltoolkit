@@ -535,60 +535,42 @@ def light_dark_transition(datadir, l7ampm=0, lplot=0):
     return save_list
 
 
-def make_binaryfiles_ecubeformat(t, d, filename, ltype=2):
-
-    '''
+def make_binaryfiles_ecubeformat(t, d, filename, ltype=1):
+    """
     make_binaryfiles_ecubeformat
-    make_binaryfiles_ecubeformat(t, d, filename, ltype=2)
-    t -  time in nano seconds to be written to binary file
+    make_binaryfiles_ecubeformat(t, d, filename, ltype=1)
+    t - time in nano seconds to be written to binary file
     d - numpy array to be converted to binary file
     filename - file name to write with path
-    ltype - digital files (default 2 digital files)
-            for rawdata files 1
+    ltype - rawdata files (default 1 rawdata files)
     returns
+    """
+    # Check ltype is 1 or 2
+    # assert ltype in [1, 2], 'Unknown ltype'
+    assert ltype in [1], 'Unknown ltype'
 
-    '''
-    # import struct
-    # import os
-
-    # check ltype is 1 or 2
-    assert 0 < ltype < 3, 'Unknown ltype'
-
-    # Exit if file exist already
+    # Exit if file exists already
     if os.path.exists(filename):
-        raise FileExistsError('filename already exists')
+        raise FileExistsError(f'{filename} already exists')
 
     if ltype == 2:
-        assert d.shape[0] == 1, 'Only supports 1-d array'
-        assert len(np.unique(d)) <= 2, 'Supports only 1 and 0'
+        assert d.ndim == 1, 'Only supports 1-d array'
+        assert np.unique(d).size <= 2, 'Supports only 1 and 0'
 
-    # Open file to write
-    # print("dt t ", t.dtype, flush=True)
-    # print("dd d ", d.dtype, flush=True)
-    # print("sh d ", d.shape, flush=True)
-    # print("ltype ", ltype, flush=True)
     if ltype == 1:
-        d = d.transpose()
-        # print("dd d ", d.dtype, flush=True)
-        # print("sh d ", d.shape, flush=True)
-        d = d.flatten()
-    # print("dd d ", d.dtype, flush=True)
-    # print("sh d ", d.shape, flush=True)
+        d = d.T.flatten()
+
     with open(filename, "wb") as binary_file:
         # Write time
         binary_file.write(struct.pack('Q', t))
 
         # Write data rawdata/digital
         if ltype == 1:
-            # binary_file.write(struct.pack('h'*d.size,
-            #                   *d.transpose().flatten()))
-            for ds in d:
-                binary_file.write(struct.pack('h',
-                                  ds))
+            d.astype('h').tofile(binary_file)
         elif ltype == 2:
-            binary_file.write(struct.pack('q'*d.size,  *d.flatten()))
+            d.astype('q').tofile(binary_file)
         else:
-            raise ValueError('Unkown value')
+            raise ValueError('Unknown value')
 
 
 def visual_grating_transition(datadir):
