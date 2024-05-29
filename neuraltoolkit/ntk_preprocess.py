@@ -267,3 +267,35 @@ def get_tetrode_channels_from_tetnum(tetrode_num, ch_grp_size=4):
     start = tetrode_num * ch_grp_size
     end = start + ch_grp_size
     return list(range(start, end))
+
+
+def get_tetrodenum_from_channel(channel_num, ch_grp_size=4):
+    """
+    Returns the tetrode number for the given channel number.
+
+    get_tetrodenum_from_channel(channel_num, ch_grp_size=4)
+
+    channel_num (int): The channel number.
+    ch_grp_size (int, optional): The number of channels per tetrode.
+       Defaults to 4.
+
+    Returns:
+    int: The tetrode number corresponding to the channel number.
+
+    Examples:
+    >>> get_tetrodenum_from_channel(0)
+    0
+
+    >>> get_tetrodenum_from_channel(3)
+    0
+
+    >>> get_tetrodenum_from_channel(4)
+    1
+
+    >>> get_tetrodenum_from_channel(63)
+    15
+    """
+    if channel_num < 0:
+        raise ValueError("channel_num must be non-negative")
+
+    return channel_num // ch_grp_size
