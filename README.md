@@ -330,6 +330,28 @@ ntk.get_tetrode_channels_from_channelnum(channel1, ch_grp_size=4)
 #    [0, 1, 2, 3, 4]
 ```
 ---
+```
+ntk.get_tetrodenum_from_channel(channel_num, ch_grp_size=4)
+# Returns the tetrode number for the given channel number.
+# channel_num (int): The channel number.
+# ch_grp_size (int, optional): The number of channels per tetrode.
+#  Defaults to 4.
+#  Returns:
+#  int: The tetrode number corresponding to the channel number.
+#    Examples:
+#    ntk.get_tetrodenum_from_channel(0)
+#    0
+#
+#    ntk.get_tetrodenum_from_channel(3)
+#    0
+#
+#    ntk.get_tetrodenum_from_channel(4)
+#    1
+#
+#    ntk.get_tetrodenum_from_channel(63)
+#    15
+```
+---
 
 ```
 # Create channel mapping file for Open Ephys
