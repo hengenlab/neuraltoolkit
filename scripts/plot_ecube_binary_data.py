@@ -14,8 +14,8 @@ class NeuralToolkitApp:
         self.root = root
         self.root.title("Neural Toolkit Data Loader")
         self.root.geometry("700x1000+0+0")
-        self.root.resizable(True, True)
-        # self.root.resizable(False, False)
+        # self.root.resizable(True, True)
+        self.root.resizable(False, False)
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
 
         self.file_path = tk.StringVar()
