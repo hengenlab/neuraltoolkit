@@ -34,6 +34,8 @@ class NeuralToolkitApp:
         self.filter_var = tk.BooleanVar()
         self.sampling_rate_var = tk.IntVar(value=25000)
 
+        self.canvas = None  # Placeholder for the canvas
+
         self.create_widgets()
 
     def create_widgets(self):
@@ -132,6 +134,9 @@ class NeuralToolkitApp:
 
     def plot_data(self, data, ntet):
         try:
+            if self.canvas:
+                self.canvas.get_tk_widget().grid_forget()  # Remove existing canvas
+
             plt.close('all')
             fig, ax = plt.subplots(nrows=4, ncols=1)
             color_list = ['#008080', '#ff7f50', '#a0db8e', '#b0e0e6']
@@ -182,9 +187,9 @@ class NeuralToolkitApp:
                 if i == 0:
                     ax[i].set_title(f'Plot for ntet = {ntet}')
 
-            canvas = FigureCanvasTkAgg(fig, master=self.root)
-            canvas.draw()
-            canvas.get_tk_widget().grid(row=13, columnspan=3, padx=5, pady=1)
+            self.canvas = FigureCanvasTkAgg(fig, master=self.root)
+            self.canvas.draw()
+            self.canvas.get_tk_widget().grid(row=13, columnspan=3, padx=5, pady=1)
         except Exception as e:
             messagebox.showerror("Error", str(e))
 
