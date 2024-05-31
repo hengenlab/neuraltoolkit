@@ -147,8 +147,11 @@ class NeuralToolkitApp:
                                label=f'Ch{channel}')
                     ax[i].legend(loc='upper right')
                     del xticks
-                    ax[i].set_xlabel('Samples')
-                    ax[i].set_ylabel('Amplitude')
+                    ax[i].set_xlabel('Samples, ' +
+                                     '[Samples/' +
+                                     str(self.sampling_rate_var.get()) +
+                                     ' = Seconds]')
+                    ax[i].set_ylabel('Amplitude [\u03bcV]')
                     ax[i].spines['top'].set_visible(False)
                     ax[i].spines['right'].set_visible(False)
                     ax[i].spines['bottom'].set_visible(False)
