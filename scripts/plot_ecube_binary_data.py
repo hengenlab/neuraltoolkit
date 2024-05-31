@@ -133,6 +133,7 @@ class NeuralToolkitApp:
     def plot_data(self, data, ntet):
         try:
             fig, ax = plt.subplots(nrows=4, ncols=1)
+            color_list = ['#008080', '#ff7f50', '#a0db8e', '#b0e0e6']
             offset = 0
             tmp_channels = ntk.get_tetrode_channels_from_tetnum(ntet, ch_grp_size=4)
             ts = int(self.ts_scale.get())
@@ -141,7 +142,9 @@ class NeuralToolkitApp:
                 if i == 3:
                     # Generate xtick positions
                     xticks = np.arange(ts, ts+samples, 1)
-                    ax[i].plot(xticks, data[channel, :] + i * offset, label=f'Channel{channel}')
+                    ax[i].plot(xticks, data[channel, :] + i * offset,
+                               color=color_list[i],
+                               label=f'Channel{channel}')
                     ax[i].legend(loc='upper right')
                     del xticks
                     ax[i].set_xlabel('Samples')
@@ -153,7 +156,9 @@ class NeuralToolkitApp:
                     ax[i].ticklabel_format(style='plain')
 
                 else:
-                    ax[i].plot(data[channel, :] + i * offset, label=f'Channel{channel}')
+                    ax[i].plot(data[channel, :] + i * offset,
+                               color=color_list[i],
+                               label=f'Channel{channel}')
                     ax[i].legend(loc='upper right')
                     ax[i].set_xlabel('')
                     ax[i].set_ylabel('')
