@@ -150,7 +150,7 @@ class NeuralToolkitApp:
                     xticks = np.arange(ts, ts+samples, 1)
                     ax[i].plot(xticks, data[channel, :] + i * offset,
                                color=color_list[i],
-                               label=f'Ch{channel}')
+                               label=f'Ch{channel} NTet {ntet}')
                     ax[i].legend(loc='upper right')
                     del xticks
                     ax[i].set_xlabel('Samples, ' +
@@ -163,6 +163,8 @@ class NeuralToolkitApp:
                     ax[i].spines['bottom'].set_visible(False)
                     ax[i].spines['left'].set_visible(False)
                     ax[i].ticklabel_format(style='plain')
+                    # Adjust 'pad' for padding
+                    ax[i].tick_params(axis='x', which='major', pad=50)
 
                 else:
                     ax[i].plot(data[channel, :] + i * offset,
@@ -184,8 +186,13 @@ class NeuralToolkitApp:
                     # ax[i].set_yticks([])
                     # ax[i].axes.get_yaxis().set_visible(False)
 
-                if i == 0:
-                    ax[i].set_title(f'Plot for ntet = {ntet}')
+                # if i == 0:
+                #   ax[i].set_title(f'Plot for ntet = {ntet}')
+                # Adjust overall layout
+                fig.tight_layout()
+                # Adjust vertical spacing between subplots
+                # fig.subplots_adjust(hspace=0.5)
+
 
             self.canvas = FigureCanvasTkAgg(fig, master=self.root)
             self.canvas.draw()
