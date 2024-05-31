@@ -12,7 +12,7 @@ class NeuralToolkitApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Neural Toolkit Data Loader")
-        self.root.geometry("700x1000+10+10")
+        self.root.geometry("700x1000+0+0")
         self.root.resizable(True, True)
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
 
@@ -35,47 +35,47 @@ class NeuralToolkitApp:
         self.create_widgets()
 
     def create_widgets(self):
-        tk.Label(self.root, text="Select Raw File").grid(row=0, column=0, padx=5, pady=5)
+        tk.Label(self.root, text="Select Raw File").grid(row=0, column=0, padx=5, pady=1)
 
-        tk.Entry(self.root, textvariable=self.file_path, width=50).grid(row=0, column=1, padx=5, pady=5)
+        tk.Entry(self.root, textvariable=self.file_path, width=50).grid(row=0, column=1, padx=5, pady=1)
 
-        tk.Button(self.root, text="Browse", command=self.select_file).grid(row=0, column=2, padx=5, pady=5)
+        tk.Button(self.root, text="Browse", command=self.select_file).grid(row=0, column=2, padx=5, pady=1)
 
-        tk.Label(self.root, text="Number of Channels").grid(row=1, column=0, padx=5, pady=5)
-        tk.Spinbox(self.root, from_=64, to=640, increment=64, textvariable=self.num_channels_var).grid(row=1, column=1, padx=5, pady=5)
+        tk.Label(self.root, text="Number of Channels").grid(row=1, column=0, padx=5, pady=1)
+        tk.Spinbox(self.root, from_=64, to=640, increment=64, textvariable=self.num_channels_var).grid(row=1, column=1, padx=5, pady=1)
 
-        tk.Label(self.root, text="HSType (comma separated)").grid(row=2, column=0, padx=5, pady=5)
-        tk.Entry(self.root, textvariable=self.hstype_entry, width=50).grid(row=2, column=1, padx=5, pady=5)
+        tk.Label(self.root, text="HSType (comma separated)").grid(row=2, column=0, padx=5, pady=1)
+        tk.Entry(self.root, textvariable=self.hstype_entry, width=50).grid(row=2, column=1, padx=5, pady=1)
 
-        tk.Label(self.root, text="TS").grid(row=3, column=0, padx=5, pady=5)
+        tk.Label(self.root, text="TS").grid(row=3, column=0, padx=5, pady=1)
         self.ts_scale_widget = tk.Scale(self.root, from_=0, to=25000 * 5 * 60,
                                         resolution=2500,
                                         orient=tk.HORIZONTAL, variable=self.ts_scale)
-        self.ts_scale_widget.grid(row=3, column=1, padx=5, pady=5)
+        self.ts_scale_widget.grid(row=3, column=1, padx=5, pady=1)
         self.ts_scale_widget.bind("<ButtonPress-1>", self.update_scale_limit)
 
-        tk.Label(self.root, text="Samples (25 to 2_500_000)").grid(row=4, column=0, padx=5, pady=5)
+        tk.Label(self.root, text="Samples (25 to 2_500_000)").grid(row=4, column=0, padx=5, pady=1)
         self.samples_scale_widget = tk.Scale(self.root, from_=25, to=25000 * 100, resolution=25, orient=tk.HORIZONTAL, variable=self.samples_scale)
-        self.samples_scale_widget.grid(row=4, column=1, padx=5, pady=5)
+        self.samples_scale_widget.grid(row=4, column=1, padx=5, pady=1)
 
-        tk.Label(self.root, text="Sampling Rate").grid(row=5, column=0, padx=5, pady=5)
-        tk.Entry(self.root, textvariable=self.sampling_rate_var, width=50).grid(row=5, column=1, padx=5, pady=5)
+        tk.Label(self.root, text="Sampling Rate").grid(row=5, column=0, padx=5, pady=1)
+        tk.Entry(self.root, textvariable=self.sampling_rate_var, width=50).grid(row=5, column=1, padx=5, pady=1)
 
-        tk.Label(self.root, text="NProbes").grid(row=6, column=0, padx=5, pady=5)
-        tk.Spinbox(self.root, from_=1, to=10, textvariable=self.nprobes_var).grid(row=6, column=1, padx=5, pady=5)
+        tk.Label(self.root, text="NProbes").grid(row=6, column=0, padx=5, pady=1)
+        tk.Spinbox(self.root, from_=1, to=10, textvariable=self.nprobes_var).grid(row=6, column=1, padx=5, pady=1)
 
-        tk.Label(self.root, text="ProbeNum").grid(row=7, column=0, padx=5, pady=5)
-        tk.Spinbox(self.root, from_=0, to=10, textvariable=self.probenum_var).grid(row=7, column=1, padx=5, pady=5)
+        tk.Label(self.root, text="ProbeNum").grid(row=7, column=0, padx=5, pady=1)
+        tk.Spinbox(self.root, from_=0, to=10, textvariable=self.probenum_var).grid(row=7, column=1, padx=5, pady=1)
 
-        tk.Label(self.root, text="ProbeChans").grid(row=8, column=0, padx=5, pady=5)
-        tk.Spinbox(self.root, from_=64, to=64, textvariable=self.probechans_var).grid(row=8, column=1, padx=5, pady=5)
+        tk.Label(self.root, text="ProbeChans").grid(row=8, column=0, padx=5, pady=1)
+        tk.Spinbox(self.root, from_=64, to=64, textvariable=self.probechans_var).grid(row=8, column=1, padx=5, pady=1)
 
-        tk.Checkbutton(self.root, text="Apply Bandpass Filter", variable=self.filter_var).grid(row=9, columnspan=2, padx=5, pady=5)
+        tk.Checkbutton(self.root, text="Apply Bandpass Filter", variable=self.filter_var).grid(row=9, columnspan=2, padx=5, pady=1)
 
-        tk.Label(self.root, text="NTet").grid(row=10, column=0, padx=5, pady=5)
-        tk.Spinbox(self.root, from_=0, to=15, textvariable=self.ntet_var).grid(row=10, column=1, padx=5, pady=5)
+        tk.Label(self.root, text="NTet").grid(row=10, column=0, padx=5, pady=1)
+        tk.Spinbox(self.root, from_=0, to=15, textvariable=self.ntet_var).grid(row=10, column=1, padx=5, pady=1)
 
-        tk.Button(self.root, text="Load and Plot Data[NTet, TS:TS+Samples]", command=self.load_data).grid(row=11, columnspan=3, padx=5, pady=20)
+        tk.Button(self.root, text="Load and Plot Data[NTet, TS:TS+Samples]", command=self.load_data).grid(row=11, columnspan=3, padx=5, pady=10)
 
     def select_file(self):
         file = filedialog.askopenfilename(initialdir='/hlabhome/kiranbn/git/neuraltoolkit/scripts/', title="Select file")
@@ -166,7 +166,7 @@ class NeuralToolkitApp:
 
             canvas = FigureCanvasTkAgg(fig, master=self.root)
             canvas.draw()
-            canvas.get_tk_widget().grid(row=13, columnspan=3, padx=5, pady=5)
+            canvas.get_tk_widget().grid(row=13, columnspan=3, padx=5, pady=1)
         except Exception as e:
             messagebox.showerror("Error", str(e))
 
