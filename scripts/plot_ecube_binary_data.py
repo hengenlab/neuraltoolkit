@@ -1,5 +1,6 @@
 # flake8: noqa
 import sys
+from sys import platform
 from tkinter import filedialog, messagebox
 import tkinter as tk
 import neuraltoolkit as ntk
@@ -14,6 +15,7 @@ class NeuralToolkitApp:
         self.root.title("Neural Toolkit Data Loader")
         self.root.geometry("700x1000+0+0")
         self.root.resizable(True, True)
+        # self.root.resizable(False, False)
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
 
         self.file_path = tk.StringVar()
@@ -78,7 +80,14 @@ class NeuralToolkitApp:
         tk.Button(self.root, text="Load and Plot Data[NTet, TS:TS+Samples]", command=self.load_data).grid(row=11, columnspan=3, padx=5, pady=10)
 
     def select_file(self):
-        file = filedialog.askopenfilename(initialdir='/hlabhome/kiranbn/git/neuraltoolkit/scripts/', title="Select file")
+        # file = filedialog.askopenfilename(initialdir='/hlabhome/kiranbn/git/neuraltoolkit/scripts/', title="Select file")
+        if platform == "darwin":
+            default_folder = '/Volumes/'
+        elif platform == 'linux':
+            default_folder = '/media/'
+        else:
+            default_folder = ''
+        file = filedialog.askopenfilename(initialdir=default_folder, title="Select file")
         self.file_path.set(file)
 
     def update_scale_limit(self, event):
