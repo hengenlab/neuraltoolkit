@@ -144,7 +144,7 @@ class NeuralToolkitApp:
                     xticks = np.arange(ts, ts+samples, 1)
                     ax[i].plot(xticks, data[channel, :] + i * offset,
                                color=color_list[i],
-                               label=f'Channel{channel}')
+                               label=f'Ch{channel}')
                     ax[i].legend(loc='upper right')
                     del xticks
                     ax[i].set_xlabel('Samples')
