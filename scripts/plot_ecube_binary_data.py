@@ -132,6 +132,7 @@ class NeuralToolkitApp:
 
     def plot_data(self, data, ntet):
         try:
+            plt.close('all')
             fig, ax = plt.subplots(nrows=4, ncols=1)
             color_list = ['#008080', '#ff7f50', '#a0db8e', '#b0e0e6']
             offset = 0
