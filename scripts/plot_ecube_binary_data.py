@@ -54,7 +54,7 @@ class NeuralToolkitApp:
         self.ts_scale_widget.grid(row=3, column=1, padx=5, pady=5)
         self.ts_scale_widget.bind("<ButtonPress-1>", self.update_scale_limit)
 
-        tk.Label(self.root, text="Samples (25 to 2_500_000").grid(row=4, column=0, padx=5, pady=5)
+        tk.Label(self.root, text="Samples (25 to 2_500_000)").grid(row=4, column=0, padx=5, pady=5)
         self.samples_scale_widget = tk.Scale(self.root, from_=25, to=25000 * 100, resolution=25, orient=tk.HORIZONTAL, variable=self.samples_scale)
         self.samples_scale_widget.grid(row=4, column=1, padx=5, pady=5)
 
