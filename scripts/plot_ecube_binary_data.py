@@ -158,7 +158,7 @@ class NeuralToolkitApp:
                 else:
                     ax[i].plot(data[channel, :] + i * offset,
                                color=color_list[i],
-                               label=f'Channel{channel}')
+                               label=f'Ch{channel}')
                     ax[i].legend(loc='upper right')
                     ax[i].set_xlabel('')
                     ax[i].set_ylabel('')
