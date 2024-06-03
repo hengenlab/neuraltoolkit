@@ -8,12 +8,21 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import numpy as np
 
-
 class NeuralToolkitApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Neural Toolkit Data Loader")
-        self.root.geometry("800x1000+0+0")
+
+        # Get screen width and height
+        screen_width = self.root.winfo_screenwidth()
+        screen_height = self.root.winfo_screenheight()
+
+        # Set window size to 80% of the screen size
+        window_width = int(screen_width * 0.8)
+        window_height = int(screen_height * 0.8)
+
+        self.root.geometry(f"{window_width}x{window_height}+0+0")
+        # self.root.geometry("800x1000+0+0")
         self.root.resizable(True, True)
         # self.root.resizable(False, False)
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
@@ -197,13 +206,11 @@ class NeuralToolkitApp:
                 # Adjust vertical spacing between subplots
                 # fig.subplots_adjust(hspace=0.5)
 
-
             self.canvas = FigureCanvasTkAgg(fig, master=self.root)
             self.canvas.draw()
             self.canvas.get_tk_widget().grid(row=13, columnspan=3, padx=5, pady=1)
         except Exception as e:
             messagebox.showerror("Error", str(e))
-
 
 if __name__ == "__main__":
     root = tk.Tk()
