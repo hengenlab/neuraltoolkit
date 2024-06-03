@@ -202,9 +202,10 @@ class NeuralToolkitApp:
                     xticks = np.arange(ts, ts+samples, 1)
                     ax[i].plot(xticks, data[channel, :] + i * offset,
                                color=color_list[i],
-                               label=f'Ch{channel} NTet {ntet}')
-                    ax[i].legend(loc='upper right')
+                               label=f'Ch{channel} NTet {ntet}',
+                               zorder=1.0)
                     del xticks
+                    ax[i].legend(fontsize="6", loc='upper right')
                     ax[i].set_xlabel('Samples, ' +
                                      '[Samples/' +
                                      str(self.sampling_rate_var.get()) +
@@ -221,8 +222,9 @@ class NeuralToolkitApp:
                 else:
                     ax[i].plot(data[channel, :] + i * offset,
                                color=color_list[i],
-                               label=f'Ch{channel}')
-                    ax[i].legend(loc='upper right')
+                               label=f'Ch{channel}',
+                               zorder=1.0)
+                    ax[i].legend(fontsize="6", loc='upper right')
                     ax[i].set_xlabel('')
                     ax[i].set_ylabel('')
                     ax[i].spines['top'].set_visible(False)
