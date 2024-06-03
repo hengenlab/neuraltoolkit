@@ -41,8 +41,10 @@ class NeuralToolkitApp:
         self.probenum_var = tk.IntVar(value=0)
         self.probechans_var = tk.IntVar(value=64)
         self.ntet_var = tk.IntVar(value=0)
-        self.filter_var = tk.BooleanVar()
+        # self.filter_var = tk.BooleanVar()
+        # self.lowpass_filter_var = tk.BooleanVar()
         self.sampling_rate_var = tk.IntVar(value=25000)
+        self.filter_option_var = tk.StringVar(value="rawdata")
 
         self.canvas = None  # Placeholder for the canvas
 
@@ -117,7 +119,12 @@ class NeuralToolkitApp:
         tk.Label(self.root, text="NTet").grid(row=9, column=0, padx=5, pady=2, sticky='e')
         tk.Spinbox(self.root, from_=0, to=15, textvariable=self.ntet_var, width=6).grid(row=9, column=1, padx=5, pady=2, sticky='w')
 
-        tk.Checkbutton(self.root, text="Apply Bandpass Filter", variable=self.filter_var).grid(row=10, column=0, columnspan=3, padx=5, pady=2)
+        # tk.Checkbutton(self.root, text="Apply Lowpass Filter", variable=self.lowpass_filter_var).grid(row=10, column=0, padx=5, pady=2)
+        # tk.Checkbutton(self.root, text="Apply Bandpass Filter", variable=self.filter_var).grid(row=10, column=1, padx=2, pady=2)
+        tk.Label(self.root, text="Filter").grid(row=10, column=0, padx=5, pady=2, sticky='e')
+        filter_options = ["rawdata", "highpass", "lowpass"]
+        tk.Spinbox(self.root, values=filter_options, textvariable=self.filter_option_var, width=20).grid(row=10, column=1, padx=2, pady=2, sticky='w')
+
 
         tk.Button(self.root, text="Load and Plot Data[NTet, TS:TS+Samples]", command=self.load_data).grid(row=11, column=0, columnspan=3, padx=5, pady=10)
 
@@ -163,10 +170,15 @@ class NeuralToolkitApp:
                 lraw=1, ts=ts, te=te, probenum=probenum, probechans=probechans
             )
 
-            if self.filter_var.get():
+            # print("self.filter_option_var ", self.filter_option_var.get())
+            if self.filter_option_var.get()  ==  "highpass":
                 data = ntk.butter_bandpass(dgc, 500, 7500, sampling_rate, 3)
-            else:
+            elif self.filter_option_var.get()  ==  "lowpass":
+                data = ntk.butter_lowpass(dgc, 80, sampling_rate, order=3)
+            elif self.filter_option_var.get()  ==  "rawdata":
                 data = dgc
+            else:
+                ValueError(f'Unkown option')
 
             self.plot_data(data, ntet)
         except Exception as e:
