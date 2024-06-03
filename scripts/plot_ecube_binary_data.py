@@ -18,7 +18,7 @@ class NeuralToolkitApp:
         screen_height = self.root.winfo_screenheight()
 
         # Set window size to 80% of the screen size
-        window_width = int(screen_width * 0.8)
+        window_width = int(screen_width * 0.4)
         window_height = int(screen_height * 0.8)
 
         self.root.geometry(f"{window_width}x{window_height}+0+0")
