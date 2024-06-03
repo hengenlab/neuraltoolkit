@@ -1,4 +1,5 @@
 # flake8: noqa
+import os
 import sys
 from sys import platform
 from tkinter import filedialog, messagebox
@@ -48,9 +49,34 @@ class NeuralToolkitApp:
         self.create_widgets()
 
     def create_widgets(self):
+        def complete_path(event):
+            typed = self.file_path.get()
+            print(f'typed {typed}')
+            if os.path.isdir(typed):
+                suggestions = os.listdir(typed)
+                print(f'i suggestions {suggestions}')
+                print(f'i suggestions[0] {suggestions[0]}')
+                if suggestions:
+                    self.file_path.set(os.path.join(typed, suggestions[0]))
+            else:
+                dir_path, partial = os.path.split(typed)
+                print(f'dir_path {dir_path} partial {partial}')
+                if os.path.isdir(dir_path):
+                    suggestions = [f for f in os.listdir(dir_path) if f.startswith(partial)]
+                    if suggestions:
+                        print(f'i suggestions {suggestions}')
+                        print(f'e suggestions[0] {suggestions[0]}')
+                        self.file_path.set(os.path.join(dir_path, suggestions[0]))
+            return 'break'
+
         tk.Label(self.root, text="Select Raw File").grid(row=0, column=0, padx=5, pady=2, sticky='e')
-        tk.Entry(self.root, textvariable=self.file_path, width=64).grid(row=0, column=1, padx=5, pady=2, sticky='w')
+        file_path_entry = tk.Entry(self.root, textvariable=self.file_path, width=64)
+        file_path_entry.grid(row=0, column=1, padx=5, pady=2, sticky='w')
+        file_path_entry.bind("<Tab>", complete_path)
         tk.Button(self.root, text="Browse", command=self.select_file).grid(row=0, column=2, padx=5, pady=2)
+        # tk.Label(self.root, text="Select Raw File").grid(row=0, column=0, padx=5, pady=2, sticky='e')
+        # tk.Entry(self.root, textvariable=self.file_path, width=64).grid(row=0, column=1, padx=5, pady=2, sticky='w')
+        # tk.Button(self.root, text="Browse", command=self.select_file).grid(row=0, column=2, padx=5, pady=2)
 
         tk.Label(self.root, text="HSType (comma separated)").grid(row=1, column=0, padx=5, pady=2, sticky='e')
         tk.Entry(self.root, textvariable=self.hstype_entry, width=64).grid(row=1, column=1, padx=5, pady=2, sticky='w')
