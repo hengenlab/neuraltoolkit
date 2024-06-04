@@ -18,16 +18,22 @@ class NeuralToolkitApp:
         screen_width = self.root.winfo_screenwidth()
         screen_height = self.root.winfo_screenheight()
 
-        # Set window size to 80% of the screen size
+        # Set window size to 50%/80% (WxH) of the screen size
         window_width = int(screen_width * 0.5)
         window_height = int(screen_height * 0.8)
 
+        # Start window at 0x0
         self.root.geometry(f"{window_width}x{window_height}+0+0")
         # self.root.geometry("800x1000+0+0")
+
+        # Resize allow/disallow
         self.root.resizable(True, True)
         # self.root.resizable(False, False)
+
+        # Close when click on x on window
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
 
+        # Initialize variables
         self.file_path = tk.StringVar()
         self.num_channels_var = tk.IntVar(value=64)
         self.hstype_entry = tk.StringVar(value='APT_PCB')
@@ -41,40 +47,41 @@ class NeuralToolkitApp:
         self.probenum_var = tk.IntVar(value=0)
         self.probechans_var = tk.IntVar(value=64)
         self.ntet_var = tk.IntVar(value=0)
-        # self.filter_var = tk.BooleanVar()
-        # self.lowpass_filter_var = tk.BooleanVar()
         self.sampling_rate_var = tk.IntVar(value=25000)
         self.filter_option_var = tk.StringVar(value="rawdata")
 
-        self.canvas = None  # Placeholder for the canvas
+        # Placeholder for the canvas
+        self.canvas = None
 
+        # Create widgets
         self.create_widgets()
 
     def create_widgets(self):
         '''Create widgets'''
         def complete_path(event):
             typed = self.file_path.get()
-            print(f'typed {typed}')
+            # print(f'typed {typed}')
             if os.path.isdir(typed):
                 suggestions = os.listdir(typed)
-                print(f'i suggestions {suggestions}')
-                print(f'i suggestions[0] {suggestions[0]}')
+                # print(f'i suggestions {suggestions}')
+                # print(f'i suggestions[0] {suggestions[0]}')
                 if suggestions:
                     self.file_path.set(os.path.join(typed, suggestions[0]))
             else:
                 dir_path, partial = os.path.split(typed)
-                print(f'dir_path {dir_path} partial {partial}')
+                # print(f'dir_path {dir_path} partial {partial}')
                 if os.path.isdir(dir_path):
                     suggestions = \
                         [f for f in os.listdir(dir_path)
                          if f.startswith(partial)]
                     if suggestions:
-                        print(f'i suggestions {suggestions}')
-                        print(f'e suggestions[0] {suggestions[0]}')
+                        # print(f'i suggestions {suggestions}')
+                        # print(f'e suggestions[0] {suggestions[0]}')
                         self.file_path.set(os.path.join(dir_path,
                                                         suggestions[0]))
             return 'break'
 
+        # Select raw file
         tk.Label(self.root, text="Select Raw File").grid(row=0, column=0,
                                                          padx=5, pady=2,
                                                          sticky='e')
@@ -86,6 +93,7 @@ class NeuralToolkitApp:
                   command=self.select_file).grid(row=0, column=2,
                                                  padx=5, pady=2)
 
+        # HS type
         tk.Label(self.root,
                  text="HSType (comma separated)").grid(row=1,
                                                        column=0,
@@ -97,6 +105,7 @@ class NeuralToolkitApp:
                  width=64).grid(row=1, column=1, padx=5,
                                 pady=2, sticky='w')
 
+        # TS
         tk.Label(self.root,
                  text="TS").grid(row=2, column=0, padx=5, pady=2, sticky='e')
         self.ts_scale_widget = tk.Scale(self.root, from_=0, to=25000 * 5 * 60,
@@ -107,6 +116,7 @@ class NeuralToolkitApp:
         self.ts_scale_widget.grid(row=2, column=1, padx=5, pady=2, sticky='w')
         self.ts_scale_widget.bind("<ButtonPress-1>", self.update_scale_limit)
 
+        # Samples
         tk.Label(self.root,
                  text="Samples (25 to 1_500_000)").grid(row=3,
                                                         column=0,
@@ -123,6 +133,7 @@ class NeuralToolkitApp:
                                        padx=5, pady=2,
                                        sticky='w')
 
+        # Sampling rate
         tk.Label(self.root,
                  text="Sampling Rate").grid(row=4, column=0,
                                             padx=5, pady=2,
@@ -131,6 +142,7 @@ class NeuralToolkitApp:
                  textvariable=self.sampling_rate_var,
                  width=7).grid(row=4, column=1, padx=5, pady=2, sticky='w')
 
+        # Number of channels
         tk.Label(self.root,
                  text="Number of Channels").grid(row=5, column=0,
                                                  padx=5, pady=2,
@@ -140,6 +152,7 @@ class NeuralToolkitApp:
                    textvariable=self.num_channels_var,
                    width=6).grid(row=5, column=1, padx=5, pady=2, sticky='w')
 
+        # Nprobes
         tk.Label(self.root, text="NProbes").grid(row=6, column=0, padx=5,
                                                  pady=2, sticky='e')
         tk.Spinbox(self.root, from_=1, to=10,
@@ -148,6 +161,7 @@ class NeuralToolkitApp:
                                  padx=5, pady=2,
                                  sticky='w')
 
+        # Probe number
         tk.Label(self.root,
                  text="ProbeNum").grid(row=7, column=0,
                                        padx=5, pady=2,
@@ -156,6 +170,7 @@ class NeuralToolkitApp:
                    textvariable=self.probenum_var,
                    width=6).grid(row=7, column=1, padx=5, pady=2, sticky='w')
 
+        # Probechans
         tk.Label(self.root,
                  text="ProbeChans").grid(row=8, column=0,
                                          padx=5, pady=2,
@@ -164,6 +179,7 @@ class NeuralToolkitApp:
                    textvariable=self.probechans_var,
                    width=6).grid(row=8, column=1, padx=5, pady=2, sticky='w')
 
+        # Ntet
         tk.Label(self.root,
                  text="NTet").grid(row=9, column=0,
                                    padx=5, pady=2, sticky='e')
@@ -173,6 +189,7 @@ class NeuralToolkitApp:
                                  padx=5, pady=2,
                                  sticky='w')
 
+        # Filter highpass, lowpass or rawdata
         tk.Label(self.root,
                  text="Filter").grid(row=10, column=0,
                                      padx=5, pady=2,
@@ -186,6 +203,7 @@ class NeuralToolkitApp:
                                   pady=2,
                                   sticky='w')
 
+        # Plot button
         tk.Button(self.root, text="Load and Plot Data[NTet, TS:TS+Samples]",
                   command=self.load_data).grid(row=11, column=0,
                                                columnspan=3, padx=5,
