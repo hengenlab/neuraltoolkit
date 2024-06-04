@@ -51,6 +51,7 @@ class NeuralToolkitApp:
         self.create_widgets()
 
     def create_widgets(self):
+        '''Create widgets'''
         def complete_path(event):
             typed = self.file_path.get()
             print(f'typed {typed}')
@@ -191,6 +192,7 @@ class NeuralToolkitApp:
                                                pady=10)
 
     def select_file(self):
+        '''Select file'''
         if platform == "darwin":
             default_folder = '/Volumes/'
         elif platform == 'linux':
@@ -202,18 +204,21 @@ class NeuralToolkitApp:
         self.file_path.set(file)
 
     def update_scale_limit(self, event):
+        '''Find limit from rawfile using ntk.find_samples_per_chan'''
         rawfile = self.file_path.get()
         number_of_channels = int(self.num_channels_var.get())
         limit = ntk.find_samples_per_chan(rawfile, number_of_channels, 1)
         self.ts_scale_widget.config(to=limit)
 
     def on_closing(self):
+        '''Messagebox, then close root and exit'''
         if messagebox.askokcancel("Quit", "Do you want to quit?"):
             self.root.destroy()
             plt.close()
             sys.exit()
 
     def load_data(self):
+        '''Load data'''
         try:
             rawfile = self.file_path.get()
             number_of_channels = int(self.num_channels_var.get())
@@ -227,11 +232,13 @@ class NeuralToolkitApp:
             ntet = int(self.ntet_var.get())
             sampling_rate = int(self.sampling_rate_var.get())
 
+            # Load data from 1 probe
             t, dgc = ntk.load_raw_gain_chmap_1probe(
                 rawfile, number_of_channels, hstype, nprobes=nprobes,
                 lraw=1, ts=ts, te=te, probenum=probenum, probechans=probechans
             )
 
+            # Select highpass, lowpass or rawdata
             # print("self.filter_option_var ", self.filter_option_var.get())
             if self.filter_option_var.get() == "highpass":
                 data = ntk.butter_bandpass(dgc, 500, 7500, sampling_rate, 3)
@@ -242,11 +249,13 @@ class NeuralToolkitApp:
             else:
                 ValueError('Unkown option')
 
+            # Plot data
             self.plot_data(data, ntet)
         except Exception as e:
             messagebox.showerror("Error", str(e))
 
     def plot_data(self, data, ntet):
+        '''Plot data from ntet'''
         try:
             if self.canvas:
                 # Remove existing canvas
