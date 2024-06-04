@@ -1,4 +1,3 @@
-# flake8: noqa
 import os
 import sys
 from sys import platform
@@ -8,6 +7,7 @@ import neuraltoolkit as ntk
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import numpy as np
+
 
 class NeuralToolkitApp:
     def __init__(self, root):
@@ -64,26 +64,40 @@ class NeuralToolkitApp:
                 dir_path, partial = os.path.split(typed)
                 print(f'dir_path {dir_path} partial {partial}')
                 if os.path.isdir(dir_path):
-                    suggestions = [f for f in os.listdir(dir_path) if f.startswith(partial)]
+                    suggestions = \
+                        [f for f in os.listdir(dir_path)
+                         if f.startswith(partial)]
                     if suggestions:
                         print(f'i suggestions {suggestions}')
                         print(f'e suggestions[0] {suggestions[0]}')
-                        self.file_path.set(os.path.join(dir_path, suggestions[0]))
+                        self.file_path.set(os.path.join(dir_path,
+                                                        suggestions[0]))
             return 'break'
 
-        tk.Label(self.root, text="Select Raw File").grid(row=0, column=0, padx=5, pady=2, sticky='e')
-        file_path_entry = tk.Entry(self.root, textvariable=self.file_path, width=64)
+        tk.Label(self.root, text="Select Raw File").grid(row=0, column=0,
+                                                         padx=5, pady=2,
+                                                         sticky='e')
+        file_path_entry = tk.Entry(self.root, textvariable=self.file_path,
+                                   width=64)
         file_path_entry.grid(row=0, column=1, padx=5, pady=2, sticky='w')
         file_path_entry.bind("<Tab>", complete_path)
-        tk.Button(self.root, text="Browse", command=self.select_file).grid(row=0, column=2, padx=5, pady=2)
-        # tk.Label(self.root, text="Select Raw File").grid(row=0, column=0, padx=5, pady=2, sticky='e')
-        # tk.Entry(self.root, textvariable=self.file_path, width=64).grid(row=0, column=1, padx=5, pady=2, sticky='w')
-        # tk.Button(self.root, text="Browse", command=self.select_file).grid(row=0, column=2, padx=5, pady=2)
+        tk.Button(self.root, text="Browse",
+                  command=self.select_file).grid(row=0, column=2,
+                                                 padx=5, pady=2)
 
-        tk.Label(self.root, text="HSType (comma separated)").grid(row=1, column=0, padx=5, pady=2, sticky='e')
-        tk.Entry(self.root, textvariable=self.hstype_entry, width=64).grid(row=1, column=1, padx=5, pady=2, sticky='w')
+        tk.Label(self.root,
+                 text="HSType (comma separated)").grid(row=1,
+                                                       column=0,
+                                                       padx=5,
+                                                       pady=2,
+                                                       sticky='e')
+        tk.Entry(self.root,
+                 textvariable=self.hstype_entry,
+                 width=64).grid(row=1, column=1, padx=5,
+                                pady=2, sticky='w')
 
-        tk.Label(self.root, text="TS").grid(row=2, column=0, padx=5, pady=2, sticky='e')
+        tk.Label(self.root,
+                 text="TS").grid(row=2, column=0, padx=5, pady=2, sticky='e')
         self.ts_scale_widget = tk.Scale(self.root, from_=0, to=25000 * 5 * 60,
                                         resolution=2500,
                                         orient=tk.HORIZONTAL,
@@ -92,51 +106,99 @@ class NeuralToolkitApp:
         self.ts_scale_widget.grid(row=2, column=1, padx=5, pady=2, sticky='w')
         self.ts_scale_widget.bind("<ButtonPress-1>", self.update_scale_limit)
 
-        tk.Label(self.root, text="Samples (25 to 1_500_000)").grid(row=3, column=0, padx=5, pady=2, sticky='e')
-        self.samples_scale_widget = tk.Scale(self.root, from_=25, to=25000 * 60,
-                                             resolution=25,
-                                             orient=tk.HORIZONTAL,
-                                             length=450,
-                                             variable=self.samples_scale)
-        self.samples_scale_widget.grid(row=3, column=1, padx=5, pady=2, sticky='w')
+        tk.Label(self.root,
+                 text="Samples (25 to 1_500_000)").grid(row=3,
+                                                        column=0,
+                                                        padx=5,
+                                                        pady=2,
+                                                        sticky='e')
+        self.samples_scale_widget = \
+            tk.Scale(self.root, from_=25, to=25000 * 60,
+                     resolution=25,
+                     orient=tk.HORIZONTAL,
+                     length=450,
+                     variable=self.samples_scale)
+        self.samples_scale_widget.grid(row=3, column=1,
+                                       padx=5, pady=2,
+                                       sticky='w')
 
-        tk.Label(self.root, text="Sampling Rate").grid(row=4, column=0, padx=5, pady=2, sticky='e')
-        tk.Entry(self.root, textvariable=self.sampling_rate_var, width=7).grid(row=4, column=1, padx=5, pady=2, sticky='w')
+        tk.Label(self.root,
+                 text="Sampling Rate").grid(row=4, column=0,
+                                            padx=5, pady=2,
+                                            sticky='e')
+        tk.Entry(self.root,
+                 textvariable=self.sampling_rate_var,
+                 width=7).grid(row=4, column=1, padx=5, pady=2, sticky='w')
 
-        tk.Label(self.root, text="Number of Channels").grid(row=5, column=0, padx=5, pady=2, sticky='e')
-        tk.Spinbox(self.root, from_=64, to=640, increment=64, textvariable=self.num_channels_var, width=6).grid(row=5, column=1, padx=5, pady=2, sticky='w')
+        tk.Label(self.root,
+                 text="Number of Channels").grid(row=5, column=0,
+                                                 padx=5, pady=2,
+                                                 sticky='e')
+        tk.Spinbox(self.root,
+                   from_=64, to=640, increment=64,
+                   textvariable=self.num_channels_var,
+                   width=6).grid(row=5, column=1, padx=5, pady=2, sticky='w')
 
+        tk.Label(self.root, text="NProbes").grid(row=6, column=0, padx=5,
+                                                 pady=2, sticky='e')
+        tk.Spinbox(self.root, from_=1, to=10,
+                   textvariable=self.nprobes_var,
+                   width=6).grid(row=6, column=1,
+                                 padx=5, pady=2,
+                                 sticky='w')
 
-        tk.Label(self.root, text="NProbes").grid(row=6, column=0, padx=5, pady=2, sticky='e')
-        tk.Spinbox(self.root, from_=1, to=10, textvariable=self.nprobes_var, width=6).grid(row=6, column=1, padx=5, pady=2, sticky='w')
+        tk.Label(self.root,
+                 text="ProbeNum").grid(row=7, column=0,
+                                       padx=5, pady=2,
+                                       sticky='e')
+        tk.Spinbox(self.root, from_=0, to=10,
+                   textvariable=self.probenum_var,
+                   width=6).grid(row=7, column=1, padx=5, pady=2, sticky='w')
 
-        tk.Label(self.root, text="ProbeNum").grid(row=7, column=0, padx=5, pady=2, sticky='e')
-        tk.Spinbox(self.root, from_=0, to=10, textvariable=self.probenum_var, width=6).grid(row=7, column=1, padx=5, pady=2, sticky='w')
+        tk.Label(self.root,
+                 text="ProbeChans").grid(row=8, column=0,
+                                         padx=5, pady=2,
+                                         sticky='e')
+        tk.Spinbox(self.root, from_=64, to=64,
+                   textvariable=self.probechans_var,
+                   width=6).grid(row=8, column=1, padx=5, pady=2, sticky='w')
 
-        tk.Label(self.root, text="ProbeChans").grid(row=8, column=0, padx=5, pady=2, sticky='e')
-        tk.Spinbox(self.root, from_=64, to=64, textvariable=self.probechans_var, width=6).grid(row=8, column=1, padx=5, pady=2, sticky='w')
+        tk.Label(self.root,
+                 text="NTet").grid(row=9, column=0,
+                                   padx=5, pady=2, sticky='e')
+        tk.Spinbox(self.root, from_=0, to=15,
+                   textvariable=self.ntet_var,
+                   width=6).grid(row=9, column=1,
+                                 padx=5, pady=2,
+                                 sticky='w')
 
-        tk.Label(self.root, text="NTet").grid(row=9, column=0, padx=5, pady=2, sticky='e')
-        tk.Spinbox(self.root, from_=0, to=15, textvariable=self.ntet_var, width=6).grid(row=9, column=1, padx=5, pady=2, sticky='w')
-
-        # tk.Checkbutton(self.root, text="Apply Lowpass Filter", variable=self.lowpass_filter_var).grid(row=10, column=0, padx=5, pady=2)
-        # tk.Checkbutton(self.root, text="Apply Bandpass Filter", variable=self.filter_var).grid(row=10, column=1, padx=2, pady=2)
-        tk.Label(self.root, text="Filter").grid(row=10, column=0, padx=5, pady=2, sticky='e')
+        tk.Label(self.root,
+                 text="Filter").grid(row=10, column=0,
+                                     padx=5, pady=2,
+                                     sticky='e')
         filter_options = ["rawdata", "highpass", "lowpass"]
-        tk.Spinbox(self.root, values=filter_options, textvariable=self.filter_option_var, width=20).grid(row=10, column=1, padx=2, pady=2, sticky='w')
+        tk.Spinbox(self.root, values=filter_options,
+                   textvariable=self.filter_option_var,
+                   width=20).grid(row=10,
+                                  column=1,
+                                  padx=2,
+                                  pady=2,
+                                  sticky='w')
 
-
-        tk.Button(self.root, text="Load and Plot Data[NTet, TS:TS+Samples]", command=self.load_data).grid(row=11, column=0, columnspan=3, padx=5, pady=10)
+        tk.Button(self.root, text="Load and Plot Data[NTet, TS:TS+Samples]",
+                  command=self.load_data).grid(row=11, column=0,
+                                               columnspan=3, padx=5,
+                                               pady=10)
 
     def select_file(self):
-        # file = filedialog.askopenfilename(initialdir='/hlabhome/kiranbn/git/neuraltoolkit/scripts/', title="Select file")
         if platform == "darwin":
             default_folder = '/Volumes/'
         elif platform == 'linux':
             default_folder = '/media/'
         else:
             default_folder = ''
-        file = filedialog.askopenfilename(initialdir=default_folder, title="Select file")
+        file = filedialog.askopenfilename(initialdir=default_folder,
+                                          title="Select file")
         self.file_path.set(file)
 
     def update_scale_limit(self, event):
@@ -171,14 +233,14 @@ class NeuralToolkitApp:
             )
 
             # print("self.filter_option_var ", self.filter_option_var.get())
-            if self.filter_option_var.get()  ==  "highpass":
+            if self.filter_option_var.get() == "highpass":
                 data = ntk.butter_bandpass(dgc, 500, 7500, sampling_rate, 3)
-            elif self.filter_option_var.get()  ==  "lowpass":
+            elif self.filter_option_var.get() == "lowpass":
                 data = ntk.butter_lowpass(dgc, 80, sampling_rate, order=3)
-            elif self.filter_option_var.get()  ==  "rawdata":
+            elif self.filter_option_var.get() == "rawdata":
                 data = dgc
             else:
-                ValueError(f'Unkown option')
+                ValueError('Unkown option')
 
             self.plot_data(data, ntet)
         except Exception as e:
@@ -187,13 +249,15 @@ class NeuralToolkitApp:
     def plot_data(self, data, ntet):
         try:
             if self.canvas:
-                self.canvas.get_tk_widget().grid_forget()  # Remove existing canvas
+                # Remove existing canvas
+                self.canvas.get_tk_widget().grid_forget()
 
             plt.close('all')
             fig, ax = plt.subplots(nrows=4, ncols=1)
             color_list = ['#008080', '#ff7f50', '#a0db8e', '#b0e0e6']
             offset = 0
-            tmp_channels = ntk.get_tetrode_channels_from_tetnum(ntet, ch_grp_size=4)
+            tmp_channels = \
+                ntk.get_tetrode_channels_from_tetnum(ntet, ch_grp_size=4)
             ts = int(self.ts_scale.get())
             samples = int(self.samples_scale.get())
             for i, channel in enumerate(tmp_channels):
@@ -249,9 +313,11 @@ class NeuralToolkitApp:
 
             self.canvas = FigureCanvasTkAgg(fig, master=self.root)
             self.canvas.draw()
-            self.canvas.get_tk_widget().grid(row=13, columnspan=3, padx=5, pady=1)
+            self.canvas.get_tk_widget().grid(row=13, columnspan=3,
+                                             padx=5, pady=1)
         except Exception as e:
             messagebox.showerror("Error", str(e))
+
 
 if __name__ == "__main__":
     root = tk.Tk()
