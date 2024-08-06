@@ -127,7 +127,6 @@ def notch_filter(data, fs, Q, ftofilter):
     notch_filter(data, fs, Q, ftofilter)
 
     fs : sampling frequency
-    
     Q :  Q = w0/bw, w0 = ftofilter/(fs/2), bw bandwidth
          High Q (e.g., 30): Provides a narrow notch,
                removing a specific frequency
@@ -137,9 +136,9 @@ def notch_filter(data, fs, Q, ftofilter):
                which can remove a broader range of frequencies.
                This might affect nearby frequencies more
                significantly.
-    
     ftofilter : frequency to filter out
-                 ftofilter is the specific frequency you want to remove from your signal.
+                 ftofilter is the specific frequency you want to
+                 remove from your signal.
                  60 to remove 60 cycle noise
 
     return
