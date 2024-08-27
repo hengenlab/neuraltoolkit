@@ -86,7 +86,8 @@ t,dgc = ntk.load_raw_gain_chmap_1probe(rawfile, number_of_channels,
 
 # bandpass filter
 bdgc = ntk.butter_bandpass(dgc, 500, 7500, 25000, 3)
-
+```
+```
 # Time only
 t = ntk.load_raw_binary_gain_chmap(rawfile, number_of_channels, 'hs64', t_only=1)
 
