@@ -72,6 +72,10 @@ fs = 25000
 
 number_of_channels = probechans * nprobes
 hstype = ['APT_PCB'] * nprobes   # Channel map
+# If you have 'IMU' as last probe uncomment these two lines below
+# hstype = ['APT_PCB'] * (nprobes-1)   # Channel map
+# hstype.append('IMU')
+
 # ts = 0, start from begining of file or can be any sample number
 # te = 2500, read 2500 sample points from ts ( te greater than ts)
 # if ts =0 and te = -1,  read from begining to end of file
