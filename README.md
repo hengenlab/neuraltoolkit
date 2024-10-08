@@ -55,13 +55,9 @@ Open powershell/terminal
     ipython
     import neuraltoolkit as ntk
 ```
-
 ---
 
-
-## load ecube data
-
-
+#### load ecube data
 ```
 import neuraltoolkit as ntk
 import numpy as np
@@ -69,24 +65,29 @@ import matplotlib.pyplot as plt
 
 # Load only one probe from raw file
 rawfile = '/home/kbn/Headstages_512_Channels_int16_2019-06-21_03-55-09.bin'
-number_of_channels = 512
-hstype = ['APT_PCB', 'APT_PCB', 'APT_PCB',
-          'APT_PCB', 'APT_PCB', 'APT_PCB',
-          'APT_PCB', 'APT_PCB']   # Channel map
-# ts = 0, start from begining of file or can be any sample number
-# te = 2500, read 2500 sample points from ts ( te greater than ts)
-# if ts =0 and te = -1,  read from begining to end of file
 nprobes = 8
 probenum = 0  # which probe to return (starts from zero)
 probechans = 64  #  number of channels per probe (symmetric)
-t,dgc = ntk.load_raw_gain_chmap_1probe(rawfile, number_of_channels,
-                                       hstype, nprobes=nprobes,
-                                       lraw=1, ts=0, te=-1,
-                                       probenum=probenum, probechans=64)
+
+number_of_channels = probechans * nprobes
+hstype = ['APT_PCB'] * nprobes   # Channel map
+# ts = 0, start from begining of file or can be any sample number
+# te = 2500, read 2500 sample points from ts ( te greater than ts)
+# if ts =0 and te = -1,  read from begining to end of file
+ts = 0
+te = -1
+
+t, dgc = ntk.load_raw_gain_chmap_1probe(rawfile, number_of_channels,
+                                        hstype, nprobes=nprobes,
+                                        lraw=1, ts=ts, te=te,
+                                        probenum=probenum,
+                                        probechans=probechans)
 
 # bandpass filter
 bdgc = ntk.butter_bandpass(dgc, 500, 7500, 25000, 3)
 ```
+---
+
 ```
 # Time only
 t = ntk.load_raw_binary_gain_chmap(rawfile, number_of_channels, 'hs64', t_only=1)
