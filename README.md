@@ -57,7 +57,7 @@ Open powershell/terminal
 ```
 ---
 
-#### load ecube data
+#### Load ecube data and get bandpassed data and LFP
 ```
 import neuraltoolkit as ntk
 import numpy as np
@@ -68,6 +68,7 @@ rawfile = '/home/kbn/Headstages_512_Channels_int16_2019-06-21_03-55-09.bin'
 nprobes = 8
 probenum = 0  # which probe to return (starts from zero)
 probechans = 64  #  number of channels per probe (symmetric)
+fs = 25000
 
 number_of_channels = probechans * nprobes
 hstype = ['APT_PCB'] * nprobes   # Channel map
@@ -84,7 +85,14 @@ t, dgc = ntk.load_raw_gain_chmap_1probe(rawfile, number_of_channels,
                                         probechans=probechans)
 
 # bandpass filter
-bdgc = ntk.butter_bandpass(dgc, 500, 7500, 25000, 3)
+highpass = 500
+lowpass = 7500
+bdgc = ntk.butter_bandpass(dgc, highpass, lowpass, fs, order=3)
+
+# lowpass filter for lfp
+lowpass = 250
+lfp = ntk.butter_lowpass(dgc, lowpass, fs, order=3)
+
 ```
 ---
 
