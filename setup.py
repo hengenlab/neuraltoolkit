@@ -37,7 +37,7 @@ setup(
    packages=['neuraltoolkit'],
    install_requires=['ipython', 'numpy', 'matplotlib', 'seaborn', 'pandas',
                      'opencv-python', 'scipy', 'h5py', 'tables',
-                     'requests'],
+                     'requests', 'packaging'],
    extras_require={
         'full': ['rpy2']
     },
