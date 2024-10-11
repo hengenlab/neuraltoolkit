@@ -24,6 +24,7 @@ except ImportError:
     raise ImportError('Run command : conda install pandas')
 import glob
 import os.path as op
+import shutil
 import matplotlib.pyplot as plt
 import itertools
 from neuraltoolkit import load_digital_binary_allchannels
@@ -178,3 +179,76 @@ def find_video_start_index(datadir, ch, nfiles=10,
             if (indx + 1) == nfiles:
                 raise\
                     RuntimeError("Try increasing nfile or check fps or ch")
+
+
+def append_emptyframes_todlc_h5file(h5_file_name, video_fps):
+    '''
+    Append missing empty row to dlc output h5 file to make it an hour
+    This can be used if video is stopped just short of 1hour and you have
+    neuralrecording for whole hour
+
+    def append_emptyframes_todlc_h5file(h5_file_name, video_fps):
+
+    Parameters
+    ----------
+    h5_file_name : File name of h5 file with path
+    video_fps : sampling rate used for video
+
+    Returns
+    -------
+    create copy of h5_file_name as h5_file_name_back
+    make a new h5_file_name with frames for 1 hour
+
+    Raises
+    ------
+
+    See Also
+    --------
+
+    Notes
+    -----
+
+    Examples
+    --------
+    video_fps = 15
+    h5_file_name = \
+     '/home/kiran/D17_trial1DeepCut_resnet50_crickethuntJul18shuffle1_15000.h5'
+    ntk.append_emptyframes_todlc_h5file(h5_file_name, video_fps)
+
+
+    '''
+    # Check if the file exists
+    if not op.isfile(h5_file_name):
+        raise FileNotFoundError(f"The file {h5_file_name} does not exist.")
+
+    # Make a copy of the h5 file
+    backup_file_name = f"{h5_file_name}_back"
+    # os.system(f"cp {h5_file_name} {backup_file_name}")
+    # Using shutil to copy the file
+    shutil.copy2(h5_file_name, backup_file_name)
+
+    # Load the HDF5 file
+    df = pd.read_hdf(h5_file_name)
+
+    # Make a copy of the DataFrame
+    dfnew = df.copy()
+
+    # Calculate the target number of rows based on video fps
+    target_rows = video_fps * 3600
+    rows_to_add = target_rows - dfnew.shape[0]
+
+    # If additional rows are needed
+    if rows_to_add > 0:
+        # Create an empty DataFrame with the same columns
+        empty_rows = pd.DataFrame(index=range(rows_to_add),
+                                  columns=dfnew.columns)
+
+        # Remove all-NA columns from empty_rows (if any)
+        empty_rows = empty_rows.dropna(axis=1, how='all')
+
+        # Concatenate the original DataFrame with the empty DataFrame
+        dfnew = pd.concat([dfnew, empty_rows], ignore_index=True)
+
+    # Replace the original h5 file with the new DataFrame
+    dfnew.to_hdf(h5_file_name, key='df', mode='w')
+    print(f"Added {rows_to_add} rows to {h5_file_name}.")
