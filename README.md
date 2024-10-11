@@ -754,6 +754,26 @@ video_start_index =\
                                    lnew=1, fig_indx=fig_indx)
 # Please remember video_start_index is continous.
 ```
+```
+# Append missing empty row to dlc output h5 file to make it an hour
+# This can be used if video is stopped just short of 1hour and you have
+# neuralrecording for whole hour
+
+# h5_file_name : File name of h5 file with path
+# video_fps : sampling rate used for video
+
+ntk.append_emptyframes_todlc_h5file(h5_file_name, video_fps)
+# create copy of h5_file_name as h5_file_name_back
+#    make a new h5_file_name with frames for 1 hour
+
+Example:
+import neuraltoolkit as ntk
+h5_file_name = '/home/kiran/ZBR00101-20240111T165554-175447DLC_resnet50_Mouse_genericmodelSep8shuffle1_1030000.h5'
+video_fps = 15
+ntk.append_emptyframes_todlc_h5file(h5_file_name, video_fps)
+Added 989 rows to /home/kiran/ZBR00101-20240111T165554-175447DLC_resnet50_Mouse_genericmodelSep8shuffle1_1030000.h5.
+```
+
 
 ---
 ## Utils
