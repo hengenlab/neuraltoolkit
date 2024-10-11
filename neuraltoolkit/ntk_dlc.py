@@ -201,6 +201,7 @@ def append_emptyframes_todlc_h5file(h5_file_name, video_fps):
 
     Raises
     ------
+    FileNotFoundError : if h5_file_name does not exist
 
     See Also
     --------
