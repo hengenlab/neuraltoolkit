@@ -100,10 +100,13 @@ lfp = ntk.butter_lowpass(dgc, lowpass, fs, order=3)
 ```
 ---
 
+#### Get ecube time only
 ```
-# Time only
 t = ntk.load_raw_binary_gain_chmap(rawfile, number_of_channels, 'hs64', t_only=1)
+```
 
+
+```
 # Load digital data for cameras, etc
 digitalrawfile = '/home/kbn/Digital_64_Channels_int64_2018-11-04_11-18-12.bin'
 t_only  : if t_only=1, just return  timestamp
