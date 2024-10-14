@@ -821,6 +821,15 @@ fl_name = '/home/kbn/my_matlab_file.mat'
 ntk.numpy_array_to_matlab(my_array, fl_name)
 ```
 
+#### Convert a string representation of truth to True or False.
+```
+ntk.strtobool(string_variable) 
+
+# if string_variable is ('y', 'yes', 't', 'true', 'on', '1') returns True
+# if string_variable is ('n', 'no', 'f', 'false', 'off', '0') returns False
+# if string_variable is not valid raises ValueError
+```
+
 ---
 ## filters
 
