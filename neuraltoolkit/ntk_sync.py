@@ -10,12 +10,21 @@ import argparse
 import csv
 import configparser
 import h5py
-import distutils.util
+# import distutils.util
 import importlib
 import urllib.parse
 import functools
 import multiprocessing
 
+def strtobool(val:str) -> bool:
+    """Convert a string representation of truth to True or False."""
+    val = val.lower()
+    if val in ('y', 'yes', 't', 'true', 'on', '1'):
+        return True
+    elif val in ('n', 'no', 'f', 'false', 'off', '0'):
+        return False
+    else:
+        raise ValueError(f"Invalid truth value: {val}")
 
 # optional import for S3 file support, for S3 file support: pip install smart_open awswrangler
 try:
@@ -687,6 +696,8 @@ def save_map_video_to_neural_data(output_filename: str = None,
         fs = int(config.get('fs', fs))
         n_channels = int(config.get('n_channels', n_channels))
         manual_video_neural_offset_sec = int(config.get('manual_video_frame_offset', manual_video_neural_offset_sec))
+        # ignore_dlc_mismatch = bool(distutils.util.strtobool((config.get('ignore_dlc_mismatch', ignore_dlc_mismatch))))
+        ignore_dlc_mismatch = strtobool(config.get('ignore_dlc_mismatch', str(ignore_dlc_mismatch)))
         ignore_dlc_mismatch = bool(distutils.util.strtobool((config.get('ignore_dlc_mismatch', ignore_dlc_mismatch))))
         neural_bin_files_per_sleepstate_file = int(config.get('neural_bin_files_per_sleepstate_file', 12))
         initial_neural_file_for_sleepstate_mapping = int(config.get('initial_neural_file_for_sleepstate_mapping'), 0)
