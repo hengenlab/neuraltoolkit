@@ -120,42 +120,57 @@ def welch_power(data, fs, lengthseg, noverlappoints, axis_n=-1, lplot=0):
 
 
 def notch_filter(data, fs, Q, ftofilter):
+    """
+    Apply a notch filter to remove a specific frequency from the signal.
 
-    '''
-    Notch filter
+    Parameters:
+    -----------
+    data : array_like
+        The input signal to be filtered.
+    fs : float
+        The sampling frequency of the input signal in Hz.
+    Q : float
+        The quality factor of the notch filter, defined as Q = f0 / bw,
+        where f0 is the frequency to remove (ftofilter) and
+        bw is the bandwidth.
+        - High Q (e.g., 30): Provides a narrow notch filter, removing a very
+          specific frequency with minimal impact on adjacent frequencies.
+          Suitable for isolating and removing narrowband interference.
+        - Low Q (e.g., 5): Creates a wider notch, affecting a broader range
+          of frequencies, but may remove more nearby frequencies.
+    ftofilter : float
+        The frequency (in Hz) to be filtered out from the signal. For example,
+        set `ftofilter = 60` to remove 60 Hz power line noise.
 
-    notch_filter(data, fs, Q, ftofilter)
+    Returns:
+    --------
+    datan : array_like
+        The filtered signal with the specified frequency removed.
 
-    fs : sampling frequency
-    Q :  Q = w0/bw, w0 = ftofilter/(fs/2), bw bandwidth
-         High Q (e.g., 30): Provides a narrow notch,
-               removing a specific frequency
-               with minimal effect on adjacent frequencies.
-               Useful for targeting a very precise frequency.
-         Low Q (e.g., 5): Provides a wider notch,
-               which can remove a broader range of frequencies.
-               This might affect nearby frequencies more
-               significantly.
-    ftofilter : frequency to filter out
-                 ftofilter is the specific frequency you want to
-                 remove from your signal.
-                 60 to remove 60 cycle noise
+    Notes:
+    ------
+    The notch filter is implemented using a forward-backward filter
+    (via `filtfilt`), which ensures zero phase distortion in
+    the filtered signal.
 
-    return
-    datan : filtered signal
+    Example:
+    --------
+    # Example usage:
+    filtered_data = ntk.notch_filter(data, fs=25000, Q=30, ftofilter=60)
 
-    '''
+    This example applies a notch filter to remove 60 Hz noise
+    from a signal sampled at 25000 Hz.
+    """
 
     from scipy.signal import filtfilt, iirnotch
 
-    w0 = ftofilter/(fs/2)  # Normalized Frequency
-    # print(w0)
-    # print(w0/10)
+    # Normalized frequency: f0 / (fs / 2)
+    w0 = ftofilter / (fs / 2)
 
-    # notch filter
+    # Design the notch filter
     b, a = iirnotch(w0, Q)
 
-    # filter foward and reverse
+    # Apply the notch filter in both forward and reverse directions
     datan = filtfilt(b, a, data)
 
     return datan
