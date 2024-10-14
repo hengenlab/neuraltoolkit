@@ -851,10 +851,33 @@ plt.plot(result[1,0:25000])
 plt.show()
 
 # lowpass filter for lfp
+# fs : The sampling frequency of the input signal in Hz.
 fs = 25000
 lowpass = 250
 lfp = ntk.butter_lowpass(rawdata, lowpass, fs, order=3)
+```
 
+#### Apply a notch filter to remove a specific frequency from the signal.
+```
+# fs : The sampling frequency of the input signal in Hz.
+# Q  : The quality factor of the notch filter, defined as Q = f0 / bw,
+#       where f0 is the frequency to remove (ftofilter) and
+#       bw is the bandwidth.
+#       - High Q (e.g., 30): Provides a narrow notch filter, removing a very
+#         specific frequency with minimal impact on adjacent frequencies.
+#         Suitable for isolating and removing narrowband interference.
+#       - Low Q (e.g., 5): Creates a wider notch, affecting a broader range
+#         of frequencies, but may remove more nearby frequencies.
+# ftofilter : The frequency (in Hz) to be filtered out from the signal.
+# Returns: The filtered signal with the specified frequency removed.
+#
+# Example usage:
+# This example applies a notch filter to remove 60 Hz noise
+# (power line noise) from a signal sampled at 25000 Hz.
+filtered_data = ntk.notch_filter(data, fs=25000, Q=30, ftofilter=60)
+```
+
+```
 # spectrogram
 ntk_spectrogram(lfp, fs, nperseg, noverlap, f_low=1, f_high=64,
                 lsavedir=None, hour=0, chan=0, reclen=3600,
