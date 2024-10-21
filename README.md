@@ -970,23 +970,44 @@ plt.scatter(u[:,0], u[:,1], c=data)
 ```
 
 ## math
-
+#### Interpolates the data vector
 ```
-# import libraries
+# Interpolates the data vector `dvec` by increasing the number of samples in `tvec` by a factor of `nfact`.
 import neuraltoolkit as ntk
 import numpy as np
 import matplotlib.pyplot as plt
 
-# interpolate
 t = np.arange(0, 10)
 d = np.cos(t)
 plt.figure(1)
-plt.plot(t,d)
-plt.show(block=False)
+plt.plot(t, d)
+
+#   tvec : array-like
+#         Time or sample vector representing the independent variable.
+#     dvec : array-like
+#         Data vector representing the dependent variable corresponding
+#          to `tvec`.
+#     nfact : int
+#         The interpolation factor by which the number of points should be
+#          increased.
+#     intpl_kind : str, optional
+#         Type of interpolation to perform (default is 'cubic').
+#         Available options:
+#           - 'linear'     : linear interpolation between points.
+#           - 'nearest'    : nearest neighbor interpolation.
+#           - 'zero'       : piecewise constant interpolation (0th-order spline).
+#           - 'slinear'    : first-order spline interpolation.
+#           - 'quadratic'  : second-order spline interpolation.
+#           - 'cubic'      : third-order spline interpolation (default).
+#    tvect_intpl : ndarray
+#         New time/sample vector with interpolated points, increased by `nfact`.
+#     dvec_intpl : ndarray
+#         Interpolated data corresponding to `tvect_intpl`.
+
 tn, d_tn = ntk.data_intpl(t, d, 4, intpl_kind='cubic')
 plt.figure(2)
 plt.plot(tn,d_tn)
-plt.show(block=False)
+plt.show()
 ```
 
 ### Cohen’s d and pwr.t.test
