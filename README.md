@@ -934,11 +934,11 @@ ntk.selectlfpchans(rawdat_dir, outdir, hstype, hour,
 
 ```
 ---
+
 ## high dimensional data
 
-
+#### TSNE
 ```
-# TSNE
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
@@ -951,8 +951,10 @@ u = ntk.highd_data_tsne(data, perplexity=30.0, n_components=2,
                         metric='euclidean', n_iter=3000,
                         verbose=True)
 plt.scatter(u[:,0], u[:,1], c=data)
+```
 
-# UMAP
+#### UMAP
+```
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
