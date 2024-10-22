@@ -181,7 +181,7 @@ def find_video_start_index(datadir, ch, nfiles=10,
                     RuntimeError("Try increasing nfile or check fps or ch")
 
 
-def append_emptyframes_todlc_h5file(h5_file_name, video_fps):
+def append_emptyframes_todlc_h5file(h5_file_name, video_fps, target_rows=None):
     '''
     Append missing empty row to dlc output h5 file to make it an hour
     This can be used if video is stopped just short of 1hour and you have
@@ -192,7 +192,11 @@ def append_emptyframes_todlc_h5file(h5_file_name, video_fps):
     Parameters
     ----------
     h5_file_name : File name of h5 file with path
-    video_fps : sampling rate used for video
+    video_fps: The sampling rate of the video (frames per second).
+    target_rows: The target number of rows to add. If None (default),
+        the number of rows is determined by video_fps. If specified,
+        this value takes precedence over video_fps,
+        and the number of rows will be calculated accordingly.
 
     Returns
     -------
@@ -235,8 +239,9 @@ def append_emptyframes_todlc_h5file(h5_file_name, video_fps):
     dfnew = df.copy()
 
     # Calculate the target number of rows based on video fps
-    target_rows = video_fps * 3600
-    rows_to_add = target_rows - dfnew.shape[0]
+    if target_rows is None:
+        target_rows = video_fps * 3600
+        rows_to_add = target_rows - dfnew.shape[0]
 
     # If additional rows are needed
     if rows_to_add > 0:
