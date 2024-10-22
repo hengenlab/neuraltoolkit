@@ -764,8 +764,12 @@ video_start_index =\
 
 # h5_file_name : File name of h5 file with path
 # video_fps : sampling rate used for video
+# target_rows: The target number of rows to add. If None (default),
+#         the number of rows is determined by video_fps. If specified,
+#         this value takes precedence over video_fps,
+#         and the number of rows will be calculated accordingly.
 
-ntk.append_emptyframes_todlc_h5file(h5_file_name, video_fps)
+ntk.append_emptyframes_todlc_h5file(h5_file_name, video_fps, target_rows=None)
 # create copy of h5_file_name as h5_file_name_back
 #    make a new h5_file_name with frames for 1 hour
 
