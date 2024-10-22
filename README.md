@@ -776,12 +776,12 @@ ntk.append_emptyframes_todlc_h5file(h5_file_name, video_fps, target_rows=None)
 # create copy of h5_file_name as h5_file_name_back
 #    make a new h5_file_name with frames for 1 hour
 
-Example:
-import neuraltoolkit as ntk
-h5_file_name = '/home/kiran/ZBR00101-20240111T165554-175447DLC_resnet50_Mouse_genericmodelSep8shuffle1_1030000.h5'
-video_fps = 15
-ntk.append_emptyframes_todlc_h5file(h5_file_name, video_fps)
-Added 989 rows to /home/kiran/ZBR00101-20240111T165554-175447DLC_resnet50_Mouse_genericmodelSep8shuffle1_1030000.h5.
+# Example:
+# import neuraltoolkit as ntk
+# h5_file_name = '/home/kiran/ZBR00101-20240111T165554-175447DLC_resnet50_Mouse_genericmodelSep8shuffle1_1030000.h5'
+# video_fps = 15
+# ntk.append_emptyframes_todlc_h5file(h5_file_name, video_fps)
+# Added 989 rows to /home/kiran/ZBR00101-20240111T165554-175447DLC_resnet50_Mouse_genericmodelSep8shuffle1_1030000.h5.
 ```
 
 
