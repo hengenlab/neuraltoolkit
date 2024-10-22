@@ -757,8 +757,11 @@ video_start_index =\
                                    lnew=1, fig_indx=fig_indx)
 # Please remember video_start_index is continous.
 ```
+
+#### Append missing empty row to dlc output h5 file
 ```
 # Append missing empty row to dlc output h5 file to make it an hour
+# or add target_rows to h5 file 
 # This can be used if video is stopped just short of 1hour and you have
 # neuralrecording for whole hour
 
