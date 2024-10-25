@@ -1054,7 +1054,7 @@ print(f"d: {result_ntk_power_t_test.rx2('d')[0]}")
 
 
 ---
-## Channel mappings
+## $\textcolor{#6897bb}{Channel\ mappings}$
 ###### 'hs64'
       [26, 30, 6,  2,  18, 22, 14, 10, 12, 16, 8,  4,  28, 32, 24, 20, 
       48,  44, 36, 40, 64, 60, 52, 56, 54, 50, 42, 46, 62, 58, 34, 38, 
