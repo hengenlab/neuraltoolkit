@@ -1,4 +1,11 @@
-# Neuraltoolkit
+# $\textcolor{#fa8072}{\textbf{Neuraltoolkit}}$
+
+<!-- 
+# title  color  #fa8072
+# header color  #6897bb
+# warnings color #ff4040
+# best color #b4eeb4
+-->
 ---
 A powerful and fast set of tools for loading data, filtering, processing,
 working with data formats, and basic utilities for electrophysiology and
@@ -7,7 +14,9 @@ behavioral data.
 ---
 ![Tests](https://github.com/hengenlab/neuraltoolkit/actions/workflows/pytests.yml/badge.svg)
 
-## Installation
+
+## $\textcolor{#6897bb}{\textbf{Installation}}$
+
 
 ### Download neuraltoolkit
 ```
