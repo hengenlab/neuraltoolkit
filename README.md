@@ -4,6 +4,7 @@
 # title  color  #fa8072
 # header color  #6897bb
 # subheader color #088da5
+# subsubheader color #81d8d0
 
 # warnings color #ff4040
 # best color #b4eeb4
@@ -71,7 +72,8 @@ Open powershell/terminal
 ```
 ---
 
-#### Load ecube data and get bandpassed data and LFP
+#### $\textcolor{#81d8d0}{\textbf{Load ecube data and get bandpassed data and LFP}}$
+
 ```
 import neuraltoolkit as ntk
 import numpy as np
@@ -114,7 +116,8 @@ lfp = ntk.butter_lowpass(dgc, lowpass, fs, order=3)
 ```
 ---
 
-#### Get ecube time only
+
+#### $\textcolor{#81d8d0}{\textbf{Get ecube time only}}$
 ```
 t = ntk.load_raw_binary_gain_chmap(rawfile, number_of_channels, 'hs64', t_only=1)
 ```
