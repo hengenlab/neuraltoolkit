@@ -3,6 +3,8 @@
 <!-- 
 # title  color  #fa8072
 # header color  #6897bb
+# subheader color #088da5
+
 # warnings color #ff4040
 # best color #b4eeb4
 -->
@@ -18,12 +20,15 @@ behavioral data.
 ## $\textcolor{#6897bb}{\textbf{Installation}}$
 
 
-### Download neuraltoolkit
+### $\textcolor{#088da5}{\textbf{Download neuraltoolkit}}$
+
+
 ```
 git clone https://github.com/hengenlab/neuraltoolkit.git 
 ```
 
-### Using pip
+### $\textcolor{#088da5}{\textbf{Using pip}}$
+
 ```
 cd locationofneuraltoolkit/neuraltoolkit/
 For example /home/kbn/git/neuraltoolkit  
@@ -58,7 +63,7 @@ export PYTHONPATH=/location_of_neuraltoolkit:$PYTHONPATH
 -->
 ---
 
-### Test import
+### $\textcolor{#088da5}{\textbf{Test import}}$
 ```
 Open powershell/terminal
     ipython
