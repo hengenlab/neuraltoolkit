@@ -235,8 +235,8 @@ Please remember, channel number here starts with 0.
 ```
 
 ---
+#### $\textcolor{#81d8d0}{\textbf{Find number of samples per channel in a ecube file}}$
 ```
-# Find number of samples per channel in a ecube file
 rawfile = '/home/kbn/Headstages_512_Channels_int16_2019-06-28_18-13-24.bin'
 number_of_channels = 512
 lraw is 1 for raw file and for prepocessed file lraw is 0
