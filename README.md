@@ -124,28 +124,50 @@ t = ntk.load_raw_binary_gain_chmap(rawfile, number_of_channels, 'hs64', t_only=1
 ---
 
 
-
+#### $\textcolor{#81d8d0}{\textbf{Load all digital channels new api digital files outputs}}$
 ```
-# Load all digital channels new api digital files outputs
 import neuraltoolkit as ntk
 import matplotlib.pyplot as plt
+
 name = 'DigitalPanel_2_Channels_bool_masked_uint64_2021-04-30_08-46-15.bin'
+# t_only  : if t_only=1, just return  timestamp
+#           (Default 0, returns timestamp and data)
+
+# if channel = -1 returns all channels, if not returns that channel
+# Please remember channel number here starts from 0.
+
 t, d = ntk.load_digital_binary_allchannels(name, t_only=0, channel=-1)
+
 # d contains all 64 channels
 print("sh d ", d.shape)
 # plot second channel
 plt.plot(d[1, 0:10000])
 plt.show()
-# Load just one channel. Please remember channel number here starts from 0.
+```
+
+#### $\textcolor{#81d8d0}{\textbf{Load just one channel}}$
+```
 import neuraltoolkit as ntk
 import matplotlib.pyplot as plt
+
 name = 'DigitalPanel_2_Channels_bool_masked_uint64_2021-04-30_08-46-15.bin'
-t, d = ntk.load_digital_binary_allchannels(name, t_only=0, channel=1)
+
+# t_only  : if t_only=1, just return  timestamp
+#           (Default 0, returns timestamp and data)
+t_only = 0
+
+# if channel = -1 returns all channels, if not returns that channel
+# Please remember channel number here starts from 0.
+channel = 1
+
+t, d = ntk.load_digital_binary_allchannels(name, t_only=t_only, channel=channel)
 # d contains only second digital channel
 print("sh d ", d.shape)
 plt.plot(d[0:10000])
 plt.show()
+```
 
+```
 # Get digital event sample times from recording block/session
 Get digital event sample times from recording block/session
 can be also used to analyze other digital data too,
