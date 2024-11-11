@@ -168,6 +168,29 @@ plt.show()
 ```
 ---
 
+#### $\textcolor{#81d8d0}{\textbf{Find number of samples per channel in a ecube rawdata file}}$
+```
+rawfile = '/home/kbn/Headstages_512_Channels_int16_2019-06-28_18-13-24.bin'
+number_of_channels = 512
+lraw is 1 for raw file and for prepocessed file lraw is 0
+number_of_samples_per_chan = ntk.find_samples_per_chan(rawfile, 512, lraw=1)
+```
+---
+
+```
+# Find number of samples between two ecube raw or digital files
+Assumes there is no corrupt/failed recording files.
+binfile1 = '/home/kbn/Headstages_512_Channels_int16_2019-06-28_18-13-24.bin'
+binfile2 = '/home/kbn/Digital_1_Channels_int64_2019-06-30_13-11-07.bin'
+number_of_channels = 512  # in the raw file
+lb1 : default 1, binfile1 is rawfile, 0 if digital file
+lb2 : default 1, binfile2 is rawfile, 0 if digital file
+samples_between = ntk.samples_between_two_binfiles(binfile1, binfile2, number_of_channels,
+                                                   hstype, nprobes=8, lb1=1, lb2=0)
+
+```
+
+---
 
 
 ```
@@ -238,26 +261,7 @@ Please remember, channel number here starts with 0.
 ```
 
 ---
-#### $\textcolor{#81d8d0}{\textbf{Find number of samples per channel in a ecube file}}$
-```
-rawfile = '/home/kbn/Headstages_512_Channels_int16_2019-06-28_18-13-24.bin'
-number_of_channels = 512
-lraw is 1 for raw file and for prepocessed file lraw is 0
-number_of_samples_per_chan = ntk.find_samples_per_chan(rawfile, 512, lraw=1)
 
-# Find number of samples between two ecube raw or digital files
-Assumes there is no corrupt/failed recording files.
-binfile1 = '/home/kbn/Headstages_512_Channels_int16_2019-06-28_18-13-24.bin'
-binfile2 = '/home/kbn/Digital_1_Channels_int64_2019-06-30_13-11-07.bin'
-number_of_channels = 512  # in the raw file
-lb1 : default 1, binfile1 is rawfile, 0 if digital file
-lb2 : default 1, binfile2 is rawfile, 0 if digital file
-samples_between = ntk.samples_between_two_binfiles(binfile1, binfile2, number_of_channels,
-                                                   hstype, nprobes=8, lb1=1, lb2=0)
-
-```
-
----
 ```
 ntk.get_data_fields(animal=None, field=None, probenum=None, region=None)
 # animal : animal name (5)
