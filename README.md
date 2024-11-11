@@ -166,6 +166,9 @@ print("sh d ", d.shape)
 plt.plot(d[0:10000])
 plt.show()
 ```
+---
+
+
 
 ```
 # Get digital event sample times from recording block/session
@@ -204,17 +207,7 @@ digital_event_sample_times, t_estart, nsamples = \
 ntk.get_digital_event_sample_times(fl_list, channel_number,
                                    val=value, verbose=verbose)
 
-# Light dark transition
-datadir = '/media/data/D1/d1_c1/'
-l7ampm = 0 # if 1 just check files around 7:00 am and 7:00 pm
-lplot = 0
-ldt = ntk.light_dark_transition(datadir, l7ampm=0, lplot=0)
-ldt - list contains
-      [filename, index of light-dark transition in file, start time of the file]
 
-# For example
-[['Digital_1_Channels_int64_10.bin', 2743961, 24082251921475],
- ['Digital_1_Channels_int64_13.bin', 2677067, 67284509201475]]
 
 # Visual grating transition
 datadir = '/media/bs003r/D1/d1_vg1/'
@@ -1355,6 +1348,21 @@ tdig, ddig = ntk.load_digital_binary(digitalrawfile, t_only=0, lcheckdigi64=1)
 #### $\textcolor{#81d8d0}{\textbf{Load time only from digital data for cameras, etc}}$
 ```
 tdig = ntk.load_digital_binary(digitalrawfile, t_only=1)
+```
+---
+
+#### $\textcolor{#81d8d0}{\textbf{Light dark transition}}$
+```
+datadir = '/media/data/D1/d1_c1/'
+l7ampm = 0 # if 1 just check files around 7:00 am and 7:00 pm
+lplot = 0
+ldt = ntk.light_dark_transition(datadir, l7ampm=0, lplot=0)
+# ldt - list contains
+#       [filename, index of light-dark transition in file, start time of the file]
+
+# For example
+# [['Digital_1_Channels_int64_10.bin', 2743961, 24082251921475],
+#  ['Digital_1_Channels_int64_13.bin', 2677067, 67284509201475]]
 ```
 ---
 
