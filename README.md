@@ -114,30 +114,18 @@ lowpass = 250
 lfp = ntk.butter_lowpass(dgc, lowpass, fs, order=3)
 
 ```
----
+
 
 
 #### $\textcolor{#81d8d0}{\textbf{Get ecube time only}}$
 ```
 t = ntk.load_raw_binary_gain_chmap(rawfile, number_of_channels, 'hs64', t_only=1)
 ```
+---
+
 
 
 ```
-# Load digital data for cameras, etc
-digitalrawfile = '/home/kbn/Digital_64_Channels_int64_2018-11-04_11-18-12.bin'
-t_only  : if t_only=1, just return  timestamp
-          (Default 0, returns timestamp and data)
-lcheckdigi64 : Default 1, check for digital file with 64 channel
-          (atypical recordings) and correct values of -11 to 0 and -9 to 1
-          lcheckdigi64=0, no checks are done, just read the file and
-          returns timestamp and data
-tdig, ddig = ntk.load_digital_binary(digitalrawfile, t_only=0, lcheckdigi64=1)
-
-# Load time only from digital data for cameras, etc
-tdig = ntk.load_digital_binary(digitalrawfile, t_only=1)
-
-
 # Load all digital channels new api digital files outputs
 import neuraltoolkit as ntk
 import matplotlib.pyplot as plt
@@ -1328,6 +1316,23 @@ if ts =0 and te = -1,  read from begining to end of file
 t, bdgc = ntk.load_raw_binary_gain_chmap_range(rawfile, number_of_channels,
                                            hstype, nprobes=1,
                                            lraw=1, ts=0, te=25000)
+```
+
+#### $\textcolor{#81d8d0}{\textbf{Load digital data for cameras, etc}}$
+```
+digitalrawfile = '/home/kbn/Digital_64_Channels_int64_2018-11-04_11-18-12.bin'
+# t_only  : if t_only=1, just return  timestamp
+#           (Default 0, returns timestamp and data)
+# lcheckdigi64 : Default 1, check for digital file with 64 channel
+#           (atypical recordings) and correct values of -11 to 0 and -9 to 1
+#           lcheckdigi64=0, no checks are done, just read the file and
+#           returns timestamp and data
+tdig, ddig = ntk.load_digital_binary(digitalrawfile, t_only=0, lcheckdigi64=1)
+```
+
+#### $\textcolor{#81d8d0}{\textbf{Load time only from digital data for cameras, etc}}$
+```
+tdig = ntk.load_digital_binary(digitalrawfile, t_only=1)
 ```
 ---
 
