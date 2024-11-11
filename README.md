@@ -202,7 +202,7 @@ hstype = ['APT_PCB'] # in the raw file
 # lb1 : default 1, binfile1 is rawfile, 0 if digital file
 # lb2 : default 1, binfile2 is rawfile, 0 if digital file
 samples_between = ntk.samples_between_two_binfiles(binfile1, binfile2, number_of_channels,
-                                                   hstype, nprobes=8, lb1=0, lb2=0)
+                                                   hstype, nprobes=1, lb1=0, lb2=0)
 # samples_between is usually 7500000.0
 ```
 
