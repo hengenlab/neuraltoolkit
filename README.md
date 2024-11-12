@@ -213,14 +213,17 @@ samples_between = ntk.samples_between_two_binfiles(binfile1, binfile2, number_of
 ```
 import neuraltoolkit as ntk
 ntk.create_chanmap_file_for_oe()
+
 Enter total number of probes:
 1
-Enter total number of channels :
+Enter total number of channels in probe 1 :
 64
-Enter probe type :
+64
+Enter probe type (Ex. hs64) :
+hs64
 hs64
 Enter filename to save data:
-channelmap_hs64.txt
+/media/bs001r/channel_maps_for_oe/64_ch_hs64.txt
 ```
 
 ---
