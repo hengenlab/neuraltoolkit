@@ -252,6 +252,15 @@ Enter filename to save data:
 
 ---
 
+#### $\textcolor{#81d8d0}{\textbf{Get tetrode channels from a channel number}}$
+```
+import neuraltoolkit as ntk
+
+ch_list = ntk.get_tetrode_channels_from_channelnum(59, 4)
+# [56, 57, 58, 59]
+```
+---
+
 ```
 # Get digital event sample times from recording block/session
 Get digital event sample times from recording block/session
@@ -565,13 +574,7 @@ else:
 ---
 
 
-```
-# Get tetrode channels from a channel number
-import neuraltoolkit as ntk
-ch_list = ntk.get_tetrode_channels_from_channelnum(59, 4)
-# [56, 57, 58, 59]
-```
----
+
 ## load intan data
 
 
