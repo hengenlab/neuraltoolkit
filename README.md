@@ -226,6 +226,40 @@ Enter filename to save data:
 /media/bs001r/channel_maps_for_oe/64_ch_hs64.txt
 ```
 
+```
+import neuraltoolkit as ntk
+ntk.create_chanmap_file_for_oe()
+
+Enter total number of probes:
+4
+Enter total number of channels in probe 1 :
+64
+64
+Enter probe type (Ex. hs64) :
+APT_PCB
+APT_PCB
+Enter total number of channels in probe 2 :
+64
+64
+Enter probe type (Ex. hs64) :
+APT_PCB
+APT_PCB
+Enter total number of channels in probe 3 :
+64
+64
+Enter probe type (Ex. hs64) :
+APT_PCB
+APT_PCB
+Enter total number of channels in probe 4 :
+64
+64
+Enter probe type (Ex. hs64) :
+IMU
+IMU
+Enter filename to save data:
+/media/bs001r/channel_maps_for_oe/256_ch_APT_PCB-APT_PCB-APT_PCB-IMU.txt
+```
+
 ---
 
 ```
