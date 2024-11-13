@@ -582,8 +582,11 @@ else:
 
 
 
-## load intan data
 
+### $\textcolor{#088da5}{\textbf{Intan data analysis}}$
+
+
+#### $\textcolor{#81d8d0}{\textbf{Load Intan data and get bandpassed data and LFP}}$
 
 ```
 # import libraries
@@ -593,26 +596,41 @@ import matplotlib.pyplot as plt
 
 # Get filename
 rawfile = 'neuraltoolkit/intansimu_170807_205345.rhd'
-
 # Get number of channels
-print("Enter total number of channels : ")
-number_of_channels = np.int16(eval(input()))
+number_of_channels = 32
 
 # Time and data
 t, dgc = ntk.load_intan_raw_gain_chanmap(rawfile, number_of_channels, 'intan32')
 
+# bandpass filter
+highpass = 500
+lowpass = 7500
+bdgc = ntk.butter_bandpass(dgc, highpass, lowpass, fs, order=3)
+
+# lowpass filter for lfp
+lowpass = 250
+lfp = ntk.butter_lowpass(dgc, lowpass, fs, order=3)
+
+```
+---
+
+#### $\textcolor{#81d8d0}{\textbf{Load Intan data multiple probes}}$
+```
 # Time and data for multiple probes with same number of channels
 hstype = ['intan32', 'linear']
+number_of_channels = 32
 nprobes = 2
 # number_of_channels here is total number of channels in all probes (32 * nprobes = 64)
-t, dgc = ntk.load_intan_raw_gain_chanmap(rawfile, number_of_channels, hstype, nprobes)
+number_of_channels = number_of_channels * nprobes
+# t, dgc = ntk.load_intan_raw_gain_chanmap(rawfile, number_of_channels, hstype, nprobes)
+```
 
-# Time, data, digital input ( for patch)
+#### $\textcolor{#81d8d0}{\textbf{Time, data, digital input ( for patch)}}$
+```
 t, dgc, din = ntk.load_intan_raw_gain_chanmap(rawfile, number_of_channels, 'intan32', ldin=1)
+```
 
-# bandpass filter
-bdgc = ntk.butter_bandpass(dgc, 500, 7500, 25000, 3)
-
+```
 # plot raw data
 ntk.plot_data(dgc, 0, 25000, 1)
 
