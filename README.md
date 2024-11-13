@@ -261,6 +261,21 @@ ch_list = ntk.get_tetrode_channels_from_channelnum(59, 4)
 ```
 ---
 
+#### $\textcolor{#81d8d0}{\textbf{Remove large noise from rawdata}}$
+```
+ntk.remove_large_noise(ddgc_filt, max_value_to_check=3000, windowval=500, checkchans=None, lplot=0)
+    
+ddgc_filt: raw data matrix
+max_value_to_check : max value to remove (default 3000)
+windowval : window to zero (default 500)
+checkchans : list of 4 channels (default None)
+lplot : 1 to plot first channel from checkchans (default 0)
+
+returns   
+data: cleaned up ddgc_filt
+```
+---
+
 ```
 # Get digital event sample times from recording block/session
 Get digital event sample times from recording block/session
@@ -350,18 +365,7 @@ ntk.get_data_fields(animal=None, field=None, probenum=None, region=None)
 
 ```
 ---
-```
-ntk.remove_large_noise(ddgc_filt, max_value_to_check=3000, windowval=500, checkchans=None, lplot=0)
-    
-ddgc_filt: raw data matrix
-max_value_to_check : max value to remove (default 3000)
-windowval : window to zero (default 500)
-checkchans : list of 4 channels (default None)
-lplot : 1 to plot first channel from checkchans (default 0)
 
-returns   
-data: cleaned up ddgc_filt
-```
 
 ```
 generate_filenames_in_ecubeformat(initial_filename, total_minutes=256,
