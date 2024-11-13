@@ -71,6 +71,9 @@ Open powershell/terminal
     import neuraltoolkit as ntk
 ```
 ---
+### $\textcolor{#088da5}{\textbf{Ecube data analysis}}$
+
+
 
 #### $\textcolor{#81d8d0}{\textbf{Load ecube data and get bandpassed data and LFP}}$
 
