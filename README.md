@@ -173,8 +173,8 @@ ntk.plot_data(bdgc, data_beg=0, data_end=250000,
 tetrode_num = 0
 ch_list = ntk.get_tetrode_channels_from_tetnum(tetrode_num, ch_grp_size=4)
 ntk.plot_data_chlist(dgc, data_beg=0, data_end=2500, ch_list=ch_list,
-                 sampling_rate=25000,
-                 file_name_with_path=None)
+                     sampling_rate=25000,
+                     file_name_with_path=None)
 ```
 ---
 
