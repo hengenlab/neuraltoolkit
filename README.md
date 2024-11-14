@@ -126,6 +126,30 @@ t = ntk.load_raw_binary_gain_chmap(rawfile, number_of_channels, 'hs64', t_only=1
 ```
 ---
 
+#### $\textcolor{#81d8d0}{\textbf{Plot raw, bandpassed, or LFP data from one channel}}$
+```
+
+# data : np.ndarray
+#      The data to plot. Can be raw, bandpassed, or LFP data.
+#      Expected shape: (channels, samples).
+#  data_beg : int
+#      Starting sample index for the plot.
+#  data_end : int
+#      Ending sample index for the plot.
+#  channel : int, optional
+#      The channel index to plot (default is 0).
+#  sampling_rate : int, optional
+#      Sampling rate in Hz (default is 25000).
+#  file_name_with_path : str or None, optional
+#      If None, displays the plot.
+#      If a file path is provided
+#      (e.g., '/path/to/plot.png'), saves the plot to the file.
+
+ntk.plot_data(bdgc, data_beg=0, data_end=250000,
+              channel=0,
+              sampling_rate=25000,
+              file_name_with_path=None)
+```
 
 #### $\textcolor{#81d8d0}{\textbf{Load all digital channels new api digital files outputs}}$
 ```
