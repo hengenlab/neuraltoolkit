@@ -170,7 +170,7 @@ ntk.plot_data(bdgc, data_beg=0, data_end=250000,
 #     If a file path is provided
 #     (e.g., '/path/to/plot.png'), saves the plot to the file.
 
-plot_data_chlist(dgc, data_beg=0, data_end=2500, ch_list=[0, 1, 2, 3],
+ntk.plot_data_chlist(dgc, data_beg=0, data_end=2500, ch_list=[0, 1, 2, 3],
                  sampling_rate=25000,
                  file_name_with_path=None)
 ```
