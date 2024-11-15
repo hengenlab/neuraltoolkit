@@ -358,7 +358,7 @@ ntk.get_tetrode_channels_from_tetnum(tetrode_num, ch_grp_size=4)
 #    [0, 1, 2, 3, 4]
 ```
 
-#### $\textcolor{#81d8d0}{\textbf{}}$
+#### $\textcolor{#81d8d0}{\textbf{Get tetrode channels from channel number}}$
 ```
 ntk.get_tetrode_channels_from_channelnum(channel1, ch_grp_size=4)
 # Returns a list of channels in the same tetrode as the given channel number.
@@ -389,7 +389,7 @@ ntk.get_tetrode_channels_from_channelnum(channel1, ch_grp_size=4)
 #    [0, 1, 2, 3, 4]
 ```
 
-#### $\textcolor{#81d8d0}{\textbf{}}$
+#### $\textcolor{#81d8d0}{\textbf{Get tetrode number from channel number}}$
 ```
 ntk.get_tetrodenum_from_channel(channel_num, ch_grp_size=4)
 # Returns the tetrode number for the given channel number.
@@ -412,7 +412,7 @@ ntk.get_tetrodenum_from_channel(channel_num, ch_grp_size=4)
 #    15
 ```
 
-#### $\textcolor{#81d8d0}{\textbf{}}$
+#### $\textcolor{#81d8d0}{\textbf{Get tetrode channel number from channel number}}$
 ```
 ntk.get_tetrodechannelnum_from_channel(channel, ch_grp_size)
 #    Calculates the tetrode channel number from a channel
