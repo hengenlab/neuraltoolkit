@@ -688,45 +688,35 @@ number_of_channels = number_of_channels * nprobes
 t, dgc, din = ntk.load_intan_raw_gain_chanmap(rawfile, number_of_channels, 'intan32', ldin=1)
 ```
 
+#### $\textcolor{#81d8d0}{\textbf{Load and plot accelerometer data}}$
 ```
-# plot raw data
-ntk.plot_data(dgc, 0, 25000, 1)
-
-# plot bandpassed data
-ntk.plot_data(bdgc, 0, 25000, 1)
-
-# plot data in channel list
-l = np.array([5, 13])
-ntk.plot_data_chlist(bdgc, 25000, 50000, l )
-
-# load aux binary data
 import neuraltoolkit as ntk
 import matplotlib.pyplot as plt
 import numpy as np
+
 aux_file = 'Acc_auxtest_191108_102919_t_0#145.8719_l_2917440_p_0_chg_1_aux3p74em5.bin'
 auxd = ntk.load_aux_binary_data(aux_file, 3)
 x_accel = auxd[0, :]
 y_accel = auxd[1, :]
 z_accel = auxd[2, :]
+
 # sampling rate for aux is rawdata sampling rate/4
 x = np.arange(0, auxd.shape[1]*4, 4)
+
 plt.subplot(3, 1, 1)
 plt.plot(x, x_accel, '.-')
 plt.title('Plot accelorometer data')
 plt.ylabel('X acceleration')
-plt.ylim((0.0, 2.5))
+
 plt.subplot(3, 1, 2)
 plt.plot(x, y_accel, '.-')
 plt.ylabel('Y acceleration')
-plt.ylim(0.0, 2.5)
+
 plt.subplot(3, 1, 3)
 plt.plot(x, z_accel, '.-')
 plt.xlabel('time')
 plt.ylabel('Z acceleration')
-plt.ylim(0.0, 2.5)
 plt.show()
- 
-
 ```
 ---
 ## video
