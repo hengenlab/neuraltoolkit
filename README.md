@@ -330,6 +330,140 @@ data: cleaned up ddgc_filt
 ```
 ---
 
+#### $\textcolor{#81d8d0}{\textbf{Get tetrode channels from tetrode number}}$
+```
+ntk.get_tetrode_channels_from_tetnum(tetrode_num, ch_grp_size=4)
+# Returns a list of channel numbers for the given tetrode number.
+
+# tetrode_num (int): The tetrode number (must be between 0 and 15 inclusive).
+# ch_grp_size (int, optional): The number of channels per tetrode.
+#        Defaults to 4.
+#    Returns:
+#    list: A list of channel numbers corresponding to the tetrode number.
+#
+#    Raises:
+#    ValueError: If tetrode_num is not between 0 and 15 inclusive.
+
+# Examples:
+#    ntk.get_tetrode_channels_from_tetnum(0)
+#    [0, 1, 2, 3]
+#
+#    ntk.get_tetrode_channels_from_tetnum(1)
+#    [4, 5, 6, 7]
+#
+#    ntk.get_tetrode_channels_from_tetnum(15)
+#    [60, 61, 62, 63]
+#
+#    ntk.get_tetrode_channels_from_tetnum(0, ch_grp_size=5)
+#    [0, 1, 2, 3, 4]
+```
+
+#### $\textcolor{#81d8d0}{\textbf{}}$
+```
+ntk.get_tetrode_channels_from_channelnum(channel1, ch_grp_size=4)
+# Returns a list of channels in the same tetrode as the given channel number.
+
+#    channel1 (int): The channel number in the tetrode.
+#    ch_grp_size (int, optional): The number of channels per tetrode.
+#     Defaults to 4.
+#
+#    returns
+#    list: A list of channel numbers in the same tetrode.
+#
+#    Raises:
+#    ValueError: If channel1 is less than 0.
+# Examples:
+#    ntk.get_tetrode_channels_from_channelnum(0)
+#    [0, 1, 2, 3]
+#
+#    ntk.get_tetrode_channels_from_channelnum(1)
+#    [0, 1, 2, 3]
+#
+#    ntk.get_tetrode_channels_from_channelnum(15)
+#    [12, 13, 14, 15]
+#
+#    ntk.get_tetrode_channels_from_channelnum(63)
+#    [60, 61, 62, 63]
+#
+#    ntk.get_tetrode_channels_from_channelnum(0, ch_grp_size=5)
+#    [0, 1, 2, 3, 4]
+```
+
+#### $\textcolor{#81d8d0}{\textbf{}}$
+```
+ntk.get_tetrodenum_from_channel(channel_num, ch_grp_size=4)
+# Returns the tetrode number for the given channel number.
+# channel_num (int): The channel number.
+# ch_grp_size (int, optional): The number of channels per tetrode.
+#  Defaults to 4.
+#  Returns:
+#  int: The tetrode number corresponding to the channel number.
+#    Examples:
+#    ntk.get_tetrodenum_from_channel(0)
+#    0
+#
+#    ntk.get_tetrodenum_from_channel(3)
+#    0
+#
+#    ntk.get_tetrodenum_from_channel(4)
+#    1
+#
+#    ntk.get_tetrodenum_from_channel(63)
+#    15
+```
+
+#### $\textcolor{#81d8d0}{\textbf{}}$
+```
+ntk.get_tetrodechannelnum_from_channel(channel, ch_grp_size)
+#    Calculates the tetrode channel number from a channel
+#     For tetrode of ch_grp_size=4,
+#      we have 4 tetrode channels 0, 1, 2 and 3.
+#       0 means first channel in a given tetrode
+#       1 means second channel in a given tetrode
+#       2 means third channel in a given tetrode
+#       3 means fourth channel in a given tetrode
+#     Values range from (0 to ch_grp_size - 1)
+
+#    channel (int): The channel number.
+#    ch_grp_size (int, optional): The number of channels per tetrode.
+#       Defaults to 4.
+#    ch_grp_size must not be zero or negative.
+#    Channel must be non-negative.
+#
+#    Returns
+#        int: The tetrodechannelnum
+#
+# Examples:
+#    ntk.get_tetrodechannelnum_from_channel(0, ch_grp_size=4)
+#    0
+#
+#    ntk.get_tetrodechannelnum_from_channel(1, ch_grp_size=4)
+#    1
+#
+#    ntk.get_tetrodechannelnum_from_channel(2, ch_grp_size=4)
+#    2
+#
+#    ntk.get_tetrodechannelnum_from_channel(3, ch_grp_size=4)
+#    3
+#
+#    ntk.get_tetrodechannelnum_from_channel(4, ch_grp_size=4)
+#    0
+#
+#    ntk.get_tetrodechannelnum_from_channel(8, ch_grp_size=4)
+#    0
+#
+#    ntk.get_tetrodechannelnum_from_channel(60, ch_grp_size=4)
+#    0
+#
+#    ntk.get_tetrodechannelnum_from_channel(63, ch_grp_size=4)
+#    3
+#
+#    ntk.get_tetrodechannelnum_from_channel(15, ch_grp_size=5)
+#    0
+```
+---
+
+
 ```
 # Get digital event sample times from recording block/session
 Get digital event sample times from recording block/session
@@ -440,134 +574,7 @@ return ecube_filenames
 
 ```
 ---
-```
-ntk.get_tetrode_channels_from_tetnum(tetrode_num, ch_grp_size=4)
-# Returns a list of channel numbers for the given tetrode number.
 
-# tetrode_num (int): The tetrode number (must be between 0 and 15 inclusive).
-# ch_grp_size (int, optional): The number of channels per tetrode.
-#        Defaults to 4.
-#    Returns:
-#    list: A list of channel numbers corresponding to the tetrode number.
-#
-#    Raises:
-#    ValueError: If tetrode_num is not between 0 and 15 inclusive.
-
-# Examples:
-#    ntk.get_tetrode_channels_from_tetnum(0)
-#    [0, 1, 2, 3]
-#
-#    ntk.get_tetrode_channels_from_tetnum(1)
-#    [4, 5, 6, 7]
-#
-#    ntk.get_tetrode_channels_from_tetnum(15)
-#    [60, 61, 62, 63]
-#
-#    ntk.get_tetrode_channels_from_tetnum(0, ch_grp_size=5)
-#    [0, 1, 2, 3, 4]
-```
----
-```
-ntk.get_tetrode_channels_from_channelnum(channel1, ch_grp_size=4)
-# Returns a list of channels in the same tetrode as the given channel number.
-
-#    channel1 (int): The channel number in the tetrode.
-#    ch_grp_size (int, optional): The number of channels per tetrode.
-#     Defaults to 4.
-#
-#    returns
-#    list: A list of channel numbers in the same tetrode.
-#
-#    Raises:
-#    ValueError: If channel1 is less than 0.
-# Examples:
-#    ntk.get_tetrode_channels_from_channelnum(0)
-#    [0, 1, 2, 3]
-#
-#    ntk.get_tetrode_channels_from_channelnum(1)
-#    [0, 1, 2, 3]
-#
-#    ntk.get_tetrode_channels_from_channelnum(15)
-#    [12, 13, 14, 15]
-#
-#    ntk.get_tetrode_channels_from_channelnum(63)
-#    [60, 61, 62, 63]
-#
-#    ntk.get_tetrode_channels_from_channelnum(0, ch_grp_size=5)
-#    [0, 1, 2, 3, 4]
-```
----
-```
-ntk.get_tetrodenum_from_channel(channel_num, ch_grp_size=4)
-# Returns the tetrode number for the given channel number.
-# channel_num (int): The channel number.
-# ch_grp_size (int, optional): The number of channels per tetrode.
-#  Defaults to 4.
-#  Returns:
-#  int: The tetrode number corresponding to the channel number.
-#    Examples:
-#    ntk.get_tetrodenum_from_channel(0)
-#    0
-#
-#    ntk.get_tetrodenum_from_channel(3)
-#    0
-#
-#    ntk.get_tetrodenum_from_channel(4)
-#    1
-#
-#    ntk.get_tetrodenum_from_channel(63)
-#    15
-```
----
-```
-ntk.get_tetrodechannelnum_from_channel(channel, ch_grp_size)
-#    Calculates the tetrode channel number from a channel
-#     For tetrode of ch_grp_size=4,
-#      we have 4 tetrode channels 0, 1, 2 and 3.
-#       0 means first channel in a given tetrode
-#       1 means second channel in a given tetrode
-#       2 means third channel in a given tetrode
-#       3 means fourth channel in a given tetrode
-#     Values range from (0 to ch_grp_size - 1)
-
-#    channel (int): The channel number.
-#    ch_grp_size (int, optional): The number of channels per tetrode.
-#       Defaults to 4.
-#    ch_grp_size must not be zero or negative.
-#    Channel must be non-negative.
-#
-#    Returns
-#        int: The tetrodechannelnum
-#
-# Examples:
-#    ntk.get_tetrodechannelnum_from_channel(0, ch_grp_size=4)
-#    0
-#
-#    ntk.get_tetrodechannelnum_from_channel(1, ch_grp_size=4)
-#    1
-#
-#    ntk.get_tetrodechannelnum_from_channel(2, ch_grp_size=4)
-#    2
-#
-#    ntk.get_tetrodechannelnum_from_channel(3, ch_grp_size=4)
-#    3
-#
-#    ntk.get_tetrodechannelnum_from_channel(4, ch_grp_size=4)
-#    0
-#
-#    ntk.get_tetrodechannelnum_from_channel(8, ch_grp_size=4)
-#    0
-#
-#    ntk.get_tetrodechannelnum_from_channel(60, ch_grp_size=4)
-#    0
-#
-#    ntk.get_tetrodechannelnum_from_channel(63, ch_grp_size=4)
-#    3
-#
-#    ntk.get_tetrodechannelnum_from_channel(15, ch_grp_size=5)
-#    0
-```
----
 ```
 # make_binaryfiles_ecubeformat
 
