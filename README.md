@@ -670,7 +670,7 @@ lowpass = 250
 lfp = ntk.butter_lowpass(dgc, lowpass, fs, order=3)
 
 ```
----
+
 
 #### $\textcolor{#81d8d0}{\textbf{Load Intan data multiple probes}}$
 ```
@@ -687,6 +687,8 @@ number_of_channels = number_of_channels * nprobes
 ```
 t, dgc, din = ntk.load_intan_raw_gain_chanmap(rawfile, number_of_channels, 'intan32', ldin=1)
 ```
+
+---
 
 #### $\textcolor{#81d8d0}{\textbf{Load and plot accelerometer data}}$
 ```
