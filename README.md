@@ -840,7 +840,9 @@ v.grab_frames_to_video(framestograb=framestograb, fl_out=fl_out)
 
 ```
 
-### $\textcolor{#088da5}{\textbf{Deeplabcut output analysis}}$
+### $\textcolor{#088da5}{\textbf{Deeplabcut (DLC) output analysis}}$
+
+#### $\textcolor{#81d8d0}{\textbf{Get x,y positions of features from DLC h5 outputfile}}$
 
 ```
 import neuraltoolkit as ntk
@@ -858,9 +860,9 @@ array([[357.29413831, 439.93870854, 482.14195955, ..., 159.27687836,
                  nan,          nan]])
 fnames
 ['cricket', 'snout', 'tailbase', 'leftear', 'rightear']
+```
 
-
-
+```
 find_video_start_index(datadir, ch, nfiles=10,
                        fs=25000, fps=15,
                        lnew=1,
