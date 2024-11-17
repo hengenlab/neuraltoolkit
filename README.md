@@ -462,7 +462,30 @@ ntk.get_tetrodechannelnum_from_channel(channel, ch_grp_size)
 #    0
 ```
 ---
-
+#### $\textcolor{#81d8d0}{\textbf{Find video start index}}$
+```
+# datadir: data directory where digital file is located
+# ch : channel where Watchtower signal is recorded,
+#      remember number starts from 0
+# nfiles: First how many files to check for pulse change
+#      (default first 10 files)
+# fs: Sampling rate of digital file (default 25000)
+# fps: Frames per second of video file (default 15)
+# lnew: default 1, new digital files.
+#      0 for old digital files with only one channel
+# fig_indx: Default None, if index is given it plot figure
+datadir = '/home/kbn/ABC12345/ABC_L9_W2_/'
+ch = 1   #  _L9_W2_  zero indexing in python, convert W2 to channel 1
+nfiles = 10
+fs = 25000
+fps = 15
+fig_indx = 1
+video_start_index =\
+    ntk.find_video_start_index(datadir, ch, nfiles=nfiles,
+                                   fs=fs, fps=fps,
+                                   lnew=1, fig_indx=fig_indx)
+```
+---
 
 ```
 # Get digital event sample times from recording block/session
@@ -847,48 +870,25 @@ v.grab_frames_to_video(framestograb=framestograb, fl_out=fl_out)
 ```
 import neuraltoolkit as ntk
 dlc_h5file = 'D17_trial1DeepCut_resnet50_crickethuntJul18shuffle1_15000.h5'
-cutoff : cutoff based on confidence
-pos, fnames = ntk.dlc_get_position(dlc_h5file, cutoff=0.6)
-pos : contains x, y positions for all features
-fnames : name of all features
+# cutoff : cutoff based on confidence
+cutoff=0.8
+pos, fnames = ntk.dlc_get_position(dlc_h5file, cutoff=cutoff)
+#
+# pos : contains x, y positions for all features
+# fnames : name of all features
 # For example
-pos
-array([[357.29413831, 439.93870854, 482.14195955, ..., 159.27687836,
-        469.79700255, 183.82241535],
-       ...,
-       [         nan,          nan,          nan, ...,          nan,
-                 nan,          nan]])
-fnames
-['cricket', 'snout', 'tailbase', 'leftear', 'rightear']
+# pos
+# array([[357.29413831, 439.93870854, 482.14195955, ..., 159.27687836,
+#         469.79700255, 183.82241535],
+#        ...,
+#        [         nan,          nan,          nan, ...,          nan,
+#                  nan,          nan]])
+# fnames
+# ['cricket', 'snout', 'tailbase', 'leftear', 'rightear']
 ```
+---
 
-```
-find_video_start_index(datadir, ch, nfiles=10,
-                       fs=25000, fps=15,
-                       lnew=1,
-                       fig_indx=None)
-# datadir: data directory where digital file is located
-# ch : channel where Watchtower signal is recorded,
-#      remember number starts from 0
-# nfiles: First how many files to check for pulse change
-#      (default first 10 files)
-# fs: Sampling rate of digital file (default 25000)
-# fps: Frames per second of video file (default 15)
-# lnew: default 1, new digital files.
-#      0 for old digital files with only one channel
-# fig_indx: Default None, if index is given it plot figure
-datadir = '/home/kbn/ABC12345/ABC_L9_W2_/'
-ch = 1   #  _L9_W2_  zero indexing
-nfiles = 10
-fs = 25000
-fps = 15
-fig_indx = 1
-video_start_index =\
-    ntk.find_video_start_index(datadir, ch, nfiles=nfiles,
-                                   fs=fs, fps=fps,
-                                   lnew=1, fig_indx=fig_indx)
-# Please remember video_start_index is continous.
-```
+
 
 #### Append missing empty row to dlc output h5 file
 ```
