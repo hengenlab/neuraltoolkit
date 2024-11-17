@@ -721,7 +721,9 @@ plt.ylabel('Z acceleration')
 plt.show()
 ```
 ---
-## video
+
+### $\textcolor{#088da5}{\textbf{Video analysis}}$
+
 
 ```
 import neuraltoolkit as ntk
@@ -838,7 +840,8 @@ v.grab_frames_to_video(framestograb=framestograb, fl_out=fl_out)
 
 ```
 
-# dlc
+### $\textcolor{#088da5}{\textbf{Deeplabcut output analysis}}$
+
 ```
 import neuraltoolkit as ntk
 dlc_h5file = 'D17_trial1DeepCut_resnet50_crickethuntJul18shuffle1_15000.h5'
