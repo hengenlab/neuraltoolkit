@@ -118,6 +118,8 @@ lfp = ntk.butter_lowpass(dgc, lowpass, fs, order=3)
 
 ```
 
+[List of channel maps](https://github.com/hengenlab/neuraltoolkit?tab=readme-ov-file#textcolor6897bbchannel-mappings)
+
 
 
 #### $\textcolor{#81d8d0}{\textbf{Get ecube time only}}$
