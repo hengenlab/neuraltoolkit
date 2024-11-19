@@ -889,8 +889,7 @@ pos, fnames = ntk.dlc_get_position(dlc_h5file, cutoff=cutoff)
 ---
 
 
-
-#### Append missing empty row to dlc output h5 file
+#### $\textcolor{#81d8d0}{\textbf{Append missing empty row to dlc output h5 file}}$
 ```
 # Append missing empty row to dlc output h5 file to make it an hour
 # or add target_rows to h5 file 
