@@ -84,10 +84,10 @@ import matplotlib.pyplot as plt
 
 # Load only one probe from raw file
 rawfile = '/home/kbn/Headstages_512_Channels_int16_2019-06-21_03-55-09.bin'
-nprobes = 8
+nprobes = 8 # number of probes
 probenum = 0  # which probe to return (starts from zero)
 probechans = 64  #  number of channels per probe (symmetric)
-fs = 25000
+fs = 25000 # sampling rate
 
 number_of_channels = probechans * nprobes
 hstype = ['APT_PCB'] * nprobes   # Channel map
