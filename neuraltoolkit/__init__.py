@@ -16,6 +16,7 @@ from .ntk_highd_data import *  # noqa: F401 F403
 from .ntk_dlc import *  # noqa: F401 F403
 from .ntk_data_fields import *   # noqa: F401 F403
 from .ntk_preprocess import *  # noqa: F401 F403
+from .ntk_spikes import *   # noqa: F401 F403
 try:
     import rpy2  # noqa: F401 F403
     from .ntk_stats import *  # noqa: F401 F403
