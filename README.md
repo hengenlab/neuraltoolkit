@@ -919,7 +919,9 @@ ntk.append_emptyframes_todlc_h5file(h5_file_name, video_fps, target_rows=None)
 
 
 ---
-## Utils
+
+### $\textcolor{#088da5}{\textbf{Utils}}$
+
 ```
 # natural sort
 naturally_sorted_list = ntk.natural_sort(list_unsorted)
@@ -970,32 +972,52 @@ ntk.strtobool(string_variable)
 ```
 ---
 
-## filters
+
+### $\textcolor{#088da5}{\textbf{Filters and spectral analysis}}$
+
+
+#### $\textcolor{#81d8d0}{\textbf{Bandpass filter}}$
+
 
 ```
 
 # import libraries
 import neuraltoolkit as ntk
 import numpy as np
-from matplotlib import pyplot as plt
 
+# help(ntk.butter_bandpass)
 # load raw data
 rawdata = np.load('P_Headstages_64_Channels_int16_2018-11-15_14-30-49.npy')
-
-# bandpass filter
-help(ntk.butter_bandpass)
-result = ntk.butter_bandpass(rawdata, 500, 4000, 25000, 3)
-
-# Plot result
-plt.plot(result[1,0:25000])
-plt.show()
-
-# lowpass filter for lfp
-# fs : The sampling frequency of the input signal in Hz.
+# Sampling frequency (in Hz) of the raw data
 fs = 25000
-lowpass = 250
-lfp = ntk.butter_lowpass(rawdata, lowpass, fs, order=3)
+# Define frequency range for the bandpass filter (in Hz)
+# highpass: Lower cutoff frequency
+# lowpass: Upper cutoff frequency
+highpass = 500
+lowpass = 6500
+result = ntk.butter_bandpass(rawdata, highpass, lowpass, fs, order=3)
 ```
+
+#### $\textcolor{#81d8d0}{\textbf{Lowpass filter}}$
+
+```
+
+# import libraries
+import neuraltoolkit as ntk
+import numpy as np
+
+# help(ntk.butter_lowpass)
+# load raw data
+rawdata = np.load('P_Headstages_64_Channels_int16_2018-11-15_14-30-49.npy')
+# Sampling frequency (in Hz) of the raw data
+fs = 25000
+# Define frequency range for the bandpass filter (in Hz)
+# lowpass: Upper cutoff frequency
+lowpass = 60
+LFP = ntk.butter_lowpass(rawdata, lowpass, fs, order=3)
+```
+
+
 
 #### Apply a notch filter to remove a specific frequency from the signal.
 ```
