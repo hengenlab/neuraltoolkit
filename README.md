@@ -1019,6 +1019,26 @@ lowpass = 60
 LFP = ntk.butter_lowpass(rawdata, lowpass, fs, order=3)
 ```
 
+#### $\textcolor{#81d8d0}{\textbf{Highpass filter}}$
+
+```
+
+# import libraries
+import neuraltoolkit as ntk
+import numpy as np
+
+# help(ntk.butter_highpass)
+# load raw data
+rawdata = np.load('P_Headstages_64_Channels_int16_2018-11-15_14-30-49.npy')
+# Sampling frequency (in Hz) of the raw data
+fs = 25000
+# Define frequency range for the bandpass filter (in Hz)
+# highpass: Lower cutoff frequency
+highpass = 500
+
+LFP = ntk.butter_highpass(rawdata, highpass, fs, order=3)
+```
+
 
 
 #### Apply a notch filter to remove a specific frequency from the signal.
