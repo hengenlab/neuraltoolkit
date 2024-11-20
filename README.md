@@ -118,7 +118,9 @@ lfp = ntk.butter_lowpass(dgc, lowpass, fs, order=3)
 
 ```
 
-[List of channel maps](https://github.com/hengenlab/neuraltoolkit?tab=readme-ov-file#textcolor6897bbchannel-mappings)
+[List of channel maps](https://github.com/hengenlab/neuraltoolkit?tab=readme-ov-file#textcolor6897bbchannel-mappings)     
+[Bandpass filter](https://github.com/hengenlab/neuraltoolkit/blob/master/README.md#textcolor81d8d0textbfbandpass-filter)        
+[Lowpass filter](https://github.com/hengenlab/neuraltoolkit/edit/master/README.md#textcolor81d8d0textbflowpass-filter)
 
 
 
