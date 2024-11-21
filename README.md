@@ -924,17 +924,20 @@ ntk.append_emptyframes_todlc_h5file(h5_file_name, video_fps, target_rows=None)
 
 ### $\textcolor{#088da5}{\textbf{Utils}}$
 
+#### $\textcolor{#81d8d0}{\textbf{Natural sort}}$
+
 ```
-# natural sort
 naturally_sorted_list = ntk.natural_sort(list_unsorted)
 ```
+
+#### $\textcolor{#81d8d0}{\textbf{Check in a list of files all files has almost similar sizes}}$
 ```
-# check_similar_sizes verify if a list of files have almost similar sizes
-file_list : A list of file paths.
-threshold: The maximum allowed percentage difference in file sizes. By default, it is set to 0.01 (1%).
-allow_empty: A boolean flag indicating whether an empty file_list should return True or False.
-             By default, it is set to False and raise Valueerror.
-returns: True if all files have almost similar sizes within the specified threshold. False otherwise.
+
+# file_list : A list of file paths.
+# threshold: The maximum allowed percentage difference in file sizes. By default, it is set to 0.01 (1%).
+# allow_empty: A boolean flag indicating whether an empty file_list should return True or False.
+#              By default, it is set to False and raise Valueerror.
+# returns: True if all files have almost similar sizes within the specified threshold. False otherwise.
 ntk.check_similar_sizes(file_list=file_list, threshold=0.01, allow_empty=False)
 ```
 
