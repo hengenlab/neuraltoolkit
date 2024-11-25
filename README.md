@@ -922,6 +922,25 @@ ntk.append_emptyframes_todlc_h5file(h5_file_name, video_fps, target_rows=None)
 
 ---
 
+### $\textcolor{#088da5}{\textbf{Spikes analysis}}$
+
+#### $\textcolor{#81d8d0}{\textbf{Create spikematrix, with counts or binary values based on spike times}}$
+
+```
+# spiketimes_ms (list of lists): Spike times for each neuron (in ms).
+# start (float): Start time (ms).
+# end (float): End time (ms).
+# binsz (float): Bin size (ms).
+# binarize (bool): If True, binarize the spike counts (default: False).
+
+# returns spikematrix (np.ndarray): Matrix of shape (n_cells, n_bins) with spike counts or binary values.
+
+make_spikematrix(spiketimes_ms, start, end, binsz, binarize=False)
+```
+
+---
+
+
 ### $\textcolor{#088da5}{\textbf{Utils}}$
 
 #### $\textcolor{#81d8d0}{\textbf{Natural sort}}$
@@ -1160,6 +1179,8 @@ for probenum in range(nprobes_to_check):
 - $\textcolor{#a0db8e}{\textbf{Please check plots and find best channels in the best probe to extract LFP}}$
 
 ---
+
+
 
 ## high dimensional data
 
