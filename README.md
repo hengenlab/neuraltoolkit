@@ -940,6 +940,30 @@ make_spikematrix(spiketimes_ms, start, end, binsz, binarize=False)
 
 ---
 
+#### $\textcolor{#81d8d0}{\textbf{Plot ISI from spike times}}$
+
+```
+
+# spiketimes_s :  Spike times for each neuron (in seconds)
+# start : Start time (default False uses 0)
+# end : End time (default False uses np.max(spiketimes_s))
+# isi_thresh : isi threshold (default 0.1)
+# nbins : Number of bins (default 101)
+# lplot : To plot or not (default lplot=1, plot isi)
+#
+# Returns
+# ISI : Inter spike interval
+# edges, hist_isi : To plot later
+#     fig1 = plt.figure()
+#     ax = fig1.add_subplot(111)
+#     ax.bar(edges[1:]*1000-0.5, hist_isi[0], color='#0b559f')
+#
+ISI, dges, hist_isi = \
+    cell_isi_hist(spiketimes_s, start=False, end=False,
+                  isi_thresh=0.1, nbins=101, lplot=1)
+```
+---
+
 
 ### $\textcolor{#088da5}{\textbf{Utils}}$
 
