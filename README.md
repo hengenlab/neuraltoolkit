@@ -935,7 +935,8 @@ ntk.append_emptyframes_todlc_h5file(h5_file_name, video_fps, target_rows=None)
 
 # returns spikematrix (np.ndarray): Matrix of shape (n_cells, n_bins) with spike counts or binary values.
 
-make_spikematrix(spiketimes_ms, start, end, binsz, binarize=False)
+spikematrix = \
+    make_spikematrix(spiketimes_ms, start, end, binsz, binarize=False)
 ```
 
 ---
@@ -958,7 +959,7 @@ make_spikematrix(spiketimes_ms, start, end, binsz, binarize=False)
 #     ax = fig1.add_subplot(111)
 #     ax.bar(edges[1:]*1000-0.5, hist_isi[0], color='#0b559f')
 #
-ISI, dges, hist_isi = \
+ISI, edges, hist_isi = \
     cell_isi_hist(spiketimes_s, start=False, end=False,
                   isi_thresh=0.1, nbins=101, lplot=1)
 ```
