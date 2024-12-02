@@ -115,7 +115,7 @@ def plot_data_chlist(data, data_beg, data_end, ch_list=None,
         (e.g., '/path/to/plot.png'), saves the plot to the file.
     title_string : str or None, optional
         If None, not title to plot.
-        If title_string is provided add it as title plot
+        If title_string is provided add it as plot title
 
     Returns:
     --------
