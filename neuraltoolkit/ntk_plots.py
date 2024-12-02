@@ -91,7 +91,8 @@ def plot_data(data, data_beg, data_end, channel=0,
 
 def plot_data_chlist(data, data_beg, data_end, ch_list=None,
                      sampling_rate=25000,
-                     file_name_with_path=None):
+                     file_name_with_path=None,
+                     title_string=None):
     """
     Plot a specified range of data from a given list of channels.
 
@@ -112,6 +113,9 @@ def plot_data_chlist(data, data_beg, data_end, ch_list=None,
         If None, displays the plot.
         If a file path is provided
         (e.g., '/path/to/plot.png'), saves the plot to the file.
+    title_string : str or None, optional
+        If None, not title to plot.
+        If title_string is provided add it as title plot
 
     Returns:
     --------
@@ -128,10 +132,11 @@ def plot_data_chlist(data, data_beg, data_end, ch_list=None,
         (base_colors * (needed_colors // len(base_colors) + 1))[:needed_colors]
 
     fig, ax = plt.subplots(nrows=len(ch_list), ncols=1,
-                           sharex=True,
+                           # sharex=True,
                            # sharey=True,
                            figsize=(16, 2 * len(ch_list)))
 
+    ax[0].set_title(title_string)
     for indx, channel in enumerate(ch_list):
         data_ch = data[channel, data_beg:data_end]
         sns.lineplot(
@@ -157,10 +162,15 @@ def plot_data_chlist(data, data_beg, data_end, ch_list=None,
             ax[indx].set_xlabel(f'Samples [Samples/{sampling_rate} = Seconds]',
                                 fontsize=10)
             ax[indx].set_ylabel('Amplitude [\u03bcV]', fontsize=10)
+            ax[indx].tick_params(axis='x', which='both',
+                                 bottom=True, top=True,
+                                 labelbottom=True)
+
         else:
             ax[indx].set_xticklabels([])
             ax[indx].tick_params(axis='x', which='both',
-                                 bottom=False, top=False)
+                                 bottom=False, top=False,
+                                 labelbottom=False)
 
     plt.tight_layout()
 
