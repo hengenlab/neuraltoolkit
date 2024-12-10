@@ -586,23 +586,33 @@ ntk.get_data_fields(animal=None, field=None, probenum=None, region=None)
 ---
 
 
+#### $\textcolor{#81d8d0}{\textbf{Generate filenames in ecubeformat}}$
+
 ```
-generate_filenames_in_ecubeformat(initial_filename, total_minutes=256,
-                                  interval_minutes=5):
+# This is used to split a large ecube files to 5 minutes files.
 
-generate_filenames_in_ecubeformat(initial_filename, total_minutes=256,
-                                  interval_minutes=5)
-This is used to split a large ecube files to 5 minutes files.
+# initial_filename : Initial headstage filename same as ecube format
+initial_filename = 'Headstages_64_Channels_int16_2023-12-19_13-28-09.bin'
 
-initial_filename : Initial headstage filename same as ecube format
- 'Headstages_64_Channels_int16_2023-12-19_13-28-09.bin'
+# total_minutes : total minutes we need to create file names for.
+total_minutes = 30
 
-total_minutes : total minutes we need to create file names for.
+# interval_minutes : In minutes, default 5 minutes
+interval_minutes = 5
 
-interval_minutes : In minutes, default 5 minutes
+# return ecube_filenames
 
-return ecube_filenames
+ntk.generate_filenames_in_ecubeformat(initial_filename, total_minutes=total_minutes,
+                                      interval_minutes=interval_minutes)
 
+
+# ['Headstages_64_Channels_int16_2023-12-19_13-33-09.bin',
+#  'Headstages_64_Channels_int16_2023-12-19_13-38-09.bin',
+#  'Headstages_64_Channels_int16_2023-12-19_13-43-09.bin',
+#  'Headstages_64_Channels_int16_2023-12-19_13-48-09.bin',
+#  'Headstages_64_Channels_int16_2023-12-19_13-53-09.bin',
+#  'Headstages_64_Channels_int16_2023-12-19_13-58-09.bin',
+#  'Headstages_64_Channels_int16_2023-12-19_14-03-09.bin']
 ```
 ---
 
