@@ -1101,8 +1101,7 @@ LFP = ntk.butter_highpass(rawdata, highpass, fs, order=3)
 ```
 
 
-
-#### Apply a notch filter to remove a specific frequency from the signal.
+#### $\textcolor{#81d8d0}{\textbf{Apply a notch filter to remove a specific frequency from the signal}}$
 ```
 # fs : The sampling frequency of the input signal in Hz.
 # Q  : The quality factor of the notch filter, defined as Q = f0 / bw,
