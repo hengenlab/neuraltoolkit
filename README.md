@@ -950,7 +950,7 @@ ntk.append_emptyframes_todlc_h5file(h5_file_name, video_fps, target_rows=None)
 # returns spikematrix (np.ndarray): Matrix of shape (n_cells, n_bins) with spike counts or binary values.
 
 spikematrix = \
-    make_spikematrix(spiketimes_ms, start, end, binsz, binarize=False)
+    ntk.make_spikematrix(spiketimes_ms, start, end, binsz, binarize=False)
 ```
 
 ---
