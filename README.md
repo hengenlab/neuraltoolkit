@@ -816,41 +816,31 @@ v.play_video_from_framenum(framenum=100, timeinsec=3.3,
                            firstframewaittime=5000,
                            otherframewaittime=10) 
 ```
+
+### $\textcolor{#81d8d0}{\textbf{Read video files and return list of all video lengths}}$
 ```
-# Load all video files and return length
 import neuraltoolkit as ntk
-import glob
-import numpy as np
-videofile_list =  np.sort(glob.glob('/media/bs001r/watchtower2_tmp/PVCre_animals/KDR00035-*.mp4'))
-lstream = 0
-v_lengths = None
-v_lengths = []
-for indx, fl in enumerate(videofile_list):
-    print(indx, " ", fl)
-    v = ntk.NTKVideos(fl, lstream)
-    v_lengths.append([fl, v.length])
-for vfl in v_lengths:
-    print(vfl)
 
-
-# Read video files and return list of all video lengths
 v_lengths = ntk.get_video_length_list('/home/kbn/watchtower_current/data/')
+```
 
-# Convert video to grey
+### $\textcolor{#81d8d0}{\textbf{Convert video to grey}}$
+```
+import neuraltoolkit as ntk
 videofilename = '/media/bs001r/ckbn/opencv/e3v8102-20190711T0056-0156.mp4'
 lstream = 0
 output_path = '/media/bs001r/ckbn/opencv/'
 v = ntk.NTKVideos(videofilename, lstream)
 v.grayscale_video(output_path)
 
+
 # diff video
 v.graydiff_video(output_path)
 # diff image
 v.graydiff_img(output_path)
+```
 
-
-
-
+```
 # Make video from images
 imgpath = '/home/user/img/'
 videopath = '/home/user/img/out/'
