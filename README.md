@@ -1112,8 +1112,9 @@ LFP = ntk.butter_highpass(rawdata, highpass, fs, order=3)
 filtered_data = ntk.notch_filter(data, fs=25000, Q=30, ftofilter=60)
 ```
 
+#### $\textcolor{#81d8d0}{\textbf{Spectrogram}}$
 ```
-# spectrogram
+
 ntk_spectrogram(lfp, fs, nperseg, noverlap, f_low=1, f_high=64,
                 lsavedir=None, hour=0, chan=0, reclen=3600,
                 lsavedeltathetha=0,
