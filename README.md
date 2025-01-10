@@ -553,16 +553,7 @@ index  [5573869 5774268 5974585 6175289 6375922 6576758 6777207 6977770 7177962
 ```
 
 ---
-```
-With IMU channel map (please see below for channel map),
-# y, x, z order for accelerometer, gyroscope.
-Channels 0, 1, 2 are 3-axis accelerometer.
-Channels 3, 4, 5 are 3-axis gyroscope.
-Channels 6, 7, 8 are 3-axis compass
-Please remember, channel number here starts with 0.
-```
 
----
 
 ```
 ntk.get_data_fields(animal=None, field=None, probenum=None, region=None)
@@ -1391,6 +1382,11 @@ print(f"d: {result_ntk_power_t_test.rx2('d')[0]}")
          42, 40, 50, 64, 48, 59, 49, 44, 45, 62, 56, 53,
          39]
 
+
+       
+###### 'linear'
+        [1:number_of_channels]
+
 ###### 'IMU' 
         [44, 45, 46, 41, 42, 43, 47, 48,
          50,  1,  2,  3,  4,  5,  6,  7,  8,
@@ -1401,9 +1397,18 @@ print(f"d: {result_ntk_power_t_test.rx2('d')[0]}")
          58, 59, 60, 61, 62, 63, 64]
          
 
-       
-###### 'linear'
-        [1:number_of_channels]
+```
+9-axis digital Inertial Motion Unit (IMU) integrates a 3-axis gyroscope, 3-axis accelerometer
+and 3-axis compass, with user-definable settings.
+
+With IMU channel map,
+channels 0, 1, 2 are 3-axis accelerometer.
+channels 3, 4, 5 are 3-axis gyroscope.
+channels 6, 7, 8 are 3-axis compass
+
+Please remember, channel number here starts with 0.
+```
+
 --- 
 ## sync
 Functions to sync data across: raw neural, sync pulse, video files and frames, sleep state labels, and deep lab cut labels.
