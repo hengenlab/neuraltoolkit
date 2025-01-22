@@ -193,6 +193,14 @@ def find_channel_map(hstype, number_of_channels=None):
                              39, 40, 49, 51, 52, 53, 54, 55, 56, 57,
                              58, 59, 60, 61, 62, 63, 64]) - 1
 
+    elif hstype == 'UCLA_revc':
+        chan_map = np.array([47, 27, 43, 30, 50, 33, 55, 36, 58, 39, 60, 42,
+                             64, 45, 51, 48, 37, 35, 41, 40, 46, 44, 52, 49,
+                             54, 59, 57, 53, 61, 56, 63, 62, 1, 2, 5, 6, 9,
+                             11, 14, 15, 18, 20, 23, 24, 26, 28, 31, 32, 4,
+                             3, 7, 8, 10, 12, 13, 17, 16, 21, 19, 29, 22,
+                             34, 25, 38]) - 1
+
     # Linear probe
     elif hstype == 'linear':
         # checks
@@ -228,14 +236,14 @@ def create_chanmap_file_for_oe():
     for i in range(number_of_probes):
 
         # Get number of channels
-        print("Enter total number of channels : ")
+        print(f"Enter total number of channels in probe {i+1} : ")
         number_of_channels = np.int16(eval(input()))
-        print(number_of_channels)
+        # print(number_of_channels)
 
         # Get number of channels
         print("Enter probe type (Ex. hs64) : ")
         hstype = input()
-        print(hstype)
+        # print(hstype)
 
         chan_map = ntkc.find_channel_map(hstype, number_of_channels)
         chan_map = chan_map + 1
@@ -250,7 +258,7 @@ def create_chanmap_file_for_oe():
     # Get filename
     print("Enter filename to save data: ")
     filename = input()
-    print(filename)
+    # print(filename)
 
     # write channel map
     fid = open(filename, 'w')
