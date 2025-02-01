@@ -212,6 +212,12 @@ def ntk_spectrogram(lfp, fs, nperseg=None, noverlap=None, f_low=1, f_high=64,
 
     '''
 
+    # Add a small value, EPS,
+    # helps to avoid numerical instability (e.g., division by zero) when
+    # lfp has near-zero values and mitigates precision errors during
+    # spectrogram computations. This ensures stable and accurate results.
+    EPS = 1e-10
+
     if lsavedir is not None:
         # Check directory exists
         if not (os.path.exists(lsavedir) and
@@ -224,13 +230,15 @@ def ntk_spectrogram(lfp, fs, nperseg=None, noverlap=None, f_low=1, f_high=64,
         noverlap = fs * 2
 
     try:
-        f, t_spec, x_spec = signal.spectrogram(lfp, fs=fs, window='hann',
+        f, t_spec, x_spec = signal.spectrogram(lfp + EPS, fs=fs,
+                                               window='hann',
                                                nperseg=nperseg,
                                                noverlap=noverlap,
                                                detrend=False,  mode='psd')
     except Exception as e:
         print("Error ", e, " changing window to hann")
-        f, t_spec, x_spec = signal.spectrogram(lfp, fs=fs, window='hanning',
+        f, t_spec, x_spec = signal.spectrogram(lfp + EPS, fs=fs,
+                                               window='hanning',
                                                nperseg=nperseg,
                                                noverlap=noverlap,
                                                detrend=False,  mode='psd')
