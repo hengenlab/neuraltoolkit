@@ -300,13 +300,39 @@ def ntk_spectrogram(lfp, fs, nperseg=None, noverlap=None, f_low=1, f_high=64,
             delt = np.pad(delt, (0, dispd), 'constant')
 
         if probenum is None:
-            np.save(os.path.join(lsavedir, 'delt' + str(hour) + '.npy'), delt)
-            np.save(os.path.join(lsavedir, 'thet' + str(hour) + '.npy'), thet)
+            if chan is None:
+                np.save(os.path.join(lsavedir, 'delt' +
+                                     str(hour) + '.npy'),
+                        delt)
+                np.save(os.path.join(lsavedir, 'thet' +
+                                     str(hour) + '.npy'),
+                        thet)
+            else:
+                np.save(os.path.join(lsavedir, 'delt' + str(hour) +
+                                     '_ch' + str(chan) +
+                                     + '.npy'), delt)
+                np.save(os.path.join(lsavedir, 'thet' + str(hour) +
+                                     '_ch' + str(chan) +
+                                     + '.npy'), thet)
+
         else:
-            np.save(os.path.join(lsavedir, 'delt' + str(hour) +
-                                 '_probe' + str(probenum) + '.npy'), delt)
-            np.save(os.path.join(lsavedir, 'thet' + str(hour) +
-                                 '_probe' + str(probenum) + '.npy'), thet)
+            if chan is None:
+                np.save(os.path.join(lsavedir, 'delt' + str(hour) +
+                                     '_probe' + str(probenum) + '.npy'),
+                        delt)
+                np.save(os.path.join(lsavedir, 'thet' + str(hour) +
+                                     '_probe' + str(probenum) + '.npy'),
+                        thet)
+            else:
+                np.save(os.path.join(lsavedir, 'delt' + str(hour) +
+                                     '_ch' + str(chan) +
+                                     '_probe' + str(probenum) + '.npy'),
+                        delt)
+                np.save(os.path.join(lsavedir, 'thet' + str(hour) +
+                                     '_ch' + str(chan) +
+                                     '_probe' + str(probenum) + '.npy'),
+                        thet)
+
     plt.close('all')
 
 
