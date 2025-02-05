@@ -312,7 +312,8 @@ def ntk_spectrogram(lfp, fs, nperseg=None, noverlap=None, f_low=1, f_high=64,
 
 def selectlfpchans(rawdat_dir, outdir, hstype, hour,
                    fs=25000, nprobes=1, number_of_channels=64,
-                   probenum=0, probechans=64, lfp_lowpass=250):
+                   probenum=0, probechans=64, lfp_lowpass=250,
+                   lsavedeltathetha=0):
     '''
     selectlfpchans(rawdat_dir, outdir, hstype, hour,
                    fs=25000, nprobes=1, number_of_channels=64,
@@ -332,6 +333,7 @@ def selectlfpchans(rawdat_dir, outdir, hstype, hour,
     probenum : which probe to return (starts from zero)
     probechans : number of channels per probe (symmetric)
     lfp_lowpass : default 250
+    lsavedeltathetha : whether to save delta and thetha too default(0)
 
 
     selectlfpchans(rawdat_dir, outdir, hstype, hour,
@@ -393,7 +395,7 @@ def selectlfpchans(rawdat_dir, outdir, hstype, hour,
         ntk_spectrogram(lfp_data, int(lfp_lowpass*2), nperseg=None,
                         noverlap=None, f_low=1, f_high=64,
                         lsavedir=outdir, hour=hour, chan=chan, reclen=3600,
-                        lsavedeltathetha=0,
+                        lsavedeltathetha=lsavedeltathetha,
                         probenum=probenum)
 
     print("Finished saving spectrogram for all channels")
