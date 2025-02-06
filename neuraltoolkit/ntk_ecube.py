@@ -38,8 +38,13 @@ try:
     from neuraltoolkit import ntk_channelmap as ntkc
 except ImportError:
     raise ImportError('please install neuraltoolkit')
+try:
+    from neuraltoolkit import ntk_videos as ntkv
+except ImportError:
+    raise ImportError('please install neuraltoolkit')
 from datetime import datetime
 from datetime import timedelta
+import glob
 
 
 # Load Ecube HS data
@@ -467,20 +472,22 @@ def load_digital_binary_allchannels(name, t_only=0, channel=-1):
             return tr, dr[channel, :]
 
 
-def light_dark_transition(datadir, l7ampm=0, channel=None, lplot=0):
+def light_dark_transition(datadir, channel, l7ampm=0, lplot=0):
     '''
     light_dark_transition
-    light_dark_transition(datadir, l7ampm=0, lplot=0)
+    light_dark_transition(datadir, channel, l7ampm=0, lplot=0)
     datadir - location of digital light data
+    channel - If not None loads light channel from new style digital files.
+              If channel is None loads old style digital files
     l7ampm - just check files around 7:00 am and 7:00 pm
             (default 0, check all files), 1 check files only around 7:00 am/pm
-    channel - default None, use old style digital files
     lplot - plot light to dark transition points (default 0, noplot), 1 to plot
     returns
     transition_list - list contains
                       [filename, index of light-dark transition in the file,
                        ecube time from the begining of the file]
     transition_list = light_dark_transition('/media/bs003r/D1/d1_c1/',
+                                            2,
                                             l7ampm=0, lplot=0)
 
     '''
@@ -497,7 +504,8 @@ def light_dark_transition(datadir, l7ampm=0, channel=None, lplot=0):
 
     save_list = []
 
-    for f in np.sort(os.listdir(datadir)):
+    # for f in np.sort(os.listdir(datadir)):
+    for f in ntkv.natural_sort(glob.glob(os.path.join(datadir, "D*.bin"))):
         if sub_string[0] in f or sub_string[1] in f:
             # print(f)
 
@@ -512,6 +520,10 @@ def light_dark_transition(datadir, l7ampm=0, channel=None, lplot=0):
             # find unique values
             unique_val = np.unique(d1)
             # print(f'unique_val {unique_val}')
+            # raise error if value is not 0 or 1
+            if not all(val in (0, 1) for val in unique_val):
+                raise \
+                    ValueError(f'Values are not 0 or 1 got {unique_val}')
 
             # transition files has 0 and 1 values
             if all(x in unique_val for x in [0, 1]):
@@ -540,9 +552,6 @@ def light_dark_transition(datadir, l7ampm=0, channel=None, lplot=0):
                 if lplot:
                     plt.figure()
                     plt.plot(d1[transition-1:transition+2], 'ro')
-            else:
-                raise \
-                    ValueError(f'Values are not 0 or 1 got {unique_val}')
 
     return save_list
 
