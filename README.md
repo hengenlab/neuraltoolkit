@@ -1606,14 +1606,20 @@ tdig = ntk.load_digital_binary(digitalrawfile, t_only=1)
 ```
 ---
 
-#### $\textcolor{#81d8d0}{\textbf{Light dark transition}}$
+#### $\textcolor{#81d8d0}{\textbf{Find Light dark transition time points}}$
 ```
 datadir = '/media/data/D1/d1_c1/'
-l7ampm = 0 # if 1 just check files around 7:00 am and 7:00 pm
+# channel - If not None loads light channel from new style digital files.
+#               If channel is None loads old style digital files
+# channel number starts from 0.
+channel = 7
+# if 1 just check files around 7:00 am and 7:00 pm
+l7ampm = 1
 lplot = 0
-ldt = ntk.light_dark_transition(datadir, l7ampm=0, lplot=0)
+ldt = ntk.light_dark_transition(datadir, channel, l7ampm=l7ampm, lplot=0)
 # ldt - list contains
-#       [filename, index of light-dark transition in file, start time of the file]
+#       [filename, index of light-dark transition in the file,
+         ecube time from the begining of the file]
 
 # For example
 # [['Digital_1_Channels_int64_10.bin', 2743961, 24082251921475],
