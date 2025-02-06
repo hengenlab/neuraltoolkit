@@ -506,7 +506,8 @@ def light_dark_transition(datadir, channel, l7ampm=0, lplot=0):
 
     # for f in np.sort(os.listdir(datadir)):
     for f in ntkv.natural_sort(glob.glob(os.path.join(datadir, "D*.bin"))):
-        if sub_string[0] in f or sub_string[1] in f:
+        # if sub_string[0] in f or sub_string[1] in f:
+        if any(sub_string[i] in f for i in range(4)):
             # print(f)
 
             # load data
@@ -519,6 +520,8 @@ def light_dark_transition(datadir, channel, l7ampm=0, lplot=0):
 
             # find unique values
             unique_val = np.unique(d1)
+            # print(f)
+            # print(unique_val)
             # print(f'unique_val {unique_val}')
             # raise error if value is not 0 or 1
             if not all(val in (0, 1) for val in unique_val):
