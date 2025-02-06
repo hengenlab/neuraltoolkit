@@ -467,17 +467,19 @@ def load_digital_binary_allchannels(name, t_only=0, channel=-1):
             return tr, dr[channel, :]
 
 
-def light_dark_transition(datadir, l7ampm=0, lplot=0):
+def light_dark_transition(datadir, l7ampm=0, channel=None, lplot=0):
     '''
     light_dark_transition
     light_dark_transition(datadir, l7ampm=0, lplot=0)
     datadir - location of digital light data
     l7ampm - just check files around 7:00 am and 7:00 pm
             (default 0, check all files), 1 check files only around 7:00 am/pm
+    channel - default None, use old style digital files
     lplot - plot light to dark transition points (default 0, noplot), 1 to plot
     returns
     transition_list - list contains
-                      [filename, index of light-dark transition, time]
+                      [filename, index of light-dark transition in the file,
+                       ecube time from the begining of the file]
     transition_list = light_dark_transition('/media/bs003r/D1/d1_c1/',
                                             l7ampm=0, lplot=0)
 
@@ -488,7 +490,8 @@ def light_dark_transition(datadir, l7ampm=0, lplot=0):
 
     # add flag to check just at time 07:30 and 19:30
     if l7ampm:
-        sub_string = ["_19-", "_07-"]
+        # sub_string = ["_19-", "_07-"]
+        sub_string = ["_18-", "_19-", "_06-",  "_07-"]
     else:
         sub_string = ['Digital', 'Digital']
 
@@ -499,10 +502,16 @@ def light_dark_transition(datadir, l7ampm=0, lplot=0):
             # print(f)
 
             # load data
-            t, d1 = load_digital_binary(datadir+f)
+            if channel is None:
+                t, d1 = load_digital_binary(os.path.join(datadir, f))
+            else:
+                t, d1 = \
+                    load_digital_binary_allchannels(os.path.join(datadir, f),
+                                                    t_only=0, channel=channel)
 
             # find unique values
             unique_val = np.unique(d1)
+            # print(f'unique_val {unique_val}')
 
             # transition files has 0 and 1 values
             if all(x in unique_val for x in [0, 1]):
@@ -531,6 +540,9 @@ def light_dark_transition(datadir, l7ampm=0, lplot=0):
                 if lplot:
                     plt.figure()
                     plt.plot(d1[transition-1:transition+2], 'ro')
+            else:
+                raise \
+                    ValueError(f'Values are not 0 or 1 got {unique_val}')
 
     return save_list
 
