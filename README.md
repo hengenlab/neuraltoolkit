@@ -1209,7 +1209,8 @@ for probenum in range(nprobes_to_check):
                        number_of_channels=number_of_channels,
                        probenum=probenum,
                        probechans=probechans,
-                       lfp_lowpass=lfp_lowpass)
+                       lfp_lowpass=lfp_lowpass,
+                       lmultitaper=1)
 ```
 
 
