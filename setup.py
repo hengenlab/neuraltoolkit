@@ -38,7 +38,8 @@ setup(
    install_requires=['ipython', 'numpy', 'matplotlib', 'seaborn', 'pandas',
                      'opencv-python', 'scipy', 'h5py', 'tables',
                      'requests',
-                     'multitaper_toolbox@git+https://github.com/hengenlab/multitaper_toolbox.git',
+                     'multitaper_toolbox@git+https://github.com/hengenlab/'
+                     'multitaper_toolbox.git',
                      ],
    extras_require={
         'full': ['rpy2']
