@@ -179,7 +179,8 @@ def notch_filter(data, fs, Q, ftofilter):
 def ntk_spectrogram(lfp, fs, nperseg=None, noverlap=None, f_low=1, f_high=64,
                     lsavedir=None, hour=0, chan=0, reclen=3600,
                     lsavedeltathetha=0,
-                    probenum=None):
+                    probenum=None,
+                    lmultitaper=0):
 
     '''
     plot spectrogram and save delta and thetha
@@ -187,7 +188,7 @@ def ntk_spectrogram(lfp, fs, nperseg=None, noverlap=None, f_low=1, f_high=64,
     ntk_spectrogram(lfp, fs, nperseg, noverlap, f_low=1, f_high=64,
                     lsavedir=None, hour=0, chan=0, reclen=3600,
                     lsavedeltathetha=0,
-                    probenum=None)
+                    probenum=None,lmultitaper=0)
 
     lfp : lfp one channel
     fs : sampling frequency
@@ -203,12 +204,14 @@ def ntk_spectrogram(lfp, fs, nperseg=None, noverlap=None, f_low=1, f_high=64,
     reclen: one hour in seconds (default 3600)
     lsavedeltathetha : whether to save delta and thetha too
     probenum : which probe to return (starts from zero)
+    lmultitaper : use multitaper spectrogram
 
     Example:
     ntk.ntk_spectrogram(lfp_all[0, :], fs, nperseg, noverlap, 1, 64,
                         lsavedir='/home/kbn/',
                         hour=0, chan=0, reclen=3600, lsavedeltathetha=0,
-                        probenum=None)
+                        probenum=None,
+                        lmultitaper=1)
 
     '''
 
@@ -218,17 +221,43 @@ def ntk_spectrogram(lfp, fs, nperseg=None, noverlap=None, f_low=1, f_high=64,
     # spectrogram computations. This ensures stable and accurate results.
     EPS = 1e-10
 
+    # window_length and step size
+    window_length = 4
+    step_size = 2
+
     if lsavedir is not None:
         # Check directory exists
         if not (os.path.exists(lsavedir) and
                 os.path.isdir(lsavedir)):
             raise NotADirectoryError("Directory {} does not exists".
                                      format(lsavedir))
-    if nperseg is None:
-        nperseg = fs * 4
-    if noverlap is None:
-        noverlap = fs * 2
 
+    if lmultitaper:
+        # from mtspec import multitaper_spectrogram
+        import multitaper_toolbox as mt
+        f0, t_spec0, x_spec0, (fig, ax) = \
+            mt.multitaper_spectrogram(
+            data=lfp + EPS,
+            fs=fs,
+            # 4-second windows, 2-second step
+            window_params=[window_length, step_size],
+            # Limit frequencies from 0 to 32 Hz
+            frequency_range=[0, 32],
+            multiprocess=False,
+            # Number of tapers
+            num_tapers=5,
+            #  Number of Tapers = 2 × time-bandwidth product (NW) − 1
+            time_bandwidth=3,
+            # 'constant', 'linear',
+            detrend_opt='linear',
+            plot_on=True,
+            return_fig=True,
+        )
+
+    if nperseg is None:
+        nperseg = fs * window_length
+    if noverlap is None:
+        noverlap = fs * step_size
     try:
         f, t_spec, x_spec = signal.spectrogram(lfp + EPS, fs=fs,
                                                window='hann',
@@ -244,12 +273,13 @@ def ntk_spectrogram(lfp, fs, nperseg=None, noverlap=None, f_low=1, f_high=64,
                                                detrend=False,  mode='psd')
     # print("sh x_spec ", x_spec.shape)
     # Remove noise
-    x_mesh, y_mesh = np.meshgrid(t_spec, f[(f < f_high) & (f > f_low)])
-    plt.figure(figsize=(16, 2))
-    plt.pcolormesh(x_mesh, y_mesh,
-                   np.log10(x_spec[(f < f_high) & (f > f_low)]),
-                   cmap='jet')
-    plt.yscale('log')
+    if not lmultitaper:
+        x_mesh, y_mesh = np.meshgrid(t_spec, f[(f < f_high) & (f > f_low)])
+        plt.figure(figsize=(16, 2))
+        plt.pcolormesh(x_mesh, y_mesh,
+                       np.log10(x_spec[(f < f_high) & (f > f_low)]),
+                       cmap='jet')
+        plt.yscale('log')
     # Add this if Sleep Wake scoring GUI has space
     # plt.xlabel('Time in minutes')
     # plt.ylabel('Frequency (log)')
@@ -275,10 +305,31 @@ def ntk_spectrogram(lfp, fs, nperseg=None, noverlap=None, f_low=1, f_high=64,
                                          '_probe' + str(probenum) + '.jpg'))
 
     if lsavedeltathetha:
-        # Extract delta, thetha
-        delt = sum(x_spec[np.where(np.logical_and(f >= 1, f <= 4))])
-        thetw = sum(x_spec[np.where(np.logical_and(f >= 2, f <= 16))])
-        thetn = sum(x_spec[np.where(np.logical_and(f >= 5, f <= 10))])
+        # # Extract delta, thetha
+        # delt = sum(x_spec[np.where(np.logical_and(f >= 1, f <= 4))])
+        # thetw = sum(x_spec[np.where(np.logical_and(f >= 2, f <= 16))])
+        # thetn = sum(x_spec[np.where(np.logical_and(f >= 5, f <= 10))])
+        if f.ndim == 1:
+            # Without multitaper case
+            delta_band = np.logical_and(f >= 0, f <= 4)
+            delt = np.sum(x_spec[delta_band, :], axis=0)
+
+            theta_wide_band = np.logical_and(f >= 2, f <= 16)
+            thetw = np.sum(x_spec[theta_wide_band, :], axis=0)
+
+            theta_narrow_band = np.logical_and(f >= 5, f <= 10)
+            thetn = np.sum(x_spec[theta_narrow_band, :], axis=0)
+
+        else:
+            # With multitaper case
+            delta_band = np.logical_and(f[:, 0] >= 0, f[:, 0] <= 4)
+            delt = np.sum(x_spec[delta_band]) * np.ones(f.shape[1])
+
+            theta_wide_band = np.logical_and(f[:, 0] >= 2, f[:, 0] <= 16)
+            thetw = np.sum(x_spec[theta_wide_band]) * np.ones(f.shape[1])
+
+            theta_narrow_band = np.logical_and(f[:, 0] >= 5, f[:, 0] <= 10)
+            thetn = np.sum(x_spec[theta_narrow_band]) * np.ones(f.shape[1])
         thet = thetn/thetw
 
         # Normalize delta and thetha
@@ -339,11 +390,14 @@ def ntk_spectrogram(lfp, fs, nperseg=None, noverlap=None, f_low=1, f_high=64,
 def selectlfpchans(rawdat_dir, outdir, hstype, hour,
                    fs=25000, nprobes=1, number_of_channels=64,
                    probenum=0, probechans=64, lfp_lowpass=250,
-                   lsavedeltathetha=0):
+                   lsavedeltathetha=0,
+                   lmultitaper=0):
     '''
     selectlfpchans(rawdat_dir, outdir, hstype, hour,
                    fs=25000, nprobes=1, number_of_channels=64,
-                   probenum=0, probechans=64, lfp_lowpass=250)
+                   probenum=0, probechans=64, lfp_lowpass=250,
+                   lsavedeltathetha=0,
+                   lmultitaper=0)
     rawdat_dir : raw data directory
     outdir : output dir.
        Standard /media/HlabShare/Sleep_Scoring/ABC00001/LFP_chancheck/'
@@ -360,11 +414,14 @@ def selectlfpchans(rawdat_dir, outdir, hstype, hour,
     probechans : number of channels per probe (symmetric)
     lfp_lowpass : default 250
     lsavedeltathetha : whether to save delta and thetha too default(0)
+    lmultitaper : use multitaper spectrogram
 
 
     selectlfpchans(rawdat_dir, outdir, hstype, hour,
                    fs=25000, nprobes=1, number_of_channels=128,
-                   probenum=1, probechans=64, lfp_lowpass=250)
+                   probenum=1, probechans=64, lfp_lowpass=250,
+                   lsavedeltathetha=0,
+                   lmultitaper=0)
     '''
     # from neuraltoolkit import ntk_ecube
 
@@ -422,6 +479,7 @@ def selectlfpchans(rawdat_dir, outdir, hstype, hour,
                         noverlap=None, f_low=1, f_high=64,
                         lsavedir=outdir, hour=hour, chan=chan, reclen=3600,
                         lsavedeltathetha=lsavedeltathetha,
+                        lmultitaper=lmultitaper,
                         probenum=probenum)
 
     print("Finished saving spectrogram for all channels")
