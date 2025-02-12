@@ -242,7 +242,8 @@ def ntk_spectrogram(lfp, fs, nperseg=None, noverlap=None, f_low=1, f_high=64,
             # 4-second windows, 2-second step
             window_params=[window_length, step_size],
             # Limit frequencies from 0 to 32 Hz
-            frequency_range=[0, 32],
+            # frequency_range=[0, 32],
+            frequency_range=[0, 20],
             multiprocess=False,
             # Number of tapers
             num_tapers=5,
