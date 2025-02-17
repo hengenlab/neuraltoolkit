@@ -181,7 +181,7 @@ def ntk_spectrogram(lfp, fs, nperseg=None, noverlap=None, f_low=1, f_high=64,
                     lsavedeltathetha=0,
                     probenum=None,
                     lmultitaper=0,
-                    m_f_low=1, m_f_high=64):
+                    m_f_low=0, m_f_high=32):
 
     '''
     plot spectrogram and save delta and thetha
@@ -206,8 +206,10 @@ def ntk_spectrogram(lfp, fs, nperseg=None, noverlap=None, f_low=1, f_high=64,
     lsavedeltathetha : whether to save delta and thetha too
     probenum : which probe to return (starts from zero)
     lmultitaper : use multitaper spectrogram
-    m_f_low : filter frequencies below f_low only for multitaper
-    m_f_high : filter frequencies above f_high only for multitaper
+    m_f_low : default 0,
+        filter frequencies below m_f_low only for multitaper
+    m_f_high : default 32,
+        filter frequencies above m_f_high only for multitaper
 
     Example:
     ntk.ntk_spectrogram(lfp_all[0, :], fs, nperseg, noverlap, 1, 64,
@@ -396,13 +398,14 @@ def selectlfpchans(rawdat_dir, outdir, hstype, hour,
                    probenum=0, probechans=64, lfp_lowpass=250,
                    lsavedeltathetha=0,
                    f_low=1, f_high=64,
-                   lmultitaper=0, m_f_low=1, m_f_high=64):
+                   lmultitaper=0, m_f_low=0, m_f_high=32):
     '''
     selectlfpchans(rawdat_dir, outdir, hstype, hour,
                    fs=25000, nprobes=1, number_of_channels=64,
                    probenum=0, probechans=64, lfp_lowpass=250,
                    lsavedeltathetha=0,
-                   lmultitaper=0)
+                   lmultitaper=0,
+                   m_f_low=0, m_f_high=32)
     rawdat_dir : raw data directory
     outdir : output dir.
        Standard /media/HlabShare/Sleep_Scoring/ABC00001/LFP_chancheck/'
@@ -422,15 +425,18 @@ def selectlfpchans(rawdat_dir, outdir, hstype, hour,
     f_low : filter frequencies below f_low
     f_high : filter frequencies above f_high
     lmultitaper : use multitaper spectrogram
-    m_f_low : filter frequencies below f_low only for multitaper
-    m_f_high : filter frequencies above f_high only for multitaper
+    m_f_low : default 0,
+        filter frequencies below m_f_low only for multitaper
+    m_f_high : default 32,
+        filter frequencies above m_f_high only for multitaper
 
 
     selectlfpchans(rawdat_dir, outdir, hstype, hour,
                    fs=25000, nprobes=1, number_of_channels=128,
                    probenum=1, probechans=64, lfp_lowpass=250,
                    lsavedeltathetha=0,
-                   lmultitaper=0)
+                   lmultitaper=0,
+                   m_f_low=0, m_f_high=32)
     '''
     # from neuraltoolkit import ntk_ecube
 
