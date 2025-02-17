@@ -491,6 +491,6 @@ def selectlfpchans(rawdat_dir, outdir, hstype, hour,
                         lsavedeltathetha=lsavedeltathetha,
                         probenum=probenum,
                         lmultitaper=lmultitaper,
-                        f_low=m_f_low, f_high=m_f_high)
+                        m_f_low=m_f_low, m_f_high=m_f_high)
 
     print("Finished saving spectrogram for all channels")
