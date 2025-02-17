@@ -1130,7 +1130,7 @@ ntk_spectrogram(lfp, fs, nperseg, noverlap, f_low=1, f_high=64,
                 lsavedir=None, hour=0, chan=0, reclen=3600,
                 lsavedeltathetha=0,
                 probenum=None,
-                lmultitaper=0, m_f_low=1, m_f_high=64)
+                lmultitaper=1, m_f_low=0, m_f_high=32)
 
 lfp : lfp one channel
 fs : sampling frequency
@@ -1147,16 +1147,17 @@ reclen: one hour in seconds (default 3600)
 lsavedeltathetha : whether to save delta and thetha too
 probenum : which probe to return (starts from zero)
 lmultitaper : use multitaper spectrogram
-m_f_low : filter frequencies below f_low only for multitaper
-m_f_high : filter frequencies above f_high only for multitaper
-
+m_f_low : default 0,
+    filter frequencies below m_f_low only for multitaper
+m_f_high : default 32,
+    filter frequencies above m_f_high only for multitaper
 
 Example
 ntk.ntk_spectrogram(lfp_all[0, :], fs, nperseg, noverlap, 1, 64,
                     lsavefile=None, hour=0, chan=0,
                     reclen=3600, lsavedeltathetha=0,
                     probenum=1,
-                    lmultitaper=0, m_f_low=1, m_f_high=64)
+                    lmultitaper=1, m_f_low=0, m_f_high=32)
 
 ```
 
@@ -1216,7 +1217,7 @@ for probenum in range(nprobes_to_check):
                        lfp_lowpass=lfp_lowpass,
                        lsavedeltathetha=0,
                        f_low=1, f_high=64,
-                       lmultitaper=1,  m_f_low=1, m_f_high=64)
+                       lmultitaper=1,  m_f_low=0, m_f_high=32)
 ```
 
 
