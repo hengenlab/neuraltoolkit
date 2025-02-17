@@ -180,7 +180,8 @@ def ntk_spectrogram(lfp, fs, nperseg=None, noverlap=None, f_low=1, f_high=64,
                     lsavedir=None, hour=0, chan=0, reclen=3600,
                     lsavedeltathetha=0,
                     probenum=None,
-                    lmultitaper=0):
+                    lmultitaper=0,
+                    m_f_low=1, m_f_high=64):
 
     '''
     plot spectrogram and save delta and thetha
@@ -205,6 +206,8 @@ def ntk_spectrogram(lfp, fs, nperseg=None, noverlap=None, f_low=1, f_high=64,
     lsavedeltathetha : whether to save delta and thetha too
     probenum : which probe to return (starts from zero)
     lmultitaper : use multitaper spectrogram
+    m_f_low : filter frequencies below f_low only for multitaper
+    m_f_high : filter frequencies above f_high only for multitaper
 
     Example:
     ntk.ntk_spectrogram(lfp_all[0, :], fs, nperseg, noverlap, 1, 64,
@@ -243,7 +246,7 @@ def ntk_spectrogram(lfp, fs, nperseg=None, noverlap=None, f_low=1, f_high=64,
             window_params=[window_length, step_size],
             # Limit frequencies from 0 to 32 Hz
             # frequency_range=[0, 32],
-            frequency_range=[0, 20],
+            frequency_range=[m_f_low, m_f_high],
             multiprocess=False,
             # Number of tapers
             num_tapers=5,
@@ -392,7 +395,8 @@ def selectlfpchans(rawdat_dir, outdir, hstype, hour,
                    fs=25000, nprobes=1, number_of_channels=64,
                    probenum=0, probechans=64, lfp_lowpass=250,
                    lsavedeltathetha=0,
-                   lmultitaper=0):
+                   f_low=1, f_high=64,
+                   lmultitaper=0, m_f_low=1, m_f_high=64):
     '''
     selectlfpchans(rawdat_dir, outdir, hstype, hour,
                    fs=25000, nprobes=1, number_of_channels=64,
@@ -415,7 +419,11 @@ def selectlfpchans(rawdat_dir, outdir, hstype, hour,
     probechans : number of channels per probe (symmetric)
     lfp_lowpass : default 250
     lsavedeltathetha : whether to save delta and thetha too default(0)
+    f_low : filter frequencies below f_low
+    f_high : filter frequencies above f_high
     lmultitaper : use multitaper spectrogram
+    m_f_low : filter frequencies below f_low only for multitaper
+    m_f_high : filter frequencies above f_high only for multitaper
 
 
     selectlfpchans(rawdat_dir, outdir, hstype, hour,
@@ -476,11 +484,13 @@ def selectlfpchans(rawdat_dir, outdir, hstype, hour,
         lfp_data = butter_lowpass(dat_full[chan, :], lfp_lowpass, fs, 3)
         ds_rate = int(fs/(2*lfp_lowpass))
         lfp_data = np.int16(lfp_data[0::ds_rate])
+
         ntk_spectrogram(lfp_data, int(lfp_lowpass*2), nperseg=None,
-                        noverlap=None, f_low=1, f_high=64,
+                        noverlap=None, f_low=f_low, f_high=f_high,
                         lsavedir=outdir, hour=hour, chan=chan, reclen=3600,
                         lsavedeltathetha=lsavedeltathetha,
+                        probenum=probenum,
                         lmultitaper=lmultitaper,
-                        probenum=probenum)
+                        f_low=m_f_low, f_high=m_f_high)
 
     print("Finished saving spectrogram for all channels")
