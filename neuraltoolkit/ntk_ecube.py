@@ -532,6 +532,9 @@ def light_dark_transition(datadir, channel, l7ampm=0, lplot=0):
             if all(x in unique_val for x in [0, 1]):
                 # print(f, " ", np.unique(d1), " ", d1.shape)
 
+                # convert to int
+                d1 = d1.astype('int')
+
                 # Find diff
                 d_diff = np.diff(d1)
 
