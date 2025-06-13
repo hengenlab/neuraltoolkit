@@ -23,6 +23,9 @@ highd_data_tsne(data, perplexity=30.0, n_components=2,
 # Load Ecube HS data and grab data within range
 def highd_data_umap(data, n_neighbors=40, n_components=2,
                     metric='euclidean', min_dist=0.2,
+                    learning_rate=1.0,
+                    init='spectral',
+                    random_state=None,
                     verbose=True):
 
     '''
@@ -42,23 +45,26 @@ def highd_data_umap(data, n_neighbors=40, n_components=2,
 
     embedding = umap.UMAP(n_neighbors=n_neighbors, n_components=n_components,
                           metric=metric, n_epochs=None,
-                          learning_rate=1.0, init='spectral',
+                          learning_rate=learning_rate, init=init,
                           min_dist=min_dist, spread=1.0, set_op_mix_ratio=1.0,
                           local_connectivity=1.0, repulsion_strength=1.0,
                           negative_sample_rate=5, transform_queue_size=4.0,
-                          a=None, b=None, random_state=None,
+                          a=None, b=None, random_state=random_state,
                           metric_kwds=None, angular_rp_forest=False,
                           target_n_neighbors=-1,
                           target_metric='categorical',
                           target_metric_kwds=None,
                           target_weight=0.5, transform_seed=42,
-                          verbose=verbose).fit_transform(data[:, 0:])
+                          verbose=verbose).fit_transform(data)
 
     return embedding
 
 
 def highd_data_tsne(data, perplexity=30.0, n_components=2,
                     metric='euclidean', n_iter=3000,
+                    init='random',
+                    learning_rate='auto',
+                    random_state=None,
                     verbose=True):
 
     '''
@@ -75,12 +81,12 @@ def highd_data_tsne(data, perplexity=30.0, n_components=2,
     except ImportError:
         raise ImportError('Run : conda install scikit-learn')
     embedding = TSNE(n_components=n_components, perplexity=perplexity,
-                     early_exaggeration=12.0, learning_rate=200.0,
+                     early_exaggeration=12.0, learning_rate=learning_rate,
                      n_iter=n_iter, n_iter_without_progress=300,
                      min_grad_norm=1e-07, metric=metric,
-                     init='random',
-                     verbose=0, random_state=None,
+                     init=init,
+                     verbose=0, random_state=random_state,
                      method='barnes_hut', angle=0.5
-                     ).fit_transform(data[:, 0:])
+                     ).fit_transform(data)
 
     return embedding
