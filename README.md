@@ -1017,7 +1017,7 @@ ntk.find_edges_from_consecutive(data, step=1, lverbose=0)
 # Out: [[0, 0], [47, 50], [97, 99]]
 ```
 
-#### Convert a NumPy array to a MATLAB .mat file
+#### $\textcolor{#81d8d0}{\textbf{Convert a NumPy array to a MATLAB .mat file}}$
 ```
 import neuraltoolkit as ntk
 # my_array (numpy.ndarray): The NumPy array to convert.
