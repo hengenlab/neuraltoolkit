@@ -1231,7 +1231,7 @@ for probenum in range(nprobes_to_check):
 
 
 
-## high dimensional data
+### $\textcolor{#6897bb}{\textbf{High dimensional data}}$
 
 #### TSNE
 ```
