@@ -1233,7 +1233,7 @@ for probenum in range(nprobes_to_check):
 
 ### $\textcolor{#6897bb}{\textbf{High dimensional data}}$
 
-#### TSNE
+#### $\textcolor{#81d8d0}{\textbf{TSNE}}$
 ```
 import numpy as np
 import matplotlib.pyplot as plt
