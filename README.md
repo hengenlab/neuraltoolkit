@@ -1249,7 +1249,7 @@ u = ntk.highd_data_tsne(data, perplexity=30.0, n_components=2,
 plt.scatter(u[:,0], u[:,1], c=data)
 ```
 
-#### UMAP
+#### $\textcolor{#81d8d0}{\textbf{UMAP}}$
 ```
 import numpy as np
 import matplotlib.pyplot as plt
