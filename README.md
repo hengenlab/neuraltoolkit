@@ -1265,7 +1265,7 @@ u = ntk.highd_data_umap(data, n_neighbors=40, n_components=2,
 plt.scatter(u[:,0], u[:,1], c=data)
 ```
 
-## math
+### $\textcolor{#6897bb}{\textbf{Math}}$
 #### Interpolates the data vector
 ```
 # Interpolates the data vector `dvec` by increasing the number of samples in `tvec` by a factor of `nfact`.
