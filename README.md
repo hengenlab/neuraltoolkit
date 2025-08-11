@@ -1266,7 +1266,7 @@ plt.scatter(u[:,0], u[:,1], c=data)
 ```
 
 ### $\textcolor{#6897bb}{\textbf{Math}}$
-#### Interpolates the data vector
+#### $\textcolor{#81d8d0}{\textbf{Interpolates the data vector}}$
 ```
 # Interpolates the data vector `dvec` by increasing the number of samples in `tvec` by a factor of `nfact`.
 import neuraltoolkit as ntk
