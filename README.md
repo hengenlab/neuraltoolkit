@@ -91,7 +91,7 @@ fs = 25000 # sampling rate
 
 number_of_channels = probechans * nprobes
 hstype = ['APT_PCB'] * nprobes   # Channel map
-# If you have 'IMU' as last probe uncomment these two lines below
+# If you have 'IMU' as last probe uncomment these two lines below, remember nprobes includes IMU also
 # hstype = ['APT_PCB'] * (nprobes-1)   # Channel map
 # hstype.append('IMU')
 
