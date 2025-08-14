@@ -85,13 +85,15 @@ import matplotlib.pyplot as plt
 # Load only one probe from raw file
 rawfile = '/home/kbn/Headstages_512_Channels_int16_2019-06-21_03-55-09.bin'
 nprobes = 8 # number of probes
+# nprobes = 8 with no IMU means 8 probes with data (64 channels each)
+# nprobes = 8 with  IMU means 7 probes with data (64 channels each) and 1 probe with IMU channels (64 channel)
 probenum = 0  # which probe to return (starts from zero)
 probechans = 64  #  number of channels per probe (symmetric)
 fs = 25000 # sampling rate
 
 number_of_channels = probechans * nprobes
 hstype = ['APT_PCB'] * nprobes   # Channel map
-# If you have 'IMU' as last probe uncomment these two lines below, remember nprobes includes IMU also
+# If you have 'IMU' as last probe uncomment these two lines below
 # hstype = ['APT_PCB'] * (nprobes-1)   # Channel map
 # hstype.append('IMU')
 
