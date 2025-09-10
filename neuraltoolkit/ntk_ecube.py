@@ -1181,3 +1181,36 @@ def check_missing_files(file_list=None, total_seconds=300):
         sys.stderr.write("Check whether there is any missing files, should be "
                          + str(nfiles) + " got " +
                          str(len(file_list)))
+
+
+def load_analog_binary_allchannels(name, t_only=0, channel=-1,
+                                   num_channels=10):
+
+    '''
+    load ecube analog data all channels
+    load_analog_binary_allchannels(analograwfile, t_only=0, channel=-1,
+                                   num_channels=10)
+    returns first timestamp and data
+
+    name : analog binary file name with path
+    t_only  : if t_only=1, just return tr, timestamp
+              (Default 0, returns timestamp and data)
+    channel : -1, return all 10 channel, else enter channel number to return
+    num_channels: 10 default, number of channels
+
+    tang, dang = load_analog_binary_allchannels(analograwfile, t_only=0,
+                                                channel=-1, num_channels=10)
+    '''
+
+    with open(name, 'rb') as f:
+        tr = np.fromfile(f, dtype=np.uint64, count=1)
+        if t_only:
+            return tr
+        dr_bytes = np.fromfile(f, dtype='<i2')
+        dr = dr_bytes.reshape((-1, 10))
+        dr = dr.T
+
+        if channel == -1:
+            return tr, dr
+        elif channel > -1:
+            return tr, dr[channel, :]
