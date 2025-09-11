@@ -188,7 +188,7 @@ ntk.plot_data_chlist(dgc, data_beg=0, data_end=2500, ch_list=ch_list,
 ```
 ---
 
-#### $\textcolor{#81d8d0}{\textbf{Load all digital channels new api digital files outputs}}$
+#### $\textcolor{#81d8d0}{\textbf{Load all data from digital channels, new api digital files}}$
 ```
 import neuraltoolkit as ntk
 import matplotlib.pyplot as plt
@@ -228,6 +228,32 @@ t, d = ntk.load_digital_binary_allchannels(name, t_only=t_only, channel=channel)
 # d contains only second digital channel
 print("sh d ", d.shape)
 plt.plot(d[0:10000])
+plt.show()
+```
+---
+
+#### $\textcolor{#81d8d0}{\textbf{Load all data from analog channels}}$
+```
+import neuraltoolkit as ntk
+import matplotlib.pyplot as plt
+
+analograwfile = '/home/kbn/AnalogPanel_10_Channels_int16_2025-09-10_14-08-32.bin'
+
+# t_only  : if t_only=1, just return  timestamp
+#           (Default 0, returns timestamp and data)
+
+# if channel = -1 returns all channels, if not returns that channel
+# Please remember channel number here starts from 0.
+
+# Default (num_channels=10), total number of channels
+
+t, da = ntk.load_analog_binary_allchannels(analograwfile, t_only=0, channel=-1,
+                               num_channels=10)
+
+# Plot all 10 channels first 1 seconds data
+fig, ax = plt.subplots(nrows=10, ncols=1, figsize=(40, 10), sharex=True, sharey=True)
+for i in range(10):
+    ax[i].plot(da[i,  0:25000])
 plt.show()
 ```
 ---
