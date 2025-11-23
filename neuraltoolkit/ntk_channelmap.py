@@ -248,7 +248,7 @@ def find_channel_map(hstype, number_of_channels=None):
                              55, 45, 48, 61, 63, 51, 56, 62, 64, 53,
                              58, 59, 60]) - 1
 
-    elif hstype == "Interim_PCB_JJM15":
+    elif hstype == "Interim_PCB_JJM14":
         chan_map = np.array([1, 50, 52, 57, 2, 10, 11, 13, 3, 7, 8, 64, 4, 51,
                              58, 60, 5, 6, 27, 59, 9, 18, 19, 28, 12, 55, 61,
                              63, 14, 16, 24, 39, 15, 29, 34, 37, 17, 45, 47,
