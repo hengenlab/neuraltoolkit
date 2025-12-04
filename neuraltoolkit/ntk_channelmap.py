@@ -84,7 +84,14 @@ def find_channel_map(hstype, number_of_channels=None):
              'UCLA_Si1'
              'PCB_tetrode', 'EAB50chmap_00',
 
-             'APT_PCB'
+             'UCLA_revc', 'WM_PCB',
+             'WM_PCB_flip', "Interim_PCB",
+             "Interim_PCB2", "Interim_PCB3_JJM01",
+             "Interim_PCB_GBT01", "Interim_PCB_JJM14",
+             "Interim_PCB_GBT02", "Interim_PCB_GBT03",
+
+             'APT_PCB',
+             'IMU',
              and 'linear'
 
     number_of_channels default(None). For hstype 'linear' provide
