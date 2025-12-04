@@ -19,7 +19,7 @@ except Exception as e:
 
 setup(
    name='neuraltoolkit',
-   version='0.4.0',
+   version='0.4.2',
    description='A powerful and fast set of tools for loading data, filtering,\
                 processing, working with data formats, and basic utilities for\
                 electrophysiology and behavioral data.',
