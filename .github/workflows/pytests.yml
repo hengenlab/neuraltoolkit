@@ -22,7 +22,13 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y libhdf5-dev
+          sudo apt-get install -y \
+            libhdf5-dev \
+            libbz2-dev \
+            liblzo2-dev \
+            libblosc-dev \
+            build-essential \
+            python3-dev
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
