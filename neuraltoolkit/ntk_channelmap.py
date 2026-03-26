@@ -82,18 +82,20 @@ def find_channel_map(hstype, number_of_channels=None):
              Si_64_KT_T1_K2_chmap includes 5-KT. and  5-K2. probe
 
              'UCLA_Si1'
-             'PCB_tetrode', 'EAB50chmap_00',
+             'UCLA_revc'
 
-             'UCLA_revc', 'WM_PCB',
+             'PCB_tetrode', 'EAB50chmap_00',
+             'APT_PCB',
+             'WM_PCB',
              'WM_PCB_flip', "Interim_PCB",
              "Interim_PCB2",
              "Interim_PCB_GBT01",
              "Interim_PCB_GBT02", "Interim_PCB_GBT03",
              "Interim_PCB_GBT01_JZ_v2"
 
-             'APT_PCB',
              'IMU',
              and 'linear'
+
 
     number_of_channels default(None). For hstype 'linear' provide
              number_of_channels, usually 64 and 32
