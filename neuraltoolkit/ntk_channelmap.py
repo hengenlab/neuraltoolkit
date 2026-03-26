@@ -86,9 +86,10 @@ def find_channel_map(hstype, number_of_channels=None):
 
              'UCLA_revc', 'WM_PCB',
              'WM_PCB_flip', "Interim_PCB",
-             "Interim_PCB2", "Interim_PCB3_JJM01",
-             "Interim_PCB_GBT01", "Interim_PCB_JJM14",
+             "Interim_PCB2",
+             "Interim_PCB_GBT01",
              "Interim_PCB_GBT02", "Interim_PCB_GBT03",
+             "Interim_PCB_GBT01_JZ_v2"
 
              'APT_PCB',
              'IMU',
@@ -97,6 +98,8 @@ def find_channel_map(hstype, number_of_channels=None):
     number_of_channels default(None). For hstype 'linear' provide
              number_of_channels, usually 64 and 32
     '''
+    # "Interim_PCB3_JJM01",
+    # "Interim_PCB_JJM14",
 
     # Ecube HS-64
     if hstype == 'hs64':
@@ -239,13 +242,13 @@ def find_channel_map(hstype, number_of_channels=None):
                              24, 32, 33, 52, 5, 45, 46, 20, 18, 21, 23, 64,
                              1, 3, 8, 48]) - 1
 
-    elif hstype == "Interim_PCB3_JJM01":
-        chan_map = np.array([1,  5,  8, 44,  2,  4,  6,  7,  3, 12, 43, 58,
-                             9, 14, 17, 18, 10, 11, 13, 15, 16, 19, 20, 24,
-                             21, 23, 29, 59, 22, 25, 28, 53, 26, 31, 34, 38,
-                             27, 30, 37, 41, 32, 50, 55, 57, 33, 36, 46, 52,
-                             35, 40, 47, 49, 39, 42, 54, 62, 45, 48, 61, 63,
-                             51, 56, 60, 64]) - 1
+    # elif hstype == "Interim_PCB3_JJM01":
+    #     chan_map = np.array([1,  5,  8, 44,  2,  4,  6,  7,  3, 12, 43, 58,
+    #                          9, 14, 17, 18, 10, 11, 13, 15, 16, 19, 20, 24,
+    #                          21, 23, 29, 59, 22, 25, 28, 53, 26, 31, 34, 38,
+    #                          27, 30, 37, 41, 32, 50, 55, 57, 33, 36, 46, 52,
+    #                          35, 40, 47, 49, 39, 42, 54, 62, 45, 48, 61, 63,
+    #                          51, 56, 60, 64]) - 1
 
     elif hstype == "Interim_PCB_GBT01":
         chan_map = np.array([1, 3, 5, 8, 2, 4, 6, 7, 9, 12, 14, 17, 10, 11, 13,
@@ -255,21 +258,21 @@ def find_channel_map(hstype, number_of_channels=None):
                              55, 45, 48, 61, 63, 51, 56, 62, 64, 53,
                              58, 59, 60]) - 1
 
-    elif hstype == "Interim_PCB_JJM14":
-        chan_map = np.array([1, 50, 52, 57, 2, 10, 11, 13, 3, 7, 8, 64, 4, 51,
-                             58, 60, 5, 6, 27, 59, 9, 18, 19, 28, 12, 55, 61,
-                             63, 14, 16, 24, 39, 15, 29, 34, 37, 17, 45, 47,
-                             49, 20, 36, 43, 54, 21, 22, 23, 48, 25, 30, 40,
-                             44, 26, 31, 32, 35, 33, 38, 42, 46, 41, 53,
-                             56, 62]) - 1
+    # elif hstype == "Interim_PCB_JJM14":
+    #     chan_map = np.array([1,50, 52, 57, 2, 10, 11, 13, 3, 7, 8, 64, 4, 51,
+    #                          58, 60, 5, 6, 27, 59, 9, 18, 19, 28, 12, 55, 61,
+    #                          63, 14, 16, 24, 39, 15, 29, 34, 37, 17, 45, 47,
+    #                          49, 20, 36, 43, 54, 21, 22, 23, 48, 25, 30, 40,
+    #                          44, 26, 31, 32, 35, 33, 38, 42, 46, 41, 53,
+    #                          56, 62]) - 1
 
-    elif hstype == "Interim_PCB_JJM18":
-        chan_map = np.array([1, 5, 6, 8, 2, 4, 40, 43, 3, 12, 29, 47, 7, 9,
-                             14, 17, 10, 11, 13, 15, 16, 19, 20, 24, 18, 21,
-                             23, 26, 22, 25, 28, 32, 27, 30, 37, 41, 31, 34,
-                             35, 38, 33, 36, 46, 52, 39, 42, 54, 57, 44, 49,
-                             50, 55, 45, 48, 61, 63, 51, 56, 62, 64, 53, 58,
-                             59, 60]) - 1
+    # elif hstype == "Interim_PCB_JJM18":
+    #     chan_map = np.array([1, 5, 6, 8, 2, 4, 40, 43, 3, 12, 29, 47, 7, 9,
+    #                          14, 17, 10, 11, 13, 15, 16, 19, 20, 24, 18, 21,
+    #                          23, 26, 22, 25, 28, 32, 27, 30, 37, 41, 31, 34,
+    #                          35, 38, 33, 36, 46, 52, 39, 42, 54, 57, 44, 49,
+    #                          50, 55, 45, 48, 61, 63, 51, 56, 62, 64, 53, 58,
+    #                          59, 60]) - 1
 
     elif hstype == "Interim_PCB_GBT02":
         chan_map = np.array([1, 27, 43, 54, 30, 39, 42, 45, 11, 26, 32, 34,
