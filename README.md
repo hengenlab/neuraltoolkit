@@ -1533,6 +1533,19 @@ print(f"d: {result_ntk_power_t_test.rx2('d')[0]}")
          
 
 ```
+
+
+
+9-axis digital Inertial Motion Unit (IMU) integrates a 3-axis gyroscope, 3-axis accelerometer
+and 3-axis compass, with user-definable settings.
+
+With IMU channel map,
+channels 0, 1, 2 are 3-axis accelerometer.
+channels 3, 4, 5 are 3-axis gyroscope.
+channels 6, 7, 8 are 3-axis compass
+
+Please remember, channel number here starts with 0.
+```
 <!-- 
 #### 'Interim_PCB3_JJM01'
        [ 1,  5,  8, 44,  2,  4,  6,  7,  3, 12, 43, 58,  9, 14, 17, 18, 10,
@@ -1546,18 +1559,6 @@ print(f"d: {result_ntk_power_t_test.rx2('d')[0]}")
          49, 20, 36, 43, 54, 21, 22, 23, 48, 25, 30, 40,
          44, 26, 31, 32, 35, 33, 38, 42, 46, 41, 53, 56, 62]
 -->
-
-
-9-axis digital Inertial Motion Unit (IMU) integrates a 3-axis gyroscope, 3-axis accelerometer
-and 3-axis compass, with user-definable settings.
-
-With IMU channel map,
-channels 0, 1, 2 are 3-axis accelerometer.
-channels 3, 4, 5 are 3-axis gyroscope.
-channels 6, 7, 8 are 3-axis compass
-
-Please remember, channel number here starts with 0.
-```
 
 --- 
 ## sync
