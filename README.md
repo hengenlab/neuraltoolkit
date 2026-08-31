@@ -114,7 +114,7 @@ highpass = 500
 lowpass = 7500
 bdgc = ntk.butter_bandpass(dgc, highpass, lowpass, fs, order=3)
 
-# lowpass filter for lfp
+# lowpass filter for LFP
 lowpass = 250
 lfp = ntk.butter_lowpass(dgc, lowpass, fs, order=3)
 
