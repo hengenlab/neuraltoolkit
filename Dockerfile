@@ -16,6 +16,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 # - ffmpeg: Required for video encoding/decoding in OpenCV and Torchvision
 RUN apt-get update && apt-get install -y --no-install-recommends \
     vim \
+    nano \
     git \
     gcc \
     g++ \
