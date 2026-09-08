@@ -59,6 +59,9 @@ RUN pip install --no-cache-dir \
 # Install neuraltoolkit directly from the GitHub repository
 RUN pip install \
     --no-cache-dir git+https://github.com/hengenlab/neuraltoolkit.git
+# Install musclebeachtools directly from the GitHub repository
+RUN pip install \
+    --no-cache-dir git+https://github.com/hengenlab/musclebeachtools.git
 
 # # Expose port 8888 for running Jupyter Lab sessions
 # EXPOSE 8888
