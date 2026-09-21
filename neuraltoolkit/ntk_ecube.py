@@ -23,6 +23,7 @@ light_dark_transition(datadir, l7ampm=0, lplot=0)
 '''
 
 import os
+import os.path as op
 import sys
 import struct
 try:
@@ -812,12 +813,13 @@ def samples_between_two_binfiles(binfile1, binfile2, number_of_channels,
 
 
 def delete_probe(name, number_of_channels, hstype, nprobes=1,
-                 probenum=0, probechans=64):
+                 probenum=0, probechans=64,
+                 outdir=None):
 
     '''
     delete a probes data, replace rawfile
     delete_probe(name, number_of_channels, hstype, nprobes=1,
-                 probenum=0, probechans=64)
+                 probenum=0, probechans=64,outdir=None)
 
     name - name of file
     number_of_channels - number of channels
@@ -825,6 +827,7 @@ def delete_probe(name, number_of_channels, hstype, nprobes=1,
     nprobes : Number of probes (default 1)
     probenum : which probe to delete (starts from zero)
     probechans : number of channels per probe (symmetric)
+    outdir: output directory (default None)
 
     '''
     # remove gain after debug
@@ -888,9 +891,15 @@ def delete_probe(name, number_of_channels, hstype, nprobes=1,
     drr = np.int16(drr)
     drr = np.delete(drr, np.arange(((probenum)*probechans),
                                    ((probenum+1)*probechans), 1), axis=0)
-    file_string = name.split('_')
+    file_string_path = op.dirname(name)
+    file_string_name = op.basename(name)
+    file_string = file_string_name.split('_')
     file_string[1] = str(int(number_of_channels - probechans))
     filename = '_'.join(file_string)
+    if outdir is None:
+        filename = op.join(file_string_path, filename)
+    else:
+        filename = op.join(outdir, filename)
     # print("type tr[0] ", type(tr[0]))
     # print("dtype tr[0] ", tr[0].dtype)
     make_binaryfiles_ecubeformat(tr[0], drr,
