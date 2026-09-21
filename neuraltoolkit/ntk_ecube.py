@@ -812,24 +812,27 @@ def samples_between_two_binfiles(binfile1, binfile2, number_of_channels,
     return samples_between
 
 
-def delete_probe(name, number_of_channels, hstype, nprobes=1,
+def delete_probe(name, number_of_channels,
+                 # hstype,
+                 nprobes=1,
                  probenum=0, probechans=64,
                  outdir=None):
 
     '''
     delete a probes data, replace rawfile
-    delete_probe(name, number_of_channels, hstype, nprobes=1,
+    delete_probe(name, number_of_channels, nprobes=1,
                  probenum=0, probechans=64,outdir=None)
 
     name - name of file
     number_of_channels - number of channels
-    hstype : Headstage type, 'hs64'
     nprobes : Number of probes (default 1)
     probenum : which probe to delete (starts from zero)
     probechans : number of channels per probe (symmetric)
     outdir: output directory (default None)
 
     '''
+    # hstype : Headstage type, 'hs64'
+
     # remove gain after debug
     # gain = np.float64(0.19073486328125)
     # gain = 1
@@ -848,11 +851,12 @@ def delete_probe(name, number_of_channels, hstype, nprobes=1,
         raise ValueError("number of channels/probechans != nprobes")
 
     # check hstype
-    if isinstance(hstype, str):
-        hstype = [hstype]
+    # hstype = ['linear'] * nprobes
+    # if isinstance(hstype, str):
+    #     hstype = [hstype]
 
-    assert len(hstype) == nprobes, \
-        'length of hstype not same as nprobes'
+    # assert len(hstype) == nprobes, \
+    #     'length of hstype not same as nprobes'
 
     # check nprobes
     if ((nprobes < 1) or (nprobes > 10)):
