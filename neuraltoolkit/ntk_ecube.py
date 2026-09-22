@@ -814,21 +814,22 @@ def samples_between_two_binfiles(binfile1, binfile2, number_of_channels,
 
 def delete_probe(name, number_of_channels,
                  # hstype,
-                 nprobes=1,
-                 probenum=0, probechans=64,
+                 nprobes,
+                 probenum, probechans=64,
                  outdir=None):
 
     '''
-    delete a probes data, replace rawfile
-    delete_probe(name, number_of_channels, nprobes=1,
-                 probenum=0, probechans=64,outdir=None)
+    delete a probes data, create new rawfile
+    delete_probe(name, number_of_channels, nprobes,
+                 probenum, probechans=64, outdir=None)
 
     name - name of file
     number_of_channels - number of channels
-    nprobes : Number of probes (default 1)
+    nprobes : Number of probes
     probenum : which probe to delete (starts from zero)
-    probechans : number of channels per probe (symmetric)
-    outdir: output directory (default None)
+    probechans : number of channels per probe (symmetric). Default 64.
+    outdir: output directory (default None,
+                              saves in the same folder where file was)
 
     '''
     # hstype : Headstage type, 'hs64'
