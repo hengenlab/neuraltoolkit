@@ -313,7 +313,10 @@ probenum : which probe to delete (starts from zero)
 probechans : number of channels per probe (symmetric). Default 64.
 outdir: output directory (default None, saves in the same folder where file was)
 ```
-[Example jupyter notebook]([https://github.com/hengenlab/neuraltoolkit?tab=readme-ov-file#textcolor6897bbchannel-mappings](https://github.com/hengenlab/neuraltoolkit/blob/master/scripts/test_delete_probe.ipynb))     
+
+
+[Example Jupyter notebook for `ntk.delete_probe`](https://github.com/hengenlab/neuraltoolkit/blob/master/scripts/test_delete_probe.ipynb)
+
 ---
 
 #### $\textcolor{#81d8d0}{\textbf{Create channel mapping file for Open Ephys}}$
