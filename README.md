@@ -299,6 +299,7 @@ samples_between = ntk.samples_between_two_binfiles(binfile1, binfile2, number_of
 ---
 
 #### $\textcolor{#81d8d0}{\textbf{Delete a bad probe or IMU probe after data extraction}}$
+$\textcolor{#ff4040}{\textbf{Please be careful when using this function.}}$
 ```
 # delete a probes data, create new rawfile
 
@@ -312,7 +313,7 @@ probenum : which probe to delete (starts from zero)
 probechans : number of channels per probe (symmetric). Default 64.
 outdir: output directory (default None, saves in the same folder where file was)
 ```
-
+[Example jupyter notebook]([https://github.com/hengenlab/neuraltoolkit?tab=readme-ov-file#textcolor6897bbchannel-mappings](https://github.com/hengenlab/neuraltoolkit/blob/master/scripts/test_delete_probe.ipynb))     
 ---
 
 #### $\textcolor{#81d8d0}{\textbf{Create channel mapping file for Open Ephys}}$
