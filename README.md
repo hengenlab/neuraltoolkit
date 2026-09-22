@@ -298,6 +298,23 @@ samples_between = ntk.samples_between_two_binfiles(binfile1, binfile2, number_of
 
 ---
 
+#### $\textcolor{#81d8d0}{\textbf{Delete a bad probe or IMU probe after data extraction}}$
+```
+# delete a probes data, create new rawfile
+
+ntk.delete_probe(name, number_of_channels, nprobes,
+                 probenum, probechans=64, outdir=None)
+
+name : name of file with path
+number_of_channels : number of channels
+nprobes : Number of probes
+probenum : which probe to delete (starts from zero)
+probechans : number of channels per probe (symmetric). Default 64.
+outdir: output directory (default None, saves in the same folder where file was)
+```
+
+---
+
 #### $\textcolor{#81d8d0}{\textbf{Create channel mapping file for Open Ephys}}$
 
 ```
