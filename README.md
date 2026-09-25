@@ -298,6 +298,46 @@ samples_between = ntk.samples_between_two_binfiles(binfile1, binfile2, number_of
 
 ---
 
+#### $\textcolor{#81d8d0}{\textbf{Find IMU channels}}$
+Verify this result against multiple dgc from different Headstage files
+```
+import neuraltoolkit as ntk
+import numpy as np
+import matplotlib.pyplot as plt
+
+import neuraltoolkit as ntk
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Load only one probe from raw file
+rawfile = '/home/kiranbn/Headstages_128_Channels_int16_2025-05-21_23-33-27.bin'
+nprobes = 2 # number of probes
+probenum = 1  # which probe to return (starts from zero)
+probechans = 64  #  number of channels per probe (symmetric)
+fs = 25000 # sampling rate
+
+number_of_channels = probechans * nprobes
+# hstype = ['APT_PCB'] * nprobes   # Channel map
+# If you have 'IMU' as last probe uncomment these two lines below
+hstype = ['APT_PCB'] * (nprobes-1)   # Channel map
+hstype.append('IMU')
+
+# ts = 0, start from begining of file or can be any sample number
+# te = 2500, read 2500 sample points from ts ( te greater than ts)
+# if ts =0 and te = -1,  read from begining to end of file
+ts = 0
+te = 25000 * 10 #-1
+
+t, dgc = ntk.load_raw_gain_chmap_1probe(rawfile, number_of_channels,
+                                        hstype, nprobes=nprobes,
+                                        lraw=1, ts=ts, te=te,
+                                        probenum=probenum,
+                                        probechans=probechans)
+
+ntk.find_IMU_channels(dgc)
+```
+
+---
 #### $\textcolor{#81d8d0}{\textbf{Delete a bad probe or IMU probe after data extraction}}$
 $\textcolor{#ff4040}{\textbf{Please be careful when using this function.}}$
 ```
