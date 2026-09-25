@@ -1266,7 +1266,7 @@ def find_IMU_channels(dgc, min_repeat=9, max_repeat=20):
         if min_repeat <= median_length <= max_repeat:
             matches.append(ch)
             print(f"Channel {ch}: median repeat length = {median_length:g}")
-        print('Verify this result against multiple dgc')
-        print('from different Headstage files')
+    print('Verify this result against multiple dgc')
+    print('from different Headstage files')
 
     return matches
