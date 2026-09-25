@@ -305,10 +305,6 @@ import neuraltoolkit as ntk
 import numpy as np
 import matplotlib.pyplot as plt
 
-import neuraltoolkit as ntk
-import numpy as np
-import matplotlib.pyplot as plt
-
 # Load only one probe from raw file
 rawfile = '/home/kiranbn/Headstages_128_Channels_int16_2025-05-21_23-33-27.bin'
 nprobes = 2 # number of probes
