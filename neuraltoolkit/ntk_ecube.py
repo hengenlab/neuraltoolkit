@@ -1228,3 +1228,45 @@ def load_analog_binary_allchannels(name, t_only=0, channel=-1,
             return tr, dr
         elif channel > -1:
             return tr, dr[channel, :]
+
+
+def find_IMU_channels(dgc, min_repeat=9, max_repeat=20):
+    """
+    Check all channels (rows) in dgc. Adjacent values differing by at most 1
+    belong to the same run.
+    Return channels whose median run length is within [min_repeat, max_repeat].
+    Remember to double check this can fail
+
+    find_IMU_channels(dgc, min_repeat=9, max_repeat=20)
+    returns IMU channels
+
+    dgc : data after running function ntk.load_raw_gain_chmap_1probe
+    min_repeat, max_repeat: Default values 9 and 20
+    """
+
+    matches = None
+    matches = []
+
+    # Loop through all channels
+    for ch in range(dgc.shape[0]):
+        x = np.asarray(dgc[ch, :])
+
+        boundaries = np.r_[
+            0,
+            np.flatnonzero(np.abs(np.diff(x.astype(np.float64))) > 1) + 1,
+            len(x),
+        ]
+        lengths = np.diff(boundaries)
+        lengths = lengths[lengths > 1]
+
+        if len(lengths) == 0:
+            continue
+
+        median_length = np.median(lengths)
+        if min_repeat <= median_length <= max_repeat:
+            matches.append(ch)
+            print(f"Channel {ch}: median repeat length = {median_length:g}")
+        print('Verify this result against multiple dgc')
+        print('from different Headstage files')
+
+    return matches
