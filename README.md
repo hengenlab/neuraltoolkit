@@ -299,7 +299,7 @@ samples_between = ntk.samples_between_two_binfiles(binfile1, binfile2, number_of
 ---
 
 #### $\textcolor{#81d8d0}{\textbf{Find IMU channels}}$
-Verify this result against multiple dgc from different Headstage files
+$\textcolor{#ff4040}{\textbf{Verify this result against multiple dgc from different Headstage files.}}$
 ```
 import neuraltoolkit as ntk
 import numpy as np
