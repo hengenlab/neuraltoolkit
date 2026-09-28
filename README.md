@@ -1112,7 +1112,8 @@ naturally_sorted_list = ntk.natural_sort(list_unsorted)
 # allow_empty: A boolean flag indicating whether an empty file_list should return True or False.
 #              By default, it is set to False and raise Valueerror.
 # returns: True if all files have almost similar sizes within the specified threshold. False otherwise.
-ntk.check_similar_sizes(file_list=file_list, threshold=0.01, allow_empty=False)
+if not ntk.check_similar_sizes(file_list, threshold=0.01, allow_empty=False):
+    raise RuntimeError("check all files have similar sizes")
 ```
 
 ```
