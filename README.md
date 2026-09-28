@@ -297,6 +297,29 @@ samples_between = ntk.samples_between_two_binfiles(binfile1, binfile2, number_of
 ```
 
 ---
+#### $\textcolor{#81d8d0}{\textbf{Find missing files}}$
+$\textcolor{#ff4040}{\textbf{Verify this before sorting}}$
+```
+import neuraltoolkit as ntk
+import numpy as np
+import glob
+
+file_paths = np.sort(glob.glob('/home/kiranbn/Headstages_64_Channels_int16_2025-05-12_*.bin'))
+print(f'Number of files {len(file_paths)}')
+
+# check there is missing files in the file list
+# file_paths : List of *.bin ecube files
+# total_seconds : total_seconds between files, default 300 seconds
+# lruntimeerror: Default 1, exit with RuntimeError if missing files
+#                0 just report warnings
+#
+# return :
+ntk.check_missing_files(file_paths, total_seconds=300, lruntimeerror=1)
+```
+
+
+---
+
 
 #### $\textcolor{#81d8d0}{\textbf{Find IMU channels}}$
 $\textcolor{#ff4040}{\textbf{Verify this result against multiple dgc from different Headstage files.}}$
