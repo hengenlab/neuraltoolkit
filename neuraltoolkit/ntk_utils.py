@@ -247,6 +247,9 @@ def check_similar_sizes(file_list=None, threshold=0.01,
     # Check if all file sizes are within the threshold of the average size
     for size in file_sizes:
         if abs(size - avg_size) > threshold * avg_size:
+            # print smallest 10 files to help user
+            for i in np.argsort(file_sizes)[:10]:
+                print(f"{file_sizes[i]:>14,} bytes  {file_list[i]}")
             return False
     return True
 
