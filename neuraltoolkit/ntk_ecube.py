@@ -1152,9 +1152,18 @@ def add_missing_files_with_random_noise(HS_file1, HS_file2,
         msfile.close()
 
 
-def check_missing_files(file_list=None, total_seconds=300):
+def check_missing_files(file_list=None, total_seconds=300,
+                        lruntimeerror=1):
     '''
     check there is missing files in the file list
+    return lmissing, 1 if files missing, 0 if no files missing
+
+    file_list : List of *.bin ecube files
+    total_seconds : total_seconds between files, default 300 seconds
+    lruntimeerror: Default 1, exit with RuntimeError if missing files
+                   0 just report warnings
+
+    return :
     '''
     # import os
     # import sys
@@ -1164,6 +1173,7 @@ def check_missing_files(file_list=None, total_seconds=300):
 
     # max_delta = 30
     # max_min = 5
+
     HS_file_start = file_list[0]
     HS_file_end = file_list[-1]
 
@@ -1186,7 +1196,6 @@ def check_missing_files(file_list=None, total_seconds=300):
         + 1
     print("nfiles ", nfiles, " len(file_list) ", len(file_list))
     if nfiles != len(file_list):
-        #  raise ValueError("Check whether these is any missing files")
         print("Check whether there is any missing files, should be ", nfiles,
               " got ", len(file_list))
         print("Check whether there is any missing files, should be ",
@@ -1195,6 +1204,8 @@ def check_missing_files(file_list=None, total_seconds=300):
         sys.stderr.write("Check whether there is any missing files, should be "
                          + str(nfiles) + " got " +
                          str(len(file_list)))
+        if lruntimeerror:
+            raise RuntimeError("Check whether there is any missing files")
 
 
 def load_analog_binary_allchannels(name, t_only=0, channel=-1,
