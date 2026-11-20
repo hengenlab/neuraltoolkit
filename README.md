@@ -377,9 +377,26 @@ probenum : which probe to delete (starts from zero)
 probechans : number of channels per probe (symmetric). Default 64.
 outdir: output directory (default None, saves in the same folder where file was)
 ```
-
-
 [Example Jupyter notebook for `ntk.delete_probe`](https://github.com/hengenlab/neuraltoolkit/blob/master/scripts/test_delete_probe.ipynb)
+
+#### $\textcolor{#81d8d0}{\textbf{Delete IMU probe only if it is the last probe use this}}$
+```
+#delete last probe (IMU) data, create new rawfile
+ntk.delete_IMU_probe(name, number_of_channels, nprobes,
+                     probechans=64, outdir=None,
+                     block_samples=1000000,
+                     lverbose=1)
+#    name - name of file
+#    number_of_channels - number of channels
+#    nprobes : Number of probes (IMU is the last probe)
+#    probechans : number of channels per probe (symmetric).
+#                 Default 64.
+#    outdir: output directory (default None,
+#                              saves in the same folder where file was)
+#    block_samples : samples read per block (default 1000000)
+#    lverbose : 0 for less verbose and 1 for more verbose
+```
+
 
 ---
 
