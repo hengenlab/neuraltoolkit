@@ -1284,3 +1284,80 @@ def find_IMU_channels(dgc, min_repeat=9, max_repeat=20,
     print('from different Headstage files')
 
     return matches
+
+
+def delete_IMU_probe(name, number_of_channels, nprobes,
+                     probechans=64, outdir=None,
+                     block_samples=1000000,
+                     lverbose=1):
+
+    '''
+    delete last probe (IMU) data, create new rawfile
+    delete_IMU_probe(name, number_of_channels, nprobes,
+                     probechans=64, outdir=None,
+                     block_samples=1000000,
+                     lverbose=1)
+
+    name - name of file
+    number_of_channels - number of channels
+    nprobes : Number of probes (IMU is the last probe)
+    probechans : number of channels per probe (symmetric).
+                 Default 64.
+    outdir: output directory (default None,
+                              saves in the same folder where file was)
+    block_samples : samples read per block (default 1000000)
+    lverbose : 0 for less verbose and 1 for more verbose
+
+    '''
+
+    # check file exists
+    if not (os.path.exists(name) and os.path.isfile(name)):
+        raise FileNotFoundError("File {} does not exists".format(name))
+
+    # check probechans, currently probechans are only 64
+    if not (probechans == 64):
+        raise ValueError("Check probechans {}".format(probechans))
+
+    # check nprobes, need at least one probe left after delete
+    if ((nprobes < 2) or (nprobes > 10)):
+        raise ValueError("Please check nprobes {}".format(nprobes))
+
+    # check number_of_channels factor of nprobes
+    if ((number_of_channels/probechans) != nprobes):
+        raise ValueError("number of channels/probechans != nprobes")
+
+    # check file size matches number_of_channels
+    # 8 bytes timestamp, then int16 for every channel and sample
+    datasize = os.path.getsize(name) - 8
+    if datasize % (number_of_channels * 2) != 0:
+        raise ValueError("File size does not match number of channels")
+
+    if lverbose:
+        print("Please make changes in labnotes to reflect deletion of "
+              "IMU probe")
+        print("Deleting data from last probe (IMU)\n")
+
+    # output file name
+    file_string_path = op.dirname(name)
+    file_string_name = op.basename(name)
+    file_string = file_string_name.split('_')
+    file_string[1] = str(int(number_of_channels - probechans))
+    filename = '_'.join(file_string)
+    if outdir is None:
+        filename = op.join(file_string_path, filename)
+    else:
+        filename = op.join(outdir, filename)
+    if op.exists(filename):
+        raise FileExistsError("File {} exists".format(filename))
+
+    # copy timestamp, then copy first n-1 probes block by block
+    blockbytes = block_samples * number_of_channels * 2
+    with open(name, 'rb') as fin, open(filename, 'wb') as fout:
+        fout.write(fin.read(8))
+        while True:
+            buf = fin.read(blockbytes)
+            if len(buf) == 0:
+                break
+            d = np.frombuffer(buf, dtype=np.int16)
+            d = d.reshape(-1, number_of_channels)
+            fout.write(d[:, :-probechans].tobytes())
