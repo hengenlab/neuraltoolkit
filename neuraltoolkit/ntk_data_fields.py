@@ -122,7 +122,7 @@ def get_data_fields(animal=None, field=None, probenum=None, region=None):
 
         elif field == 'probe_num':
             # if ((probenum == None) and (region != None)):
-            print(f"Probe num { data_animal_json[probe_num]['probe_num']}")
+            print(f"Probe num {data_animal_json[probe_num]['probe_num']}")
             return data_animal_json[probe_num]['probe_num']
         elif field == 'region':
             # if ((probenum != None) and (region == None)):
