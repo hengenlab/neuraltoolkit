@@ -380,6 +380,7 @@ outdir: output directory (default None, saves in the same folder where file was)
 [Example Jupyter notebook for `ntk.delete_probe`](https://github.com/hengenlab/neuraltoolkit/blob/master/scripts/test_delete_probe.ipynb)
 
 #### $\textcolor{#81d8d0}{\textbf{Delete IMU probe only if it is the last probe use this}}$
+$\textcolor{#ff4040}{\textbf{Please be careful when using this function.}}$
 ```
 #delete last probe (IMU) data, create new rawfile
 ntk.delete_IMU_probe(name, number_of_channels, nprobes,
